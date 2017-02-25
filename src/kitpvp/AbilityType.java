@@ -1,0 +1,6 @@
+package kitpvp;
+
+public enum AbilityType {
+
+	SPIDERMAN, BOWBOMBER, PROTECTOR, THUNDERGOD, FISHERMAN, FLIGHT, BOMBER, NULL; 
+}
