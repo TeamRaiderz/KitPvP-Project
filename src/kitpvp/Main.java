@@ -8,6 +8,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import kitpvp.MySQL.MySQLManager;
+import kitpvp.Util.KitAPI;
+
 public class Main extends JavaPlugin{
 
 	private static File messagesFile = null;
@@ -20,6 +23,8 @@ public class Main extends JavaPlugin{
 		
 		saveDefaultConfig();
 		saveDefaultMsgFile();
+		
+		getMySQLManager().setupDataBase();
 		
 	}
 	
@@ -62,6 +67,14 @@ public class Main extends JavaPlugin{
 			saveResource("messages.yml", false);
 		}
 		
+	}
+	
+	public static MySQLManager getMySQLManager(){
+		return new MySQLManager();
+	}
+	
+	public static KitAPI getAPI(){
+		return new KitAPI();
 	}
 	
 }
