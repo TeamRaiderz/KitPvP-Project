@@ -1,0 +1,7 @@
+MsgPrefix: '&7[&bPrefix&7]'
+MySQL:
+  enabled: true
+  hostname: 'localhost'
+  port: 3306
+  username: 'kitpvpserver'
+  password: 'password123'

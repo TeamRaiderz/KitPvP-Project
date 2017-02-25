@@ -6,7 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
-public class Prefix implements Listener, CommandExecutor {
+public class PrefixCommand implements Listener, CommandExecutor {
 
 	public void openPrefixGUI(Player p){
 		
