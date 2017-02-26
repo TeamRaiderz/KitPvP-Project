@@ -1,4 +1,4 @@
-MsgPrefix: '&7[&bPrefix&7]'
+MsgPrefix: '&7[&c!&7]'
 MySQL:
   enabled: true
   hostname: 'localhost'

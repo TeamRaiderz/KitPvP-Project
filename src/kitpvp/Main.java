@@ -10,10 +10,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import kitpvp.MySQL.MySQLManager;
 import kitpvp.Util.KitAPI;
+import kitpvp.commands.KitCommand;
 
 public class Main extends JavaPlugin{
 
 	private static File messagesFile = null;
+	private static File dataFile = null;
+	private static File kitFile = null;
 	public static Main instance;
 	public static Main getInstance(){ return instance; }
 	
@@ -23,8 +26,12 @@ public class Main extends JavaPlugin{
 		
 		saveDefaultConfig();
 		saveDefaultMsgFile();
+		saveDefaultDataFile();
+		saveDefaultKitFile();
 		
 		getMySQLManager().setupDataBase();
+		
+		registerCommand("kit", new KitCommand());
 		
 	}
 	
@@ -38,6 +45,13 @@ public class Main extends JavaPlugin{
 		return YamlConfiguration.loadConfiguration(messagesFile);
 	}
 	
+	public static FileConfiguration getDataFile(){
+		return YamlConfiguration.loadConfiguration(dataFile);
+	}
+	
+	public static FileConfiguration getKitFile(){
+		return YamlConfiguration.loadConfiguration(kitFile);
+	}
 	public static FileConfiguration getConfigFile(){
 		return Main.getInstance().getConfig();
 	}
@@ -59,9 +73,47 @@ public class Main extends JavaPlugin{
 		}
 	}
 	
+	public static void saveKitFile(){
+		try {
+			getMsgFile().save(kitFile);
+		} catch (IOException e) {
+			System.err.println("Could not save kits.yml file");
+			e.printStackTrace();
+		}
+	}
+	
+	public static void saveDataFile(){
+		try {
+			getMsgFile().save(dataFile);
+		} catch (IOException e) {
+			System.err.println("Could not save data.yml file");
+			e.printStackTrace();
+		}
+	}
+	
 	private void saveDefaultMsgFile(){
 		if(messagesFile == null){
 			messagesFile = new File(getDataFolder(), "messages.yml");
+		}
+		if(!(messagesFile.exists())){
+			saveResource("messages.yml", false);
+		}
+		
+	}
+	
+	private void saveDefaultDataFile(){
+		if(messagesFile == null){
+			messagesFile = new File(getDataFolder(), "data.yml");
+		}
+		if(!(messagesFile.exists())){
+			saveResource("messages.yml", false);
+		}
+		
+	}
+	
+	private void saveDefaultKitFile(){
+		if(messagesFile == null){
+			messagesFile = new File(getDataFolder(), "kits.yml");
 		}
 		if(!(messagesFile.exists())){
 			saveResource("messages.yml", false);

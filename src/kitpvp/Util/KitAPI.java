@@ -4,6 +4,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+
+import kitpvp.Kit;
+import kitpvp.Language;
 import kitpvp.Main;
 
 public class KitAPI {
@@ -58,6 +63,43 @@ public class KitAPI {
 			s.executeUpdate("INSERT INTO kills (`PlayerName`, `balance`) VALUES ('" + player + "', '" + kills + "');");
 			System.out.println("The player's " + player + " balance is now " + kills);
 		} catch (SQLException e) { e.printStackTrace(); }
+	}
+	
+	public Language getLanguage(String player){
+		
+		OfflinePlayer p = Bukkit.getOfflinePlayer(player);
+		String uuid = p.getUniqueId().toString();
+		
+		if(Main.getDataFile().getString(uuid + ".lang").equalsIgnoreCase("ENG")){
+			return Language.ENGLISH;
+		}
+		else if(Main.getDataFile().getString(uuid + ".lang").equalsIgnoreCase("FIN")){
+			return Language.FINNISH;
+		}
+		return null;
+	}
+	
+	public void setLanguage(String player, Language language){
+		
+		OfflinePlayer p = Bukkit.getOfflinePlayer(player);
+		String uuid = p.getUniqueId().toString();
+		
+		if (Main.getDataFile().get(uuid) == null) {
+			System.out.println("That player is not in our database.");
+			return;
+		}
+		
+		switch (language) {
+		case FINNISH:
+			Main.getDataFile().set(uuid + ".lang", "FIN");
+			Main.saveDataFile();
+			break;
+		case ENGLISH:
+			Main.getDataFile().set(uuid + ".lang", "ENG");
+			Main.saveDataFile();
+			break;
+		}
+		
 	}
 	
 }
