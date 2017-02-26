@@ -1,28 +1,34 @@
 package kitpvp;
 
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
+
+import kitpvp.Util.ChatUtils;
 
 public class Kit {
 	
 	private static String name;
-	private ItemStack[] items;
-	private ItemStack[] armor;
+	private List<ItemStack> items;
+	private List<ItemStack> armor;
 	private PotionEffect[] effect;
 	private AbilityType ability;
 	
-	public Kit(String name, ItemStack[] items, ItemStack[] armor, AbilityType ability) {
+	public Kit(String name, List<ItemStack> items, List<ItemStack> armor, AbilityType ability) {
 		Kit.name = name.toLowerCase();
 		this.items = items;
 		this.armor = armor;
 		this.ability = ability;
 	}
 	
-	public Kit(String name, ItemStack[] items, ItemStack[] armor, PotionEffect[] effect, AbilityType ability) {
+	public Kit(String name, List<ItemStack> items, List<ItemStack> armor, PotionEffect[] effect, AbilityType ability) {
 		Kit.name = name.toLowerCase();
 		this.items = items;
 		this.armor = armor;
@@ -33,10 +39,10 @@ public class Kit {
 	public String getName() {
 		return ChatColor.translateAlternateColorCodes('&', name);
 	}
-	public ItemStack[] getItems() {
+	public List<ItemStack> getItems() {
 		return items;
 	}
-	public ItemStack[] getArmor() {
+	public List<ItemStack> getArmor() {
 		return armor;
 	}
 	public PotionEffect[] getEffects(){
@@ -59,39 +65,48 @@ public class Kit {
 			}
 		}
 		
-		player.getInventory().clear();
-		player.getInventory().setArmorContents(null);
-		player.getInventory().setContents(null);
-		
-		player.getInventory().setArmorContents(armor);
-		player.getInventory().setContents(items);
-		
-		for(ItemStack item : items){
-			item.getItemMeta().setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
+		if(player.getInventory().getContents() != null){
+			player.getInventory().clear();
 		}
-		for(ItemStack item : armor){
-			item.getItemMeta().setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
+		if(player.getInventory().getArmorContents() != null){
+			player.getInventory().setArmorContents(null);
 		}
 		
-	}
-	
-	public static Kit getKit(String kitName){
+		FileConfiguration file = Main.getKitFile();
 		
-		Kit kit = null;
-		String name = kitName.toLowerCase();
+		ItemStack[] content = ((List<ItemStack>) file.get(name + ".items")).toArray(new ItemStack[0]);
+        ItemStack[]  armor = ((List<ItemStack>) file.get(name + ".armor")).toArray(new ItemStack[0]);
+        
+        for(ItemStack item : content){
+        	player.getInventory().addItem(item);
+        }
+        
+        for(ItemStack item : armor){
+        	if(item.getType() == Material.LEATHER_HELMET || item.getType() == Material.GOLD_HELMET || item.getType() == Material.IRON_HELMET
+        			|| item.getType() == Material.DIAMOND_HELMET || item.getType() == Material.CHAINMAIL_HELMET){
+        		player.getInventory().setHelmet(item);
+        	}
+        	else if(item.getType() == Material.LEATHER_CHESTPLATE || item.getType() == Material.GOLD_CHESTPLATE || item.getType() == Material.IRON_CHESTPLATE
+        			|| item.getType() == Material.DIAMOND_CHESTPLATE || item.getType() == Material.CHAINMAIL_CHESTPLATE){
+        		player.getInventory().setChestplate(item);
+        	}
+        	else if(item.getType() == Material.LEATHER_LEGGINGS || item.getType() == Material.GOLD_LEGGINGS || item.getType() == Material.IRON_LEGGINGS
+        			|| item.getType() == Material.DIAMOND_LEGGINGS || item.getType() == Material.CHAINMAIL_LEGGINGS){
+        		player.getInventory().setLeggings(item);
+        	}
+        	else if(item.getType() == Material.LEATHER_BOOTS || item.getType() == Material.GOLD_BOOTS || item.getType() == Material.IRON_BOOTS
+        			|| item.getType() == Material.DIAMOND_BOOTS || item.getType() == Material.CHAINMAIL_BOOTS){
+        		player.getInventory().setBoots(item);
+        	}
+        }
 		
-		try{
-			
-			FileConfiguration file = Main.getKitFile();
-			
-			kit = new Kit(file.getString(name), (ItemStack[]) file.get(name + ".items"), (ItemStack[]) file.get(name + ".armor"),
-					(PotionEffect[]) file.get(name + ".potionEffects"), AbilityType.valueOf(file.getString(name + ".ability")));
-			
-		} catch (NullPointerException ex){
-			System.err.println("Could not get kit " + name + "from the file, because it doesn't exist. Please use the correct names.");
-		}
-		
-		return kit;
+        if(Main.getAPI().getLanguage(player.getName()) == Language.FINNISH){
+        	ChatUtils.sendMessageWithPrefix(player, "§7Sinulle annettiin kit §c" + name + "§7!");
+        }
+        else if(Main.getAPI().getLanguage(player.getName()) == Language.ENGLISH){
+        	ChatUtils.sendMessageWithPrefix(player, "§7You were given the kit §c" + name + "§7!");
+        }
+        
 	}
 	
 	public void loadToFile(){
@@ -101,8 +116,14 @@ public class Kit {
 		file.createSection(name.toLowerCase());
 		file.getConfigurationSection(name.toLowerCase()).set("items", getItems());
 		file.getConfigurationSection(name.toLowerCase()).set("armor", getArmor());
-		file.getConfigurationSection(name.toLowerCase()).set("ability", getAbility().toString());
-		file.getConfigurationSection(name.toLowerCase()).set("potionEffects", getEffects().toString());
+		if(getAbility() == null)
+			file.getConfigurationSection(name.toLowerCase()).set("ability", "");
+		else
+			file.getConfigurationSection(name.toLowerCase()).set("ability", getAbility());
+		if(getEffects() == null)
+			file.getConfigurationSection(name.toLowerCase()).set("potionEffects", "");
+		else
+			file.getConfigurationSection(name.toLowerCase()).set("potionEffects", getEffects().toString());
 		file.getConfigurationSection(name.toLowerCase()).set("name", getName());
 		
 		Main.saveKitFile();

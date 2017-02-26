@@ -2,7 +2,9 @@ package kitpvp;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -11,15 +13,16 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import kitpvp.MySQL.MySQLManager;
+import kitpvp.Util.DataYML;
 import kitpvp.Util.KitAPI;
+import kitpvp.Util.KitsYML;
 import kitpvp.commands.KitCommand;
 import kitpvp.listeners.ConnectionListener;
 
 public class Main extends JavaPlugin{
 
 	private static File messagesFile = null;
-	private static File dataFile = null;
-	private static File kitFile = null;
+	private static FileConfiguration messagesConfig = null;
 	public static Main instance;
 	public static Main getInstance(){ return instance; }
 	
@@ -29,8 +32,6 @@ public class Main extends JavaPlugin{
 		
 		saveDefaultConfig();
 		saveDefaultMsgFile();
-		saveDefaultDataFile();
-		saveDefaultKitFile();
 		
 		getMySQLManager().setupDataBase();
 		
@@ -46,15 +47,19 @@ public class Main extends JavaPlugin{
 	}
 	
 	public static FileConfiguration getMsgFile(){
-		return YamlConfiguration.loadConfiguration(messagesFile);
+		if (messagesConfig == null) {
+
+			reloadMessagesFile();
+		}
+		return messagesConfig;
 	}
 	
 	public static FileConfiguration getDataFile(){
-		return YamlConfiguration.loadConfiguration(dataFile);
+		return DataYML.getFile();
 	}
 	
 	public static FileConfiguration getKitFile(){
-		return YamlConfiguration.loadConfiguration(kitFile);
+		return KitsYML.getFile();
 	}
 	public static FileConfiguration getConfigFile(){
 		return Main.getInstance().getConfig();
@@ -81,22 +86,28 @@ public class Main extends JavaPlugin{
 		}
 	}
 	
-	public static void saveKitFile(){
-		try {
-			getMsgFile().save(kitFile);
-		} catch (IOException e) {
-			System.err.println("Could not save kits.yml file");
-			e.printStackTrace();
+	public static void reloadMessagesFile(){
+		if(messagesFile == null){
+			messagesFile = new File(Bukkit.getPluginManager().getPlugin("KitPvP").getDataFolder(), "messages.yml");
+		}
+		
+		messagesConfig = YamlConfiguration.loadConfiguration(messagesFile);
+		
+		InputStream defConfigStream = Bukkit.getPluginManager().getPlugin("KitPvP").getResource("messages.yml");
+		if(defConfigStream != null){
+			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+			if(!(messagesFile.exists() || messagesFile.length() == 0L)){
+				messagesConfig.setDefaults(defConfig);
+			}
 		}
 	}
 	
+	public static void saveKitFile(){
+		KitsYML.saveFile();
+	}
+	
 	public static void saveDataFile(){
-		try {
-			getMsgFile().save(dataFile);
-		} catch (IOException e) {
-			System.err.println("Could not save data.yml file");
-			e.printStackTrace();
-		}
+		DataYML.saveFile();
 	}
 	
 	private void saveDefaultMsgFile(){
@@ -105,26 +116,6 @@ public class Main extends JavaPlugin{
 		}
 		if(!(messagesFile.exists())){
 			saveResource("messages.yml", false);
-		}
-		
-	}
-	
-	private void saveDefaultDataFile(){
-		if(dataFile == null){
-			dataFile = new File(getDataFolder(), "data.yml");
-		}
-		if(!(dataFile.exists())){
-			saveResource("data.yml", false);
-		}
-		
-	}
-	
-	private void saveDefaultKitFile(){
-		if(kitFile == null){
-			kitFile = new File(getDataFolder(), "kits.yml");
-		}
-		if(!(kitFile.exists())){
-			saveResource("kits.yml", false);
 		}
 		
 	}
