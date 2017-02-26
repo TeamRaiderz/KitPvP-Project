@@ -6,11 +6,14 @@ import java.io.IOException;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import kitpvp.MySQL.MySQLManager;
 import kitpvp.Util.KitAPI;
 import kitpvp.commands.KitCommand;
+import kitpvp.listeners.ConnectionListener;
 
 public class Main extends JavaPlugin{
 
@@ -32,6 +35,7 @@ public class Main extends JavaPlugin{
 		getMySQLManager().setupDataBase();
 		
 		registerCommand("kit", new KitCommand());
+		registerListener(this, new ConnectionListener());
 		
 	}
 	
@@ -62,6 +66,10 @@ public class Main extends JavaPlugin{
 	
 	public static void registerCommand(String command, CommandExecutor cmdClass){
 		Main.getInstance().getCommand(command).setExecutor(cmdClass);
+	}
+	
+	public static void registerListener(Plugin mainClass, Listener eventClass){
+		Main.getInstance().getServer().getPluginManager().registerEvents(eventClass, mainClass);
 	}
 	
 	public static void saveMsgFile(){
