@@ -110,21 +110,21 @@ public class Main extends JavaPlugin{
 	}
 	
 	private void saveDefaultDataFile(){
-		if(messagesFile == null){
-			messagesFile = new File(getDataFolder(), "data.yml");
+		if(dataFile == null){
+			dataFile = new File(getDataFolder(), "data.yml");
 		}
-		if(!(messagesFile.exists())){
-			saveResource("messages.yml", false);
+		if(!(dataFile.exists())){
+			saveResource("data.yml", false);
 		}
 		
 	}
 	
 	private void saveDefaultKitFile(){
-		if(messagesFile == null){
-			messagesFile = new File(getDataFolder(), "kits.yml");
+		if(kitFile == null){
+			kitFile = new File(getDataFolder(), "kits.yml");
 		}
-		if(!(messagesFile.exists())){
-			saveResource("messages.yml", false);
+		if(!(kitFile.exists())){
+			saveResource("kits.yml", false);
 		}
 		
 	}
