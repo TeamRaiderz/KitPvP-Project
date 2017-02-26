@@ -1,6 +1,6 @@
 MsgPrefix: '&7[&c!&7]'
 MySQL:
-  enabled: true
+  enabled: false
   hostname: 'localhost'
   port: 3306
   username: 'kitpvpserver'
