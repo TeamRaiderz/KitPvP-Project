@@ -106,7 +106,14 @@ public class KitCommand implements CommandExecutor{
 				}
 				else if(args[1].equalsIgnoreCase("delete")){
 					
-					Kit.removeFromFile();
+					Kit kit = new Kit(args[0], items, armors, null);
+					
+					if (Main.getAPI().getLanguage(sender.getName()) == Language.FINNISH) {
+						ChatUtils.sendMessageWithPrefix(sender, "§7Poistit kitin §c" + kit.getName() + "§7!");
+					} else if (Main.getAPI().getLanguage(sender.getName()) == Language.ENGLISH) {
+						ChatUtils.sendMessageWithPrefix(sender, "§7You removed the kit §c" + kit.getName() + "§7!");
+					}
+					kit.removeFromFile();
 					
 				}
 				

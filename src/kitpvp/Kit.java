@@ -8,28 +8,27 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 
 import kitpvp.Util.ChatUtils;
 
 public class Kit {
 	
-	private static String name;
+	private String name;
 	private List<ItemStack> items;
 	private List<ItemStack> armor;
 	private PotionEffect[] effect;
 	private AbilityType ability;
 	
 	public Kit(String name, List<ItemStack> items, List<ItemStack> armor, AbilityType ability) {
-		Kit.name = name.toLowerCase();
+		this.name = name.toLowerCase();
 		this.items = items;
 		this.armor = armor;
 		this.ability = ability;
 	}
 	
 	public Kit(String name, List<ItemStack> items, List<ItemStack> armor, PotionEffect[] effect, AbilityType ability) {
-		Kit.name = name.toLowerCase();
+		this.name = name.toLowerCase();
 		this.items = items;
 		this.armor = armor;
 		this.effect = effect;
@@ -129,7 +128,7 @@ public class Kit {
 		Main.saveKitFile();
 	}
 	
-	public static void removeFromFile(){
+	public void removeFromFile(){
 		
 		FileConfiguration file = Main.getKitFile();
 		
