@@ -21,7 +21,7 @@ public class KitCommand implements CommandExecutor{
 			sender.sendMessage("§cDo /kit ? to see command help.");
 			return true;
 		}
-		else if (args.length == 1 || args.length == 2){
+		else if (args.length == 1){
 			if(args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?")){
 				sender.sendMessage("§7§m----------§c§l KitPvP Command Help §7§----------");
 				sender.sendMessage("§c/kit (kit) create §7Create a kit.");
@@ -36,7 +36,7 @@ public class KitCommand implements CommandExecutor{
 				return true;
 			}
 		}
-		else if (args.length == 3){
+		else if (args.length == 2){
 			
 			if(args[1].equalsIgnoreCase("create") || args[1].equalsIgnoreCase("delete")){
 			
@@ -65,7 +65,7 @@ public class KitCommand implements CommandExecutor{
 			}
 			
 		}
-		else if (args.length == 4){
+		else if (args.length == 3){
 			
 			if(args[1].equalsIgnoreCase("give") || args[1].equalsIgnoreCase("setability") || args[1].equalsIgnoreCase("removeability")){
 				
