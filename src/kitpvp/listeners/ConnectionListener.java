@@ -9,6 +9,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 import kitpvp.Main;
 import kitpvp.Util.ChatUtils;
+import kitpvp.commands.PrefixCommand.NameColor;
 
 public class ConnectionListener implements Listener{
 
@@ -26,6 +27,7 @@ public class ConnectionListener implements Listener{
 			data.set(uuid + ".currentName", p.getName());
 			data.set(uuid + ".ipAddress", p.getAddress().getAddress().toString());
 			data.set(uuid + ".lang", "ENG");
+			Main.getAPI().setNick(p.getName(), NameColor.DEFAULT);
 			
 			Main.saveDataFile();
 			

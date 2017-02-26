@@ -16,7 +16,9 @@ import kitpvp.MySQL.MySQLManager;
 import kitpvp.Util.DataYML;
 import kitpvp.Util.KitAPI;
 import kitpvp.Util.KitsYML;
+import kitpvp.commands.LangCommand;
 import kitpvp.commands.KitCommand;
+import kitpvp.commands.PrefixCommand;
 import kitpvp.listeners.ConnectionListener;
 
 public class Main extends JavaPlugin{
@@ -36,7 +38,14 @@ public class Main extends JavaPlugin{
 		getMySQLManager().setupDataBase();
 		
 		registerCommand("kit", new KitCommand());
+		registerCommand("prefix", new PrefixCommand());
+		registerCommand("nick", new PrefixCommand());
+		registerCommand("lang", new LangCommand());
+		registerCommand("kieli", new LangCommand());
+		
 		registerListener(this, new ConnectionListener());
+		registerListener(this, new PrefixCommand());
+		registerListener(this, new ChatFormat());
 		
 	}
 	

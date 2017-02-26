@@ -6,3 +6,11 @@ author: TeamRaiderz
 commands:
   kit:
     description: main command
+  prefix: 
+    description: Change the color of your name
+  nick: 
+    description: Change the color of your name
+  lang: 
+    description: Change your language
+  kieli: 
+    description: Change your language

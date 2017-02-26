@@ -10,6 +10,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -57,6 +58,19 @@ public class KitCommand implements CommandExecutor{
 				} else if (Main.getAPI().getLanguage(sender.getName()) == Language.ENGLISH) {
 					ChatUtils.sendMessageWithPrefix(sender, "§7Reloaded the plugin");
 				}
+				
+			}
+			else if (args[0].equalsIgnoreCase("openInv")){
+				
+				if(!(sender instanceof Player)){
+					ChatUtils.sendConsoleMessageWithPrefix("§cOnly for players!");
+					return true;
+				}
+				
+				Inventory inv = Bukkit.createInventory(null, 36, "Random inventory");
+				
+				Player p = (Player) sender;
+				p.openInventory(inv);
 				
 			}
 			else{
