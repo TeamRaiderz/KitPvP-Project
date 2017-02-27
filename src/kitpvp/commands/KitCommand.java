@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -120,7 +120,7 @@ public class KitCommand implements CommandExecutor{
 				}
 				else if(args[1].equalsIgnoreCase("delete")){
 					
-					Kit kit = new Kit(args[0], items, armors, null);
+					Kit kit = new Kit(args[0], items, armors);
 					
 					if (Main.getAPI().getLanguage(sender.getName()) == Language.FINNISH) {
 						ChatUtils.sendMessageWithPrefix(sender, "§7Poistit kitin §c" + kit.getName() + "§7!");
@@ -149,7 +149,7 @@ public class KitCommand implements CommandExecutor{
 					
 					//Give the kit
 					
-					Kit kit = new Kit(args[0], items, armors, null);
+					Kit kit = new Kit(args[0], items, armors);
 					
 					kit.giveKit(target);
 					

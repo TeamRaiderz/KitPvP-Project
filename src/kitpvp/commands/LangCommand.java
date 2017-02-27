@@ -10,13 +10,14 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 
 import kitpvp.Language;
 import kitpvp.Main;
 import kitpvp.Util.KitAPI;
 
-public class LangCommand implements CommandExecutor{
+public class LangCommand implements CommandExecutor, Listener{
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {

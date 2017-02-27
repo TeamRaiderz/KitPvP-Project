@@ -15,7 +15,7 @@ public class ChatFormat implements Listener{
 		String uuid = p.getUniqueId().toString();
 		String nickname = ChatColor.translateAlternateColorCodes('&', Main.getDataFile().getString(uuid + ".nick"));
 		
-		e.setFormat(nickname + " §a§l>> §r" + e.getMessage());
+		e.setFormat("§3§lBOOSTER §r" + nickname + " §a§l>> §r" + ChatColor.translateAlternateColorCodes('&', e.getMessage()));
 		
 	}
 	

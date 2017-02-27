@@ -37,13 +37,11 @@ public class PrefixCommand implements Listener, CommandExecutor {
 			createWoolItem(inv, 10, DyeColor.RED, "§c§lPUNAINEN", Arrays.asList("§7Vaihda nimesi väri punaiseksi!", "", "§aKlikkaa vaihtaaksesi!"));
 			createWoolItem(inv, 11, DyeColor.GREEN, "§a§lVIHREÄ", Arrays.asList("§7Vaihda nimesi väri vihreäksi!", "", "§aKlikkaa vaihtaaksesi!"));
 			createWoolItem(inv, 12, DyeColor.LIGHT_BLUE, "§b§lVAALEANSININEN", Arrays.asList("§7Vaihda nimesi väri vaaleansiniseksi!", "", "§aKlikkaa vaihtaaksesi!"));
-			createWoolItem(inv, 13, DyeColor.CYAN, "§3§lCYAANI", Arrays.asList("§7Vaihda nimesi väri cyaaniksi!", "", "§aKlikkaa vaihtaaksesi!"));
+			createWoolItem(inv, 13, DyeColor.PURPLE, "§5§lVIOLETTI", Arrays.asList("§7Vaihda nimesi väri violetiksi!", "", "§aKlikkaa vaihtaaksesi!"));
 			createWoolItem(inv, 14, DyeColor.BLUE, "§9§lSININEN", Arrays.asList("§7Vaihda nimesi väri siniseksi!", "", "§aKlikkaa vaihtaaksesi!"));
 			createWoolItem(inv, 15, DyeColor.YELLOW, "§e§lKELTAINEN", Arrays.asList("§7Vaihda nimesi väri keltaiseksi!", "", "§aKlikkaa vaihtaaksesi!"));
-			createWoolItem(inv, 16, DyeColor.WHITE, "§f§lVALKOINEN", Arrays.asList("§7Vaihda nimesi väri valkoiseksi!", "", "§aKlikkaa vaihtaaksesi!"));
-			createWoolItem(inv, 19, DyeColor.ORANGE, "§6§lKULTAINEN", Arrays.asList("§7Vaihda nimesi väri kultaiseksi!", "", "§aKlikkaa vaihtaaksesi!"));
-			createWoolItem(inv, 20, DyeColor.PURPLE, "§5§lVIOLETTI", Arrays.asList("§7Vaihda nimesi väri violetiksi!", "", "§aKlikkaa vaihtaaksesi!"));
-			createWoolItem(inv, 21, DyeColor.PINK, "§d§lPINKKI", Arrays.asList("§7Vaihda nimesi väri pinkiksi!", "", "§aKlikkaa vaihtaaksesi!"));
+			createWoolItem(inv, 16, DyeColor.ORANGE, "§6§lKULTAINEN", Arrays.asList("§7Vaihda nimesi väri kultaiseksi!", "", "§aKlikkaa vaihtaaksesi!"));
+			createWoolItem(inv, 22, DyeColor.PINK, "§d§lPINKKI", Arrays.asList("§7Vaihda nimesi väri pinkiksi!", "", "§aKlikkaa vaihtaaksesi!"));
 			
 			ItemStack restore = new ItemStack(Material.BARRIER);
 			ItemMeta restoreMeta = restore.getItemMeta();
@@ -65,13 +63,11 @@ public class PrefixCommand implements Listener, CommandExecutor {
 			createWoolItem(inv, 10, DyeColor.RED, "§c§lRED", Arrays.asList("§7Change your name to red color!", "", "§aClick to change!"));
 			createWoolItem(inv, 11, DyeColor.GREEN, "§a§lGREEN", Arrays.asList("§7Change your name to green color!", "", "§aClick to change!"));
 			createWoolItem(inv, 12, DyeColor.LIGHT_BLUE, "§b§lAQUA", Arrays.asList("§7Change your name to light blue color!", "", "§aClick to change!"));
-			createWoolItem(inv, 13, DyeColor.CYAN, "§3§lCYAN", Arrays.asList("§7Change your name to cyan color!", "", "§aClick to change!"));
+			createWoolItem(inv, 13, DyeColor.PURPLE, "§5§lPURPLE", Arrays.asList("§7Change your name to purple color!", "", "§aClick to change!"));
 			createWoolItem(inv, 14, DyeColor.BLUE, "§9§lBLUE", Arrays.asList("§7Change your name to blue color!", "", "§aClick to change!"));
 			createWoolItem(inv, 15, DyeColor.YELLOW, "§e§lYELLOW", Arrays.asList("§7Change your name to yellow color!", "", "§aClick to change!"));
-			createWoolItem(inv, 16, DyeColor.WHITE, "§f§lWHITE", Arrays.asList("§7Change your name to white color!", "", "§aClick to change!"));
-			createWoolItem(inv, 19, DyeColor.ORANGE, "§6§lGOLD", Arrays.asList("§7Change your name to gold color!", "", "§aClick to change!"));
-			createWoolItem(inv, 20, DyeColor.PURPLE, "§5§lPURPLE", Arrays.asList("§7Change your name to purple color!", "", "§aClick to change!"));
-			createWoolItem(inv, 21, DyeColor.PINK, "§d§lPINK", Arrays.asList("§7Change your name to pink color!", "", "§aClick to change!"));
+			createWoolItem(inv, 16, DyeColor.ORANGE, "§6§lGOLD", Arrays.asList("§7Change your name to gold color!", "", "§aClick to change!"));
+			createWoolItem(inv, 22, DyeColor.PINK, "§d§lPINK", Arrays.asList("§7Change your name to pink color!", "", "§aClick to change!"));
 		
 			ItemStack restore = new ItemStack(Material.BARRIER);
 			ItemMeta restoreMeta = restore.getItemMeta();
@@ -128,16 +124,6 @@ public class PrefixCommand implements Listener, CommandExecutor {
 						ChatUtils.sendMessageWithPrefix(p, "§7Your name's color has been changed to §b§lLIGHT BLUE.");
 					}
 				}
-				else if(item.getData().getData() == DyeColor.CYAN.getData()){
-					e.setCancelled(true);
-					p.closeInventory();
-					api.setNick(p.getName(), NameColor.CYAN);
-					if (Main.getAPI().getLanguage(p.getName()) == Language.FINNISH) {
-						ChatUtils.sendMessageWithPrefix(p, "§7Sinun nimesi väri on nyt §3§lCYAANI.");
-					} else if (Main.getAPI().getLanguage(p.getName()) == Language.ENGLISH) {
-						ChatUtils.sendMessageWithPrefix(p, "§7Your name's color has been changed to §3§lCYAN.");
-					}
-				}
 				else if(item.getData().getData() == DyeColor.BLUE.getData()){
 					e.setCancelled(true);
 					p.closeInventory();
@@ -157,16 +143,6 @@ public class PrefixCommand implements Listener, CommandExecutor {
 						ChatUtils.sendMessageWithPrefix(p, "§7Sinun nimesi väri on nyt §e§lKELTAINEN.");
 					} else if (Main.getAPI().getLanguage(p.getName()) == Language.ENGLISH) {
 						ChatUtils.sendMessageWithPrefix(p, "§7Your name's color has been changed to §e§lYELLOW.");
-					}
-				}
-				else if(item.getData().getData() == DyeColor.WHITE.getData()){
-					e.setCancelled(true);
-					p.closeInventory();
-					api.setNick(p.getName(), NameColor.WHITE);
-					if (Main.getAPI().getLanguage(p.getName()) == Language.FINNISH) {
-						ChatUtils.sendMessageWithPrefix(p, "§7Sinun nimesi väri on nyt §f§lVALKOINEN.");
-					} else if (Main.getAPI().getLanguage(p.getName()) == Language.ENGLISH) {
-						ChatUtils.sendMessageWithPrefix(p, "§7Your name's color has been changed to §f§lWHITE.");
 					}
 				}
 				else if(item.getData().getData() == DyeColor.ORANGE.getData()){

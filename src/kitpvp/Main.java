@@ -16,9 +16,10 @@ import kitpvp.MySQL.MySQLManager;
 import kitpvp.Util.DataYML;
 import kitpvp.Util.KitAPI;
 import kitpvp.Util.KitsYML;
-import kitpvp.commands.LangCommand;
 import kitpvp.commands.KitCommand;
+import kitpvp.commands.LangCommand;
 import kitpvp.commands.PrefixCommand;
+import kitpvp.listeners.AbilityListener;
 import kitpvp.listeners.ConnectionListener;
 
 public class Main extends JavaPlugin{
@@ -46,6 +47,7 @@ public class Main extends JavaPlugin{
 		registerListener(this, new ConnectionListener());
 		registerListener(this, new PrefixCommand());
 		registerListener(this, new ChatFormat());
+		registerListener(this, new AbilityListener());
 		
 	}
 	

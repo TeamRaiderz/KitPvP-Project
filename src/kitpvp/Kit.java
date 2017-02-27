@@ -18,21 +18,18 @@ public class Kit {
 	private List<ItemStack> items;
 	private List<ItemStack> armor;
 	private PotionEffect[] effect;
-	private AbilityType ability;
 	
-	public Kit(String name, List<ItemStack> items, List<ItemStack> armor, AbilityType ability) {
+	public Kit(String name, List<ItemStack> items, List<ItemStack> armor) {
 		this.name = name.toLowerCase();
 		this.items = items;
 		this.armor = armor;
-		this.ability = ability;
 	}
 	
-	public Kit(String name, List<ItemStack> items, List<ItemStack> armor, PotionEffect[] effect, AbilityType ability) {
+	public Kit(String name, List<ItemStack> items, List<ItemStack> armor, PotionEffect[] effect) {
 		this.name = name.toLowerCase();
 		this.items = items;
 		this.armor = armor;
 		this.effect = effect;
-		this.ability = ability;
 	}
 	
 	public String getName() {
@@ -47,11 +44,6 @@ public class Kit {
 	public PotionEffect[] getEffects(){
 		return effect;
 	}
-
-	public AbilityType getAbility() {
-		return ability;
-	}
-
 	public void giveKit(Player player){
 		
 		if(player.getActivePotionEffects() != null){
@@ -115,10 +107,6 @@ public class Kit {
 		file.createSection(name.toLowerCase());
 		file.getConfigurationSection(name.toLowerCase()).set("items", getItems());
 		file.getConfigurationSection(name.toLowerCase()).set("armor", getArmor());
-		if(getAbility() == null)
-			file.getConfigurationSection(name.toLowerCase()).set("ability", "");
-		else
-			file.getConfigurationSection(name.toLowerCase()).set("ability", getAbility());
 		if(getEffects() == null)
 			file.getConfigurationSection(name.toLowerCase()).set("potionEffects", "");
 		else

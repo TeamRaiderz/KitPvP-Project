@@ -1,0 +1,57 @@
+--->Uudet kitit<---
+
+1. Pommijousittaja:
+
+Ase: Jousi: Tekee pienen räjähdyksen //4block säde?// kohteeseen ja heittää pelaajia poispäin kohteesta.
+   Tekee myös 2damagea kaikkiin alueella oleviin pelaajiin.
+   Enchant inffinity 1
+  Armorit:
+   Leather hattu (värjätty: musta)
+   Ei chestplatea:
+   Leather housut (värjätty: musta)
+   Leather kengät (värjätty: valkoinen)
+  Muuta:
+   Kultaiset omenat 5kpl:
+   1 nuoli inventoryyn:
+
+
+2. Suojaaja:
+
+Ase: Ink sac (sharpness3) Right click heittää kaikki lähellä//4block säde?// olevat pelaajat kauemmaksi (COOLDOWN 20sec):
+  Armorit:
+   Leather hattu (värjätty: punainen)
+   Leather chestplate (värjätty: pinkki)
+   Leather housut (värjätty: pinkki)
+   Leather kengät (värjätty: punainen)
+   
+   Kaikki armorit enchantattu: Protection 1
+   
+  Muuta:
+   Kultaiset omenat 5kpl:
+   Magma cream: Right click palauttaa äkillisesti elämät (Regenation 4/3 ajaksi 5sec) (COOLDOWN 15sec) (testimielessä 15sec)
+
+
+2. Ukkosjumala:
+
+Ase: : Diamond axe (enchant unb1) Right click tekee salaman kohteeseen HETI. (COOLDOWN 15sec) (testimielessä 15sec)
+  Armorit:
+   Leather hattu (värjätty: punainen)
+   Leather chestplate (värjätty: pinkki)
+   Leather housut (värjätty: pinkki)
+   Leather kengät (värjätty: punainen)
+   
+   Kaikki armorit enchantattu: Protection 1
+   
+  Muuta:
+   Kultaiset omenat 5kpl:
+   Magma cream: Right click palauttaa äkillisesti elämät (Regenation 4/3 ajaksi 5sec) (COOLDOWN 15sec) (testimielessä 15sec)
+
+
+
+--->Toivomuksia<---
+
+1. Spider kitin ääni joksikin spider ääneksi
+
+2. Kaikista kiteistä nimet //&7Kitin nimi// EI &l
+
+3. Golden apple parannus (Palauttaa nopeammin elämät Joku regenation yms)
