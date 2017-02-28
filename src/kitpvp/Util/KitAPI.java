@@ -10,6 +10,8 @@ import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
+import org.bukkit.entity.Entity;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -18,6 +20,7 @@ import kitpvp.Language;
 import kitpvp.Main;
 import kitpvp.commands.PrefixCommand.NameColor;
 import net.md_5.bungee.api.ChatColor;
+import net.minecraft.server.v1_8_R3.NBTTagCompound;
 
 public class KitAPI {
 
@@ -188,5 +191,16 @@ public class KitAPI {
 		inv.setItem(pos, wool);
 	}
 	
+	public void Silent(Entity YourEntity) {
+		net.minecraft.server.v1_8_R3.Entity nmsEntity = ((CraftEntity) YourEntity).getHandle();
+		NBTTagCompound tag = nmsEntity.getNBTTag();
+		if (tag == null) {
+			tag = new NBTTagCompound();
+		}
+
+		nmsEntity.c(tag);
+		tag.setInt("Silent", 1);
+		nmsEntity.f(tag);
+	}
 	
 }

@@ -94,19 +94,19 @@ public class KitCommand implements CommandExecutor{
 					for(ItemStack item : p.getInventory().getContents()){
 						if (item != null && item.getItemMeta() != null) {
 							ItemMeta meta = item.getItemMeta();
-							meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', args[0]));
+							meta.spigot().setUnbreakable(true);
 							item.setItemMeta(meta);
-							items.add(item);
 						}
+						items.add(item);
 					}
 					
 					for(ItemStack armor : p.getInventory().getArmorContents()){
 						if (armor != null && armor.getItemMeta() != null) {
 							ItemMeta meta = armor.getItemMeta();
-							meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', args[0]));
+							meta.spigot().setUnbreakable(true);
 							armor.setItemMeta(meta);
-							armors.add(armor);
 						}
+						armors.add(armor);
 					}
 					
 					Kit kit = new Kit(ChatColor.translateAlternateColorCodes('&', args[0]), 
@@ -150,6 +150,16 @@ public class KitCommand implements CommandExecutor{
 					//Give the kit
 					
 					Kit kit = new Kit(args[0], items, armors);
+					
+					if(Main.getKitFile().get(kit.getName()) == null){
+						
+						if (Main.getAPI().getLanguage(sender.getName()) == Language.FINNISH) {
+							ChatUtils.sendMessageWithPrefix(sender, "§7Tuota kittiä ei ole olemassa!");
+						} else if (Main.getAPI().getLanguage(sender.getName()) == Language.ENGLISH) {
+							ChatUtils.sendMessageWithPrefix(sender, "§7That kit does not exist!");
+						}
+						return true;
+					}
 					
 					kit.giveKit(target);
 					
