@@ -1,7 +1,7 @@
 MsgPrefix: '&7[&c!&7]'
 MySQL:
-  enabled: false
-  hostname: 'localhost'
+  enabled: true
+  hostname: ' mysql-pr01.'
   port: 3306
-  username: 'kitpvpserver'
-  password: 'password123'
+  username: 'mc_11138'
+  password: '29444c33d1'

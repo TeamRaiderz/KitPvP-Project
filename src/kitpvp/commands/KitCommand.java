@@ -51,7 +51,6 @@ public class KitCommand implements CommandExecutor{
 				DataYML.reloadFile();
 				KitsYML.reloadFile();
 				Main.getInstance().reloadConfig();
-				Main.reloadMessagesFile();
 				
 				if (Main.getAPI().getLanguage(sender.getName()) == Language.FINNISH) {
 					ChatUtils.sendMessageWithPrefix(sender, "§7Reloadasit pluginin!");
@@ -71,6 +70,9 @@ public class KitCommand implements CommandExecutor{
 				
 				Player p = (Player) sender;
 				p.openInventory(inv);
+				
+				Main.getAPI().addBalance(p.getName(), 5);
+				p.sendMessage("Balance: " + Main.getAPI().getBalance(p.getName()));
 				
 			}
 			else{

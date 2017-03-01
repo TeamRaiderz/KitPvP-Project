@@ -18,28 +18,6 @@ public class AbilityListener implements Listener {
 		ItemMeta meta = item.getItemMeta();
 		Material type = item.getType();
 		
-		if(meta.getDisplayName().contains("spider ability") && type == Material.SPIDER_EYE){
-			
-		}
-		else if(meta.getDisplayName().contains("spider ability") && type == Material.SPIDER_EYE){
-			
-		}
-		else if(meta.getDisplayName().contains("spider ability") && type == Material.SPIDER_EYE){
-			
-		}
-		else if(meta.getDisplayName().contains("spider ability") && type == Material.SPIDER_EYE){
-			
-		}
-		else if(meta.getDisplayName().contains("spider ability") && type == Material.SPIDER_EYE){
-			
-		}
-		else if(meta.getDisplayName().contains("spider ability") && type == Material.SPIDER_EYE){
-			
-		}
-		else if(meta.getDisplayName().contains("spider ability") && type == Material.SPIDER_EYE){
-			
-		}
-		
 	}
 	
 }

@@ -23,9 +23,7 @@ import kitpvp.listeners.AbilityListener;
 import kitpvp.listeners.ConnectionListener;
 
 public class Main extends JavaPlugin{
-
-	private static File messagesFile = null;
-	private static FileConfiguration messagesConfig = null;
+	
 	public static Main instance;
 	public static Main getInstance(){ return instance; }
 	
@@ -33,10 +31,9 @@ public class Main extends JavaPlugin{
 		
 		instance = this;
 		
-		saveDefaultConfig();
-		saveDefaultMsgFile();
+		getMySQLManager().openConnection();
 		
-		getMySQLManager().setupDataBase();
+		saveDefaultConfig();
 		
 		registerCommand("kit", new KitCommand());
 		registerCommand("prefix", new PrefixCommand());
@@ -47,7 +44,7 @@ public class Main extends JavaPlugin{
 		registerListener(this, new ConnectionListener());
 		registerListener(this, new PrefixCommand());
 		registerListener(this, new ChatFormat());
-		registerListener(this, new AbilityListener());
+	//	registerListener(this, new AbilityListener());
 		
 	}
 	
@@ -55,14 +52,8 @@ public class Main extends JavaPlugin{
 		
 		instance = null;
 		
-	}
-	
-	public static FileConfiguration getMsgFile(){
-		if (messagesConfig == null) {
-
-			reloadMessagesFile();
-		}
-		return messagesConfig;
+		MySQLManager.disable();
+		
 	}
 	
 	public static FileConfiguration getDataFile(){
@@ -88,47 +79,12 @@ public class Main extends JavaPlugin{
 		Main.getInstance().getServer().getPluginManager().registerEvents(eventClass, mainClass);
 	}
 	
-	public static void saveMsgFile(){
-		try {
-			getMsgFile().save(messagesFile);
-		} catch (IOException e) {
-			System.err.println("Could not save messages.yml file");
-			e.printStackTrace();
-		}
-	}
-	
-	public static void reloadMessagesFile(){
-		if(messagesFile == null){
-			messagesFile = new File(Bukkit.getPluginManager().getPlugin("KitPvP").getDataFolder(), "messages.yml");
-		}
-		
-		messagesConfig = YamlConfiguration.loadConfiguration(messagesFile);
-		
-		InputStream defConfigStream = Bukkit.getPluginManager().getPlugin("KitPvP").getResource("messages.yml");
-		if(defConfigStream != null){
-			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-			if(!(messagesFile.exists() || messagesFile.length() == 0L)){
-				messagesConfig.setDefaults(defConfig);
-			}
-		}
-	}
-	
 	public static void saveKitFile(){
 		KitsYML.saveFile();
 	}
 	
 	public static void saveDataFile(){
 		DataYML.saveFile();
-	}
-	
-	private void saveDefaultMsgFile(){
-		if(messagesFile == null){
-			messagesFile = new File(getDataFolder(), "messages.yml");
-		}
-		if(!(messagesFile.exists())){
-			saveResource("messages.yml", false);
-		}
-		
 	}
 	
 	public static MySQLManager getMySQLManager(){

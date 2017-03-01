@@ -69,12 +69,13 @@ public class Kit {
         ItemStack[]  armor = ((List<ItemStack>) file.get(name + ".armor")).toArray(new ItemStack[0]);
         
         for(ItemStack item : content){
+        	if(item  == null) continue;
         	item.getItemMeta().spigot().setUnbreakable(true);
         	player.getInventory().addItem(item);
         }
         
         for(ItemStack item : armor){
-        	item.getItemMeta().spigot().setUnbreakable(true);
+        	if(item  == null) continue;
         	if(item.getType() == Material.LEATHER_HELMET || item.getType() == Material.GOLD_HELMET || item.getType() == Material.IRON_HELMET
         			|| item.getType() == Material.DIAMOND_HELMET || item.getType() == Material.CHAINMAIL_HELMET){
         		player.getInventory().setHelmet(item);
