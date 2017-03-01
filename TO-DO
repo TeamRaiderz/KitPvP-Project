@@ -51,7 +51,7 @@ Something to think:
   
   
   
-NS BOOSTERIT:
+NS BOOSTERIT:      UNFINISHED
    IRL RAHA OSTO
    antaa kaikille 2h ajaksi tupla raha ja xp
    
@@ -60,7 +60,7 @@ NS BOOSTERIT:
    (KIITOS JUTTU. CHATTI EVENT JOTA PAINAMALLA PELAAJA JA BOOSTERIN "HALTIJA" SAAVAT MOLEMMAT 5-15dollaria:
   
 
-NS COSMETIC BOX
+NS COSMETIC BOX     UNFINISHED
     
     VALUUTTA TOKENIT:
 
@@ -70,7 +70,7 @@ NS COSMETIC BOX
     
 
 
-LEVELSYSTEEMI:
+LEVELSYSTEEMI:    UNFINISHED
       
       ns "valuuttana" xp
 
@@ -81,6 +81,20 @@ LEVELSYSTEEMI:
       
       
       LEVEL = LEVEL x 100
+      
+      
+      
+      
+ SPAWN ITEMIT:      UNFINISHED
+    -hide players
+    -ns cosmetic "crate" mistä saa avattua nimen värejä, partikkelejä, nuolijanoja yms
+    -joku info kirja
+    -MUUTA?
+    
+    HUOM!!! Spawn itemit häviää kitin valinnassa tai hypätessä areenalle/// poistumisessa spawn regionilta!
+
+
+    
       
 
 
