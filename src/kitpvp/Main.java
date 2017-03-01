@@ -1,13 +1,9 @@
 package kitpvp;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -19,8 +15,8 @@ import kitpvp.Util.KitsYML;
 import kitpvp.commands.KitCommand;
 import kitpvp.commands.LangCommand;
 import kitpvp.commands.PrefixCommand;
-import kitpvp.listeners.AbilityListener;
 import kitpvp.listeners.ConnectionListener;
+import kitpvp.listeners.DamageListener;
 
 public class Main extends JavaPlugin{
 	
@@ -45,6 +41,8 @@ public class Main extends JavaPlugin{
 		registerListener(this, new PrefixCommand());
 		registerListener(this, new ChatFormat());
 	//	registerListener(this, new AbilityListener());
+		registerListener(this, new DamageListener());
+		registerListener(this, new LangCommand());
 		
 	}
 	

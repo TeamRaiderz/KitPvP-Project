@@ -22,8 +22,7 @@ import kitpvp.Util.DataYML;
 import kitpvp.Util.KitsYML;
 
 public class KitCommand implements CommandExecutor{
-
-	private String kitName;
+	
 	List<ItemStack> items = new ArrayList<ItemStack>();
 	List<ItemStack> armors = new ArrayList<ItemStack>();
 	
@@ -41,8 +40,6 @@ public class KitCommand implements CommandExecutor{
 				sender.sendMessage("§7§m----------§c§l KitPvP Command Help §7§----------");
 				sender.sendMessage("§c/kit (kit) create §7Create a kit.");
 				sender.sendMessage("§c/kit (kit) delete §7Remove a kit.");
-				sender.sendMessage("§c/kit (kit) setability (ability) §7Set a kit's ability");
-				sender.sendMessage("§c/kit (kit) removeability (ability) §7Remove an ability from a kit.");
 				sender.sendMessage("§c/kit (kit) give (player) §7Give a kit to a player.");
 				sender.sendMessage("§c/kit reload §7Reload the files.");
 				sender.sendMessage("§7§m-----------------------------------------");
@@ -95,6 +92,7 @@ public class KitCommand implements CommandExecutor{
 					
 					for(ItemStack item : p.getInventory().getContents()){
 						if (item != null && item.getItemMeta() != null) {
+							item.setAmount(item.getAmount());
 							ItemMeta meta = item.getItemMeta();
 							meta.spigot().setUnbreakable(true);
 							item.setItemMeta(meta);
@@ -104,6 +102,7 @@ public class KitCommand implements CommandExecutor{
 					
 					for(ItemStack armor : p.getInventory().getArmorContents()){
 						if (armor != null && armor.getItemMeta() != null) {
+							armor.setAmount(armor.getAmount());
 							ItemMeta meta = armor.getItemMeta();
 							meta.spigot().setUnbreakable(true);
 							armor.setItemMeta(meta);
@@ -111,10 +110,7 @@ public class KitCommand implements CommandExecutor{
 						armors.add(armor);
 					}
 					
-					Kit kit = new Kit(ChatColor.translateAlternateColorCodes('&', args[0]), 
-							items, armors, null);
-					
-					this.kitName = args[0];
+					Kit kit = new Kit(args[0].toLowerCase(), items, armors, null);
 					
 					kit.loadToFile();
 					ChatUtils.sendMessageWithPrefix(p, "§7You created a new kit §c" + kit.getName() + "§7!");

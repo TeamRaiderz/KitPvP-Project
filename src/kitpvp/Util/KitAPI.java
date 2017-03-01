@@ -42,7 +42,7 @@ public class KitAPI {
 				return kill;
 			}
 			else{
-				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0)");
+				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0)");
 				newPlayer.setString(1, player);
 				newPlayer.execute();
 				newPlayer.close();
@@ -76,7 +76,7 @@ public class KitAPI {
 				
 			}
 			else{
-				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0)");
+				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0)");
 				newPlayer.setString(1, player);
 				newPlayer.execute();
 				newPlayer.close();
@@ -111,7 +111,103 @@ public class KitAPI {
 				result.close();
 			}
 			else{
-				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0)");
+				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0)");
+				newPlayer.setString(1, player);
+				newPlayer.execute();
+				newPlayer.close();
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+	}
+	
+	public int getDeaths(String player){
+		try {
+			
+			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getPlayer(player))){
+
+				PreparedStatement sql = connection.prepareStatement("SELECT deaths FROM `player_data` WHERE player = ?;");
+				sql.setString(1, player);
+				
+				ResultSet result = sql.executeQuery();
+				result.next();
+				
+				int kill = result.getInt("deaths");
+				
+				return kill;
+			}
+			else{
+				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0)");
+				newPlayer.setString(1, player);
+				newPlayer.execute();
+				newPlayer.close();
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	public void setDeaths(String player, int deaths){
+		try {
+			
+			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getPlayer(player))){
+				
+				PreparedStatement sql = connection.prepareStatement("SELECT deaths FROM `player_data` WHERE player = ?;");
+				sql.setString(1, player);
+				
+				ResultSet result = sql.executeQuery();
+				result.next();
+				
+				PreparedStatement updatedeaths = connection.prepareStatement("UPDATE `player_data` SET deaths=? WHERE player = ?;");
+				updatedeaths.setInt(1, deaths);
+				updatedeaths.setString(2, player);
+				updatedeaths.executeUpdate();
+			
+				updatedeaths.close();
+				sql.close();
+				result.close();
+				
+			}
+			else{
+				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0)");
+				newPlayer.setString(1, player);
+				newPlayer.execute();
+				newPlayer.close();
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+		
+	}
+	
+	public void addDeaths(String player, int deaths){
+		try {
+			
+			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getPlayer(player))){
+				
+				PreparedStatement sql = connection.prepareStatement("SELECT deaths FROM `player_data` WHERE player = ?;");
+				sql.setString(1, player);
+				
+				ResultSet result = sql.executeQuery();
+				result.next();
+				
+				int kill = result.getInt("deaths");
+				
+				PreparedStatement updatedeaths = connection.prepareStatement("UPDATE `player_data` SET deaths=? WHERE player = ?;");
+				updatedeaths.setInt(1, kill + deaths);
+				updatedeaths.setString(2, player);
+				updatedeaths.executeUpdate();
+				
+				updatedeaths.close();
+				sql.close();
+				result.close();
+			}
+			else{
+				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0)");
 				newPlayer.setString(1, player);
 				newPlayer.execute();
 				newPlayer.close();
@@ -138,7 +234,7 @@ public class KitAPI {
 				return kill;
 			}
 			else{
-				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0)");
+				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0)");
 				newPlayer.setString(1, player);
 				newPlayer.execute();
 				newPlayer.close();
@@ -173,7 +269,7 @@ public class KitAPI {
 				
 			}
 			else{
-				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0)");
+				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0)");
 				newPlayer.setString(1, player);
 				newPlayer.execute();
 				newPlayer.close();
@@ -210,7 +306,207 @@ public class KitAPI {
 				sql.close();
 				result.close();
 			} else {
-				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0)");
+				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0)");
+				newPlayer.setString(1, player);
+				newPlayer.execute();
+				newPlayer.close();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+	
+	public int getXp(String player){
+		try {
+			
+			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getPlayer(player))){
+
+				PreparedStatement sql = connection.prepareStatement("SELECT xp FROM `player_data` WHERE player = ?;");
+				sql.setString(1, player);
+				
+				ResultSet result = sql.executeQuery();
+				result.next();
+				
+				int kill = result.getInt("xp");
+				
+				return kill;
+			}
+			else{
+				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0)");
+				newPlayer.setString(1, player);
+				newPlayer.execute();
+				newPlayer.close();
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	public void setXp(String player, int money){
+		
+		try {
+			
+			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getPlayer(player))){
+				
+				PreparedStatement sql = connection.prepareStatement("SELECT xp FROM `player_data` WHERE player = ?;");
+				sql.setString(1, player);
+				
+				ResultSet result = sql.executeQuery();
+				result.next();
+				
+				PreparedStatement updateKills = connection.prepareStatement("UPDATE `player_data` SET xp=? WHERE player = ?;");
+				updateKills.setInt(1, money);
+				updateKills.setString(2, player);
+				updateKills.executeUpdate();
+			
+				updateKills.close();
+				sql.close();
+				result.close();
+				
+			}
+			else{
+				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0)");
+				newPlayer.setString(1, player);
+				newPlayer.execute();
+				newPlayer.close();
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void addXp(String player, int money) {
+		
+		try {
+
+			if (Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getPlayer(player))) {
+
+				PreparedStatement sql = connection
+						.prepareStatement("SELECT xp FROM `player_data` WHERE player = ?;");
+				sql.setString(1, player);
+
+				ResultSet result = sql.executeQuery();
+				result.next();
+
+				int kill = result.getInt("xp");
+
+				PreparedStatement updateKills = connection
+						.prepareStatement("UPDATE `player_data` SET xp=? WHERE player = ?;");
+				updateKills.setInt(1, kill + money);
+				updateKills.setString(2, player);
+				updateKills.executeUpdate();
+
+				updateKills.close();
+				sql.close();
+				result.close();
+			} else {
+				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0)");
+				newPlayer.setString(1, player);
+				newPlayer.execute();
+				newPlayer.close();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+	
+	public int getlevel(String player){
+		try {
+			
+			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getPlayer(player))){
+
+				PreparedStatement sql = connection.prepareStatement("SELECT level FROM `player_data` WHERE player = ?;");
+				sql.setString(1, player);
+				
+				ResultSet result = sql.executeQuery();
+				result.next();
+				
+				int kill = result.getInt("level");
+				
+				return kill;
+			}
+			else{
+				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0)");
+				newPlayer.setString(1, player);
+				newPlayer.execute();
+				newPlayer.close();
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	public void setlevel(String player, int money){
+		
+		try {
+			
+			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getPlayer(player))){
+				
+				PreparedStatement sql = connection.prepareStatement("SELECT level FROM `player_data` WHERE player = ?;");
+				sql.setString(1, player);
+				
+				ResultSet result = sql.executeQuery();
+				result.next();
+				
+				PreparedStatement updateKills = connection.prepareStatement("UPDATE `player_data` SET level=? WHERE player = ?;");
+				updateKills.setInt(1, money);
+				updateKills.setString(2, player);
+				updateKills.executeUpdate();
+			
+				updateKills.close();
+				sql.close();
+				result.close();
+				
+			}
+			else{
+				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0)");
+				newPlayer.setString(1, player);
+				newPlayer.execute();
+				newPlayer.close();
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void addLevel(String player, int money) {
+		
+		try {
+
+			if (Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getPlayer(player))) {
+
+				PreparedStatement sql = connection
+						.prepareStatement("SELECT level FROM `player_data` WHERE player = ?;");
+				sql.setString(1, player);
+
+				ResultSet result = sql.executeQuery();
+				result.next();
+
+				int kill = result.getInt("level");
+
+				PreparedStatement updateKills = connection
+						.prepareStatement("UPDATE `player_data` SET level=? WHERE player = ?;");
+				updateKills.setInt(1, kill + money);
+				updateKills.setString(2, player);
+				updateKills.executeUpdate();
+
+				updateKills.close();
+				sql.close();
+				result.close();
+			} else {
+				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0)");
 				newPlayer.setString(1, player);
 				newPlayer.execute();
 				newPlayer.close();

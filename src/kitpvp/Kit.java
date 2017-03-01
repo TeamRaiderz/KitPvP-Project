@@ -70,12 +70,19 @@ public class Kit {
         
         for(ItemStack item : content){
         	if(item  == null) continue;
-        	item.getItemMeta().spigot().setUnbreakable(true);
+        	
+        	int amount = file.getInt(name + ".items." + item + ".amount");
+        	
+        	item.setAmount(amount);
         	player.getInventory().addItem(item);
         }
         
         for(ItemStack item : armor){
         	if(item  == null) continue;
+        	
+        	int amount = file.getInt(name + ".armor." + item + ".amount");
+        	
+        	item.setAmount(amount);
         	if(item.getType() == Material.LEATHER_HELMET || item.getType() == Material.GOLD_HELMET || item.getType() == Material.IRON_HELMET
         			|| item.getType() == Material.DIAMOND_HELMET || item.getType() == Material.CHAINMAIL_HELMET){
         		player.getInventory().setHelmet(item);
@@ -107,14 +114,14 @@ public class Kit {
 		
 		FileConfiguration file = Main.getKitFile();
 		
-		file.createSection(name.toLowerCase());
-		file.getConfigurationSection(name.toLowerCase()).set("items", getItems());
-		file.getConfigurationSection(name.toLowerCase()).set("armor", getArmor());
+		file.set(name.toLowerCase() + ".items", getItems());
+		file.set(name.toLowerCase() + ".armor", getArmor());
+		
 		if(getEffects() == null)
-			file.getConfigurationSection(name.toLowerCase()).set("potionEffects", "");
+			file.set(name.toLowerCase() + ".potionEffects", "");
 		else
-			file.getConfigurationSection(name.toLowerCase()).set("potionEffects", getEffects().toString());
-		file.getConfigurationSection(name.toLowerCase()).set("name", getName());
+			file.set(name.toLowerCase() + ".potionEffects", getEffects().toString());
+		file.set(name.toLowerCase() + ".name", getName());
 		
 		Main.saveKitFile();
 	}
