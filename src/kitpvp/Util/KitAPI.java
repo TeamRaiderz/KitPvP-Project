@@ -3,7 +3,9 @@ package kitpvp.Util;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
@@ -15,6 +17,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import kitpvp.Language;
 import kitpvp.Main;
@@ -363,6 +366,24 @@ public class KitAPI {
 				updateKills.setString(2, player);
 				updateKills.executeUpdate();
 			
+				new BukkitRunnable(){
+
+					@Override
+					public void run() {
+							
+						if(getXp(player) >= getlevel(player) * 100){
+							try {
+								updateKills.setInt(1, 0);
+								addLevel(player, 1);
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+						}
+						
+					}
+					
+				}.runTaskTimerAsynchronously(Main.getInstance(), 0, 1);
+				
 				updateKills.close();
 				sql.close();
 				result.close();
@@ -499,12 +520,16 @@ public class KitAPI {
 				PreparedStatement updateKills = connection
 						.prepareStatement("UPDATE `player_data` SET level=? WHERE player = ?;");
 				updateKills.setInt(1, kill + money);
+				if(money >= 100 || kill >= 100){
+					updateKills.setInt(1, 100);
+				}
 				updateKills.setString(2, player);
 				updateKills.executeUpdate();
-
+				
 				updateKills.close();
 				sql.close();
 				result.close();
+				
 			} else {
 				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0)");
 				newPlayer.setString(1, player);
