@@ -545,13 +545,10 @@ public class KitAPI {
 	
 	public Language getLanguage(String player){
 		
-		OfflinePlayer p = Bukkit.getOfflinePlayer(player);
-		String uuid = p.getUniqueId().toString();
-		
-		if(Main.getDataFile().getString(uuid + ".lang").equalsIgnoreCase("ENG")){
+		if(Main.getDataFile().getString(player).equalsIgnoreCase("ENG")){
 			return Language.ENGLISH;
 		}
-		else if(Main.getDataFile().getString(uuid + ".lang").equalsIgnoreCase("FIN")){
+		else if(Main.getDataFile().getString(player).equalsIgnoreCase("FIN")){
 			return Language.FINNISH;
 		}
 		return null;
@@ -559,21 +556,18 @@ public class KitAPI {
 	
 	public void setLanguage(String player, Language language){
 		
-		OfflinePlayer p = Bukkit.getOfflinePlayer(player);
-		String uuid = p.getUniqueId().toString();
-		
-		if (Main.getDataFile().get(uuid) == null) {
+		if (Main.getDataFile().get(player) == null) {
 			System.out.println("That player is not in our database.");
 			return;
 		}
 		
 		switch (language) {
 		case FINNISH:
-			Main.getDataFile().set(uuid + ".lang", "FIN");
+			Main.getDataFile().set(player, "FIN");
 			Main.saveDataFile();
 			break;
 		case ENGLISH:
-			Main.getDataFile().set(uuid + ".lang", "ENG");
+			Main.getDataFile().set(player, "ENG");
 			Main.saveDataFile();
 			break;
 		}
