@@ -12,6 +12,7 @@ import kitpvp.MySQL.MySQLManager;
 import kitpvp.Util.DataYML;
 import kitpvp.Util.KitAPI;
 import kitpvp.Util.KitsYML;
+import kitpvp.commands.CommandTest;
 import kitpvp.commands.KitCommand;
 import kitpvp.commands.LangCommand;
 import kitpvp.commands.PrefixCommand;
@@ -36,6 +37,7 @@ public class Main extends JavaPlugin{
 		registerCommand("nick", new PrefixCommand());
 		registerCommand("lang", new LangCommand());
 		registerCommand("kieli", new LangCommand());
+		registerCommand("test", new CommandTest());
 		
 		registerListener(this, new ConnectionListener());
 		registerListener(this, new PrefixCommand());
