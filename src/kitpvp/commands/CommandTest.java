@@ -57,14 +57,15 @@ public class CommandTest implements CommandExecutor {
 		else if (args.length == 3) {
 			if (args[0].equalsIgnoreCase("cps")) {
 
-				Player target = Bukkit.getPlayer(args[1]);
-
-				if (target == null || !target.isOnline()) {
-					sender.sendMessage("§cThat player is not online!");
-					return true;
-				}
 
 				if (args[1].equalsIgnoreCase("startMsg")) {
+					
+					Player target = Bukkit.getPlayer(args[2]);
+
+					if (target == null || !target.isOnline()) {
+						sender.sendMessage("§cThat player is not online!");
+						return true;
+					}
 					
 					if (api.getLanguage(target.getName()) == Language.FINNISH) {
 						ChatUtils.sendMessageWithPrefix(target, "§7CPS-testi on alkanut!");
@@ -74,6 +75,13 @@ public class CommandTest implements CommandExecutor {
 
 				} else {
 
+					Player target = Bukkit.getPlayer(args[1]);
+
+					if (target == null || !target.isOnline()) {
+						sender.sendMessage("§cThat player is not online!");
+						return true;
+					}
+					
 					int score = 0;
 
 					try {
@@ -83,9 +91,9 @@ public class CommandTest implements CommandExecutor {
 					}
 
 					if (api.getLanguage(target.getName()) == Language.FINNISH) {
-						ChatUtils.sendMessageWithPrefix(target, "§7Läpäisit CPS-testin! Klikkaukset testin aikana: §c" + score + "§7! Keskiarvosi oli: §c" + score / 10 + " CPS§7!");
+						ChatUtils.sendMessageWithPrefix(target, "§7Läpäisit CPS-testin! Klikkaukset testin aikana: §c" + score + "§7! Keskiarvosi oli: §c" + (double) score / 10 + " CPS§7!");
 					} else if (api.getLanguage(target.getName()) == Language.ENGLISH) {
-						ChatUtils.sendMessageWithPrefix(sender, "§7Completed the CPS-test! You had §c" + score  + " clicks in the test§7! Your average was §c" + score / 10 + " CPS§7!");
+						ChatUtils.sendMessageWithPrefix(target, "§7Completed the CPS-test! You had §c" + score  + " §7clicks in the test! Your average was §c" + (double) score / 10 + " CPS§7!");
 					}
 
 				}
@@ -93,14 +101,14 @@ public class CommandTest implements CommandExecutor {
 			} 
 			else if (args[0].equalsIgnoreCase("bow")) {
 
-				Player target = Bukkit.getPlayer(args[1]);
-
-				if (target == null || !target.isOnline()) {
-					sender.sendMessage("§cThat player is not online!");
-					return true;
-				}
-
 				if (args[1].equalsIgnoreCase("startMsg")) {
+					
+					Player target = Bukkit.getPlayer(args[2]);
+
+					if (target == null || !target.isOnline()) {
+						sender.sendMessage("§cThat player is not online!");
+						return true;
+					}
 					
 					if (api.getLanguage(target.getName()) == Language.FINNISH) {
 						ChatUtils.sendMessageWithPrefix(target, "§7Ampumatesti on alkanut!");
@@ -110,6 +118,13 @@ public class CommandTest implements CommandExecutor {
 
 				} else {
 
+					Player target = Bukkit.getPlayer(args[1]);
+
+					if (target == null || !target.isOnline()) {
+						sender.sendMessage("§cThat player is not online!");
+						return true;
+					}
+					
 					int score = 0;
 
 					try {
