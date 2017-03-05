@@ -101,7 +101,7 @@ public class PrefixCommand implements Listener, CommandExecutor {
 					if (Main.getAPI().getLanguage(p.getName()) == Language.FINNISH) {
 						ChatUtils.sendMessageWithPrefix(p, "§7Sinun nimesi väri on nyt §c§lPUNAINEN.");
 					} else if (Main.getAPI().getLanguage(p.getName()) == Language.ENGLISH) {
-						ChatUtils.sendMessageWithPrefix(p, "§7Your name's color has been changed to §c§lPUNAINEN.");
+						ChatUtils.sendMessageWithPrefix(p, "§7Your name's color has been changed to §c§lRED.");
 					}
 				}
 				else if(item.getData().getData() == DyeColor.GREEN.getData()){
@@ -111,7 +111,7 @@ public class PrefixCommand implements Listener, CommandExecutor {
 					if (Main.getAPI().getLanguage(p.getName()) == Language.FINNISH) {
 						ChatUtils.sendMessageWithPrefix(p, "§7Sinun nimesi väri on nyt §a§lVIHREÄ.");
 					} else if (Main.getAPI().getLanguage(p.getName()) == Language.ENGLISH) {
-						ChatUtils.sendMessageWithPrefix(p, "§7Your name's color has been changed to §a§lVIHREÄ.");
+						ChatUtils.sendMessageWithPrefix(p, "§7Your name's color has been changed to §a§lGREEN.");
 					}
 				}
 				else if(item.getData().getData() == DyeColor.LIGHT_BLUE.getData()){

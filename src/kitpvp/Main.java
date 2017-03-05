@@ -1,9 +1,12 @@
 package kitpvp;
 
 import java.io.File;
+import java.util.Arrays;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -15,11 +18,15 @@ import kitpvp.Util.KitAPI;
 import kitpvp.Util.KitsYML;
 import kitpvp.Util.PacketUtils;
 import kitpvp.commands.CommandDB;
+import kitpvp.commands.CommandKill;
+import kitpvp.commands.CommandList;
+import kitpvp.commands.CommandMsg;
 import kitpvp.commands.CommandStats;
 import kitpvp.commands.CommandTest;
 import kitpvp.commands.KitCommand;
 import kitpvp.commands.LangCommand;
 import kitpvp.commands.PrefixCommand;
+import kitpvp.listeners.ChatEvent;
 import kitpvp.listeners.ConnectionListener;
 import kitpvp.listeners.DamageListener;
 import net.milkbowl.vault.chat.Chat;
@@ -54,6 +61,17 @@ public class Main extends JavaPlugin{
 		registerCommand("test", new CommandTest());
 		registerCommand("stats", new CommandStats());
 		registerCommand("db", new CommandDB());
+		registerCommand("pvpkill", new CommandKill());
+		registerCommand("settings", new Settings());
+		registerCommand("asetukset", new Settings());
+		registerCommand("msg", new CommandMsg());
+		registerCommand("tell", new CommandMsg());
+		registerCommand("whisper", new CommandMsg());
+		registerCommand("list", new CommandList());
+		registerCommand("profile", new Profile());
+		registerCommand("info", new Info());
+		
+		getCommand("list").setAliases(Arrays.asList("who", "online", "players"));
 		
 		registerListener(this, new ConnectionListener());
 		registerListener(this, new PrefixCommand());
@@ -61,6 +79,15 @@ public class Main extends JavaPlugin{
 	//	registerListener(this, new AbilityListener());
 		registerListener(this, new DamageListener());
 		registerListener(this, new LangCommand());
+		registerListener(this, new SpawnItems());
+		registerListener(this, new Settings());
+		registerListener(this, new ChatEvent());
+		registerListener(this, new Profile());
+		registerListener(this, new Info());
+		
+		for(Player online : Bukkit.getOnlinePlayers()){
+			getAPI().startPlayTimeCount(online);
+		}
 		
 	}
 	

@@ -24,7 +24,7 @@ public class CommandStats implements CommandExecutor {
 			
 			Player p = (Player) sender;
 			
-			api.sendPlayerStats(p, p);
+			api.sendPlayerStats(p, p.getName());
 			
 		}
 		else if(args.length == 1){
@@ -36,7 +36,7 @@ public class CommandStats implements CommandExecutor {
 				return true;
 			}
 			
-			api.sendPlayerStats(sender, target);
+			api.sendPlayerStats(sender, target.getName());
 			
 		}
 		else{

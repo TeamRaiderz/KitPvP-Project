@@ -20,3 +20,23 @@ commands:
     description: See your statistics
   db: 
     description: Database commands
+  pvpkill: 
+    description: Secrets
+  settings: 
+    description: Set your settings
+  asetukset: 
+    description: Set your settings
+  msg: 
+    description: Private msg
+  tell: 
+    description: Private msg
+  whisper: 
+    description: Private msg
+  list: 
+    description: See online players
+    aliases: [who, online, players]
+  profile:
+    description: See others profile
+    aliases: [profiili]
+  info: 
+    description: Server info

@@ -42,21 +42,27 @@ public class ChatFormat implements Listener{
 		if(p.hasPermission("chat.color") && Main.getPermissions().getPrimaryGroup(p) != null){
 			e.setCancelled(true);
 			for(Player online : Bukkit.getOnlinePlayers()){
-				online.spigot().sendMessage(format);
+				if(Main.getDataFile().getBoolean(online.getUniqueId().toString() + ".chat")){
+					online.spigot().sendMessage(format);
+				}
 			}
 			ChatUtils.sendConsoleMessage("<" + p.getName() + "> " + e.getMessage());
 		}
 		else if(!p.hasPermission("chat.color") && Main.getPermissions().getPrimaryGroup(p) == null){
 			e.setCancelled(true);
 			for(Player online : Bukkit.getOnlinePlayers()){
-				online.spigot().sendMessage(format1);
+				if(Main.getDataFile().getBoolean(online.getUniqueId().toString() + ".chat")){
+					online.spigot().sendMessage(format1);
+				}
 			}
 			ChatUtils.sendConsoleMessage("<" + p.getName() + "> " + e.getMessage());
 		}
 		else if(p.hasPermission("chat.color") && Main.getPermissions().getPrimaryGroup(p) != null){
 			e.setCancelled(true);
 			for(Player online : Bukkit.getOnlinePlayers()){
-				online.spigot().sendMessage(format2);
+				if(Main.getDataFile().getBoolean(online.getUniqueId().toString() + ".chat")){
+					online.spigot().sendMessage(format2);
+				}
 			}
 			ChatUtils.sendConsoleMessage("<" + p.getName() + "> " + e.getMessage());
 		}

@@ -30,12 +30,7 @@ public class DamageListener implements Listener{
 		api.addKillToKillStreak(killer);
 		api.clearKillStreak(victim);
 		
-		if(api.getLanguage(killer.getName()) == Language.FINNISH){
-			ChatUtils.sendMessageWithPrefix(killer, "§7Tapoit pelaajan §c" + victim.getName() + "§7! Killstreak: §c" + api.getKillStreak(killer));
-		}
-		else if(api.getLanguage(killer.getName()) == Language.ENGLISH){
-			ChatUtils.sendMessageWithPrefix(killer, "§7You killed the player §c" + victim.getName() + "§7! Killstreak: §c" + api.getKillStreak(killer));
-		}
+		e.setDeathMessage(null);
 		
 		if (api.getLanguage(victim.getName()) == Language.FINNISH) {
 

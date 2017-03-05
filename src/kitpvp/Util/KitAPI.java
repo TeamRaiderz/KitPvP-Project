@@ -3,6 +3,14 @@ package kitpvp.Util;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,8 +36,13 @@ import net.minecraft.server.v1_8_R3.NBTTagCompound;
 
 public class KitAPI {
 	
+	private int onlineStaff = 0;
+	private List<String> staffMembers = new ArrayList<String>();
 	private Connection connection = Main.getMySQLManager().getConnection();
 	private HashMap<String, Integer> killStreak = new HashMap<String, Integer>();
+	
+	private  final DateFormat sdf = new SimpleDateFormat("dd/MM/yyy HH:mm:ss");
+    private  final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/yyyy/MM HH:mm:ss");
 	
 	public int getKills(String player){
 		try {
@@ -810,61 +823,103 @@ public class KitAPI {
 		nmsEntity.f(tag);
 	}
 	
-	public void sendPlayerStats(CommandSender receiver, Player target){
+	public void sendPlayerStats(CommandSender receiver, String target){
 		
-		if(receiver == target){
+		
+		if(receiver.getName().equals(target)){
+			
+			int kills = getKills(receiver.getName());
+			int deaths = getDeaths(receiver.getName());
+			
+			double absKD = (double) getKills(receiver.getName()) / (double) getDeaths(receiver.getName());
+			
+			double KD = Math.round(absKD * 10000.0D) / 10000.0D;
+			int balance = getBalance(receiver.getName());
+			int level = getlevel(receiver.getName());
+			int xp = getXp(receiver.getName());
+			
+			if(Double.isInfinite(KD)) KD = 0.0D;
+			if(Double.isNaN(KD)) KD = 0.0D;
+			
 			if(getLanguage(receiver.getName()) == Language.FINNISH){
 
 				receiver.sendMessage("§7§m------§a§l Sinun statsit §7§m------");
-				receiver.sendMessage("§7Tapot: §a" + getKills(target.getName()));
-				receiver.sendMessage("§7Kuolemat: §a" + getDeaths(target.getName()));
-				receiver.sendMessage("§7K/D: §a" + (double) getKills(target.getName()) / (double) getDeaths(target.getName()));
-				receiver.sendMessage("§7Rahat: §a" + getBalance(target.getName()));
-				receiver.sendMessage("§7Level: §a" + getlevel(target.getName()) + "/50");
-				receiver.sendMessage("§7XP: §a" + getXp(target.getName()) + "/" + getlevel(target.getName()) * 100);
-				receiver.sendMessage("§7Kieli: §a" + String.valueOf(getLanguage(target.getName())));
-				receiver.sendMessage("§7Peliaika: §a0y 0m 0d 0h 0min 0s"); // Add this later on.
+				receiver.sendMessage("§7Tapot: §a" + kills);
+				receiver.sendMessage("§7Kuolemat: §a" + deaths);
+				receiver.sendMessage("§7K/D: §a" + KD);
+				receiver.sendMessage("§7Rahat: §a" + balance);
+				receiver.sendMessage("§7Level: §a" + level + "/50");
+				receiver.sendMessage("§7XP: §a" + xp + "/" + getlevel(target) * 100);
+				receiver.sendMessage("§7Kieli: §a" + String.valueOf(getLanguage(target)));
+				receiver.sendMessage("§7Peliaika: §a" + getPlayTime(target)); // Add this later on.
 				receiver.sendMessage("§7§m---------------------------------------------");
 				
 			}
 			else if (getLanguage(receiver.getName()) == Language.ENGLISH){
 				receiver.sendMessage("§7§m------ §a§l Your stats §7§m------");
-				receiver.sendMessage("§7Kills: §a" + getKills(target.getName()));
-				receiver.sendMessage("§7Deaths: §a" + getDeaths(target.getName()));
-				receiver.sendMessage("§7K/D: §a" + (double) getKills(target.getName()) / (double) getDeaths(target.getName()));
-				receiver.sendMessage("§7Balance: §a" + getBalance(target.getName()));
-				receiver.sendMessage("§7Level: §a" + getlevel(target.getName()) + "/50");
-				receiver.sendMessage("§7XP: §a" + getXp(target.getName()) + "/" + getlevel(target.getName()) * 100);
-				receiver.sendMessage("§7Language: §a" + String.valueOf(getLanguage(target.getName())));
-				receiver.sendMessage("§7Playtime: §a0y 0m 0d 0h 0min 0s"); // Add this later on.
+				receiver.sendMessage("§7Kills: §a" + kills);
+				receiver.sendMessage("§7Deaths: §a" + deaths);
+				receiver.sendMessage("§7K/D: §a" + KD);
+				receiver.sendMessage("§7Balance: §a" + balance);
+				receiver.sendMessage("§7Level: §a" + level + "/50");
+				receiver.sendMessage("§7XP: §a" + xp + "/" + getlevel(target) * 100);
+				receiver.sendMessage("§7Language: §a" + String.valueOf(getLanguage(target)));
+				receiver.sendMessage("§7Playtime: §a" + getPlayTime(target)); // Add this later on.
 				receiver.sendMessage("§7§m---------------------------------------------");
 			}
 		}
 		else{
+			
+			OfflinePlayer offTarget = Bukkit.getOfflinePlayer(target);
+			
+			if(Main.getDataFile().getBoolean(offTarget.getUniqueId().toString() + ".privateAccount") && !receiver.hasPermission("privacy.bypass")){
+				if(getLanguage(receiver.getName()) == Language.FINNISH){
+					ChatUtils.sendMessageWithPrefix(receiver, "§7Tuolla pelaajalla on käyttäjä yksityisenä!");
+					return;
+				}
+				else if(getLanguage(receiver.getName()) == Language.ENGLISH){
+					ChatUtils.sendMessageWithPrefix(receiver, "§7That player's account is private!");
+					return;
+				}
+			}
+			
+			int kills = getKills(offTarget.getName());
+			int deaths = getDeaths(offTarget.getName());
+			
+			double absKD = (double) getKills(offTarget.getName()) / (double) getDeaths(offTarget.getName());
+			
+			double KD = Math.round(absKD * 10000.0D) / 10000.0D;
+			int balance = getBalance(offTarget.getName());
+			int level = getlevel(offTarget.getName());
+			int xp = getXp(offTarget.getName());
+			
+			if(Double.isInfinite(KD)) KD = 0.0D;
+			if(Double.isNaN(KD)) KD = 0.0D;
+			
 			if(getLanguage(receiver.getName()) == Language.FINNISH){
 
-				receiver.sendMessage("§7§m------§a§l Pelaajan " + target.getName() + " statsit §7§m------");
-				receiver.sendMessage("§7Tapot: §a" + getKills(target.getName()));
-				receiver.sendMessage("§7Kuolemat: §a" + getDeaths(target.getName()));
-				receiver.sendMessage("§7K/D: §a" + (double) getKills(target.getName()) / (double) getDeaths(target.getName()));
-				receiver.sendMessage("§7Rahat: §a" + getBalance(target.getName()));
-				receiver.sendMessage("§7Level: §a" + getlevel(target.getName()) + "/50");
-				receiver.sendMessage("§7XP: §a" + getXp(target.getName()) + "/" + getlevel(target.getName()) * 100);
-				receiver.sendMessage("§7Kieli: §a" + String.valueOf(getLanguage(target.getName())));
-				receiver.sendMessage("§7Peliaika: §a0y 0m 0d 0h 0min 0s"); // Add this later on.
+				receiver.sendMessage("§7§m------§a§l Pelaajan " + offTarget.getName() + " statsit §7§m------");
+				receiver.sendMessage("§7Tapot: §a" + kills);
+				receiver.sendMessage("§7Kuolemat: §a" + deaths);
+				receiver.sendMessage("§7K/D: §a" + KD);
+				receiver.sendMessage("§7Rahat: §a" + balance);
+				receiver.sendMessage("§7Level: §a" + level + "/50");
+				receiver.sendMessage("§7XP: §a" + xp + "/" + getlevel(target) * 100);
+				receiver.sendMessage("§7Kieli: §a" + String.valueOf(getLanguage(target)));
+				receiver.sendMessage("§7Peliaika: §a" + getPlayTime(target)); // Add this later on.
 				receiver.sendMessage("§7§m---------------------------------------------");
 				
 			}
 			else if (getLanguage(receiver.getName()) == Language.ENGLISH){
-				receiver.sendMessage("§7§m------§a§l Stats of " + target.getName() + " §7§m------");
-				receiver.sendMessage("§7Kills: §a" + getKills(target.getName()));
-				receiver.sendMessage("§7Deaths: §a" + getDeaths(target.getName()));
-				receiver.sendMessage("§7K/D: §a" + (double) getKills(target.getName()) / (double) getDeaths(target.getName()));
-				receiver.sendMessage("§7Balance: §a" + getBalance(target.getName()));
-				receiver.sendMessage("§7Level: §a" + getlevel(target.getName()) + "/50");
-				receiver.sendMessage("§7XP: §a" + getXp(target.getName()) + "/" + getlevel(target.getName()) * 100);
-				receiver.sendMessage("§7Language: §a" + String.valueOf(getLanguage(target.getName())));
-				receiver.sendMessage("§7Playtime: §a0y 0m 0d 0h 0min 0s"); // Add this later on.
+				receiver.sendMessage("§7§m------§a§l Stats of " + offTarget.getName() + " §7§m------");
+				receiver.sendMessage("§7Kills: §a" + kills);
+				receiver.sendMessage("§7Deaths: §a" + deaths);
+				receiver.sendMessage("§7K/D: §a" + KD);
+				receiver.sendMessage("§7Balance: §a" + balance);
+				receiver.sendMessage("§7Level: §a" + level + "/50");
+				receiver.sendMessage("§7XP: §a" + xp + "/" + getlevel(offTarget.getName()) * 100);
+				receiver.sendMessage("§7Language: §a" + String.valueOf(getLanguage(offTarget.getName())));
+				receiver.sendMessage("§7Playtime: §a" + getPlayTime(offTarget.getName())); // Add this later on.
 				receiver.sendMessage("§7§m---------------------------------------------");
 			}
 		}
@@ -915,4 +970,166 @@ public class KitAPI {
 		}
 	}
 	
+	public int onlineStaff(){
+		return onlineStaff;
+	}
+	
+	public List<String> getOnlineStaffMembers(){
+		
+		for(Player p : Bukkit.getOnlinePlayers()){
+			if(p.hasPermission("staff.online")){
+				staffMembers.add(p.getName());
+			}
+		}
+		
+		onlineStaff = staffMembers.size();
+		
+		return staffMembers;
+	}
+	
+	  public long getFreeMemory(){
+      	Runtime r = Runtime.getRuntime();
+      	return r.freeMemory() / 1024L / 1024L;
+      }
+      public long getMaxMemory(){
+      	Runtime r = Runtime.getRuntime();
+      	return r.maxMemory() / 1024L / 1024L;
+      }
+      public long getTotalMemory(){
+      	Runtime r = Runtime.getRuntime();
+      	return r.totalMemory() / 1024L / 1024L;
+      }
+      
+      @SuppressWarnings("deprecation")
+      public String getStackData(ItemStack item) {
+          int itemTypeId = item.getTypeId();
+          short itemDur = item.getDurability();
+          return itemTypeId + ":" + itemDur;
+      } 
+      
+      public String getLastLogin(String player){
+      	
+    	  OfflinePlayer p = Bukkit.getOfflinePlayer(player);
+    	  
+      	String lastLogin = Main.getDataFile().getString(p.getUniqueId().toString() + ".lastLogin");
+      	
+      	if(lastLogin == null){
+
+             LocalDate localDate = LocalDate.now();
+             System.out.println(DateTimeFormatter.ofPattern("dd/MM/yy").format(localDate));
+
+      		return DateTimeFormatter.ofPattern("dd/MM/yy").format(localDate);
+      	}
+      	
+      	lastLogin = lastLogin.replace("-", ".");
+      	
+      	return lastLogin;
+      }
+      
+      public void setLastLogin(String player){
+		OfflinePlayer p = Bukkit.getOfflinePlayer(player);
+		LocalDate localDate = LocalDate.now();
+		Main.getDataFile().set(p.getUniqueId().toString() + ".lastLogin",
+				DateTimeFormatter.ofPattern("dd/MM/yy").format(localDate));
+		Main.saveDataFile();
+      }
+      
+      public String getPlayTime(String player){
+      	
+    	  OfflinePlayer p = Bukkit.getOfflinePlayer(player);
+    	  FileConfiguration data = Main.getDataFile();
+    	  String uuid = p.getUniqueId().toString();
+    	  
+      	if(Main.getDataFile().get(p.getUniqueId().toString()) == null){ return "0 min"; }
+      	
+      		int min = data.getInt(uuid + ".playTime.minutes");
+			int hour = data.getInt(uuid + ".playTime.hours");
+			int day = data.getInt(uuid + ".playTime.days");
+			int month = data.getInt(uuid + ".playTime.months");
+			int year = data.getInt(uuid + ".playTime.years");
+      	
+      	if(hour == 0 && day == 0 && month == 0 && year == 0 && min >= 0){
+				return min + "min";
+			}
+			 if(hour >= 1 && day == 0 && month == 0 && year == 0 && min >= 0){
+				return  hour + "h " + min + "min";
+			}
+			 if (hour >= 1 && day >= 1 && month == 0 && year == 0 && min >= 0){
+				return  day + "vrk " + hour + "h " + min + "min";
+			}
+			 if (hour >= 1 && day >= 1 && month >= 1 && year == 0 && min >= 0){
+				return  month + "kk " + day + "vrk " + hour + "h " + min + "min";
+			}
+			 if (hour >= 1 && day >= 1 && month >= 1 && year >= 1 && min >= 0){
+				return  year + "v " + month + "kk " + day + "vrk " + hour + "h " + min + "min";
+			}
+      	
+			return null;
+			
+      }
+	
+      public void startPlayTimeCount(Player p){
+    	  
+    	  FileConfiguration data = Main.getDataFile();
+    	  String uuid = p.getUniqueId().toString();
+    	  
+    	  new BukkitRunnable(){
+
+				@Override
+				public void run() {
+					
+					int minutes = DataYML.getFile().getInt(uuid + ".playTime.minutes");
+					int hours = DataYML.getFile().getInt(uuid + ".playTime.hours");
+					int days = DataYML.getFile().getInt(uuid + ".playTime.days");
+					int months = DataYML.getFile().getInt(uuid + ".playTime.months");
+					int years = DataYML.getFile().getInt(uuid + ".playTime.years");
+					
+					if(p.isOnline()){
+						
+						if(minutes >= minutes){
+							minutes = minutes + 1;
+							data.set(uuid + ".playTime.minutes", minutes);
+							Main.saveDataFile();
+							DataYML.saveFile();
+						}
+						
+						if(minutes >= 60){
+							minutes = 1;
+							hours = hours + 1;
+							DataYML.getFile().set(uuid + ".playTime.hours", hours);
+							DataYML.getFile().set(uuid + ".playTime.minutes", minutes);
+							DataYML.saveFile();
+						}
+						if(hours >= 24){
+							hours = 1;
+							days = days + 1;
+							DataYML.getFile().set(uuid + ".playTime.days", days);
+							DataYML.getFile().set(uuid + ".playTime.hours", hours);
+							DataYML.saveFile();
+						}
+						if(days >= 31){
+							days = 1;
+							months = months + 1;
+							DataYML.getFile().set(uuid + ".playTime.months", months);
+							DataYML.getFile().set(uuid + ".playTime.days", days);
+							DataYML.saveFile();
+						}
+						if(months >= 12){
+							months = 1;
+							years = years + 1;
+							DataYML.getFile().set(uuid + ".playTime.years", years);
+							DataYML.getFile().set(uuid + ".playTime.months", months);
+							DataYML.saveFile();
+						}
+						
+					}
+					else if(!p.isOnline()){
+						cancel();
+						return;
+					}
+					
+				}
+				
+			}.runTaskTimerAsynchronously(Main.getInstance(), 0, 1200);
+		}
 }

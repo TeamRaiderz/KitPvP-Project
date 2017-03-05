@@ -18,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 
 import kitpvp.Language;
 import kitpvp.Main;
+import kitpvp.SpawnItems;
 import kitpvp.Util.ChatUtils;
 import kitpvp.Util.KitAPI;
 import kitpvp.commands.PrefixCommand.NameColor;
@@ -97,12 +98,14 @@ public class LangCommand implements CommandExecutor, Listener{
 					p.closeInventory();
 					api.setLanguage(p.getName(), Language.ENGLISH);
 					ChatUtils.sendMessageWithPrefix(p, "§7Your language is now §c§lENGLISH§7!");
+					SpawnItems.giveItems(p, p.getInventory());
 				}
 				else if(item.getData().getData() == DyeColor.BLUE.getData()){
 					e.setCancelled(true);
 					p.closeInventory();
 					api.setLanguage(p.getName(), Language.FINNISH);
 					ChatUtils.sendMessageWithPrefix(p, "§7Sinun kielesi on nyt §9§lSUOMI§7!");
+					SpawnItems.giveItems(p, p.getInventory());
 				}
 				else if (item.getType() == null) return;
 				else if (item == null) return;
