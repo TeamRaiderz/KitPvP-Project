@@ -93,6 +93,7 @@ public class Profile implements Listener, CommandExecutor {
 			api.createItem(inv, 19, Material.BOOK, 1, "§a§lStats", Arrays.asList("§7Klikkaa nähdäksesi sinun", "§7statsit!"));
 			api.createItem(inv, 21, Material.NETHER_STAR, 1, "§b§lInfo", Arrays.asList("§7Rank: §a" + Main.getPermissions().getPrimaryGroup(opener.getWorld().getName(), offTarget), 
 					"§7Paikalla: §a" + offTarget.isOnline(), "§7Peliaika: §a" + Main.getAPI().getPlayTime(target), "§7Viim. kirjautuminen: §a" + Main.getAPI().getLastLogin(target)));
+			api.createItem(inv, 23, Material.PAPER, 1, "§e§lSaavutukset", Arrays.asList("§7Klikkaa nähdäksesi hänen", "§7saavutuksensa!"));
 			
 			opener.openInventory(inv);
 		}
@@ -112,6 +113,7 @@ public class Profile implements Listener, CommandExecutor {
 			api.createItem(inv, 19, Material.BOOK, 1, "§a§lStats", Arrays.asList("§7Click to see your stats"));
 			api.createItem(inv, 21, Material.NETHER_STAR, 1, "§b§lInfo", Arrays.asList("§7Rank: §a" + Main.getPermissions().getPrimaryGroup(opener.getWorld().getName(), offTarget), 
 					"§7Online: §a" + offTarget.isOnline(), "§7Playtime: §a" + Main.getAPI().getPlayTime(target), "§7Last login: §a" + Main.getAPI().getLastLogin(target)));
+			api.createItem(inv, 23, Material.PAPER, 1, "§e§lAchievements", Arrays.asList("§7Click to see the achievements", "§7of " + target + "!"));
 			
 			opener.openInventory(inv);
 		}
@@ -138,6 +140,7 @@ public class Profile implements Listener, CommandExecutor {
 			api.createItem(inv, 19, Material.BOOK, 1, "§a§lStats", Arrays.asList("§7Klikkaa nähdäksesi sinun", "§7statsit!"));
 			api.createItem(inv, 21, Material.NETHER_STAR, 1, "§b§lInfo", Arrays.asList("§7Rank: §a" + Main.getPermissions().getPrimaryGroup(p), 
 					"§7Paikalla: §a" + p.isOnline(), "§7Peliaika: §a" + Main.getAPI().getPlayTime(p.getName())));
+			api.createItem(inv, 23, Material.PAPER, 1, "§e§lSaavutukset", Arrays.asList("§7Klikkaa nähdäksesi sinun", "§7saavutukset!"));
 			
 			p.openInventory(inv);
 		}
@@ -157,6 +160,7 @@ public class Profile implements Listener, CommandExecutor {
 			api.createItem(inv, 19, Material.BOOK, 1, "§a§lStats", Arrays.asList("§7Click to see your stats"));
 			api.createItem(inv, 21, Material.NETHER_STAR, 1, "§b§lInfo", Arrays.asList("§7Rank: §a" + Main.getPermissions().getPrimaryGroup(p), 
 					"§7Online: §a" + p.isOnline(), "§7Playtime: §a" + Main.getAPI().getPlayTime(p.getName())));
+			api.createItem(inv, 23, Material.PAPER, 1, "§e§lAchievements", Arrays.asList("§7Click to see your achievements!"));
 			
 			p.openInventory(inv);
 		}

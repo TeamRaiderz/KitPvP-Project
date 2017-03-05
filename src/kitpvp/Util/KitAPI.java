@@ -3,14 +3,9 @@ package kitpvp.Util;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -41,13 +36,10 @@ public class KitAPI {
 	private Connection connection = Main.getMySQLManager().getConnection();
 	private HashMap<String, Integer> killStreak = new HashMap<String, Integer>();
 	
-	private  final DateFormat sdf = new SimpleDateFormat("dd/MM/yyy HH:mm:ss");
-    private  final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/yyyy/MM HH:mm:ss");
-	
 	public int getKills(String player){
 		try {
 			
-			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getPlayer(player))){
+			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
 
 				PreparedStatement sql = connection.prepareStatement("SELECT kills FROM `player_data` WHERE player = ?;");
 				sql.setString(1, player);
@@ -61,7 +53,7 @@ public class KitAPI {
 			}
 			else{
 				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0,0)");
-				newPlayer.setString(1, Bukkit.getPlayer(player).getName());
+				newPlayer.setString(1, Bukkit.getOfflinePlayer(player).getName());
 				newPlayer.execute();
 				newPlayer.close();
 			}
@@ -75,7 +67,7 @@ public class KitAPI {
 	public void setKills(String player, int kills){
 		try {
 			
-			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getPlayer(player))){
+			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
 				
 				PreparedStatement sql = connection.prepareStatement("SELECT kills FROM `player_data` WHERE player = ?;");
 				sql.setString(1, player);
@@ -95,7 +87,7 @@ public class KitAPI {
 			}
 			else{
 				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0,0)");
-				newPlayer.setString(1, Bukkit.getPlayer(player).getName());
+				newPlayer.setString(1, Bukkit.getOfflinePlayer(player).getName());
 				newPlayer.execute();
 				newPlayer.close();
 			}
@@ -109,7 +101,7 @@ public class KitAPI {
 	public void addKills(String player, int kills){
 		try {
 			
-			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getPlayer(player))){
+			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
 				
 				PreparedStatement sql = connection.prepareStatement("SELECT kills FROM `player_data` WHERE player = ?;");
 				sql.setString(1, player);
@@ -130,7 +122,7 @@ public class KitAPI {
 			}
 			else{
 				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0,0)");
-				newPlayer.setString(1, Bukkit.getPlayer(player).getName());
+				newPlayer.setString(1, Bukkit.getOfflinePlayer(player).getName());
 				newPlayer.execute();
 				newPlayer.close();
 			}
@@ -143,7 +135,7 @@ public class KitAPI {
 	public int getDeaths(String player){
 		try {
 			
-			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getPlayer(player))){
+			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
 
 				PreparedStatement sql = connection.prepareStatement("SELECT deaths FROM `player_data` WHERE player = ?;");
 				sql.setString(1, player);
@@ -157,7 +149,7 @@ public class KitAPI {
 			}
 			else{
 				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0,0)");
-				newPlayer.setString(1, Bukkit.getPlayer(player).getName());
+				newPlayer.setString(1, Bukkit.getOfflinePlayer(player).getName());
 				newPlayer.execute();
 				newPlayer.close();
 			}
@@ -171,7 +163,7 @@ public class KitAPI {
 	public void setDeaths(String player, int deaths){
 		try {
 			
-			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getPlayer(player))){
+			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
 				
 				PreparedStatement sql = connection.prepareStatement("SELECT deaths FROM `player_data` WHERE player = ?;");
 				sql.setString(1, player);
@@ -191,7 +183,7 @@ public class KitAPI {
 			}
 			else{
 				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0,0)");
-				newPlayer.setString(1, Bukkit.getPlayer(player).getName());
+				newPlayer.setString(1, Bukkit.getOfflinePlayer(player).getName());
 				newPlayer.execute();
 				newPlayer.close();
 			}
@@ -205,7 +197,7 @@ public class KitAPI {
 	public void addDeaths(String player, int deaths){
 		try {
 			
-			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getPlayer(player))){
+			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
 				
 				PreparedStatement sql = connection.prepareStatement("SELECT deaths FROM `player_data` WHERE player = ?;");
 				sql.setString(1, player);
@@ -226,7 +218,7 @@ public class KitAPI {
 			}
 			else{
 				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0,0)");
-				newPlayer.setString(1, Bukkit.getPlayer(player).getName());
+				newPlayer.setString(1, Bukkit.getOfflinePlayer(player).getName());
 				newPlayer.execute();
 				newPlayer.close();
 			}
@@ -239,7 +231,7 @@ public class KitAPI {
 	public int getBalance(String player){
 		try {
 			
-			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getPlayer(player))){
+			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
 
 				PreparedStatement sql = connection.prepareStatement("SELECT balance FROM `player_data` WHERE player = ?;");
 				sql.setString(1, player);
@@ -253,7 +245,7 @@ public class KitAPI {
 			}
 			else{
 				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0,0)");
-				newPlayer.setString(1, Bukkit.getPlayer(player).getName());
+				newPlayer.setString(1, Bukkit.getOfflinePlayer(player).getName());
 				newPlayer.execute();
 				newPlayer.close();
 			}
@@ -268,7 +260,7 @@ public class KitAPI {
 		
 		try {
 			
-			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getPlayer(player))){
+			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
 				
 				PreparedStatement sql = connection.prepareStatement("SELECT balance FROM `player_data` WHERE player = ?;");
 				sql.setString(1, player);
@@ -288,7 +280,7 @@ public class KitAPI {
 			}
 			else{
 				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0,0)");
-				newPlayer.setString(1, Bukkit.getPlayer(player).getName());
+				newPlayer.setString(1, Bukkit.getOfflinePlayer(player).getName());
 				newPlayer.execute();
 				newPlayer.close();
 			}
@@ -303,7 +295,7 @@ public class KitAPI {
 		
 		try {
 
-			if (Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getPlayer(player))) {
+			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
 
 				PreparedStatement sql = connection
 						.prepareStatement("SELECT balance FROM `player_data` WHERE player = ?;");
@@ -325,7 +317,7 @@ public class KitAPI {
 				result.close();
 			} else {
 				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0,0)");
-				newPlayer.setString(1, Bukkit.getPlayer(player).getName());
+				newPlayer.setString(1, Bukkit.getOfflinePlayer(player).getName());
 				newPlayer.execute();
 				newPlayer.close();
 			}
@@ -339,7 +331,7 @@ public class KitAPI {
 	public int getXp(String player){
 		try {
 			
-			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getPlayer(player))){
+			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
 
 				PreparedStatement sql = connection.prepareStatement("SELECT xp FROM `player_data` WHERE player = ?;");
 				sql.setString(1, player);
@@ -353,7 +345,7 @@ public class KitAPI {
 			}
 			else{
 				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0,0)");
-				newPlayer.setString(1, Bukkit.getPlayer(player).getName());
+				newPlayer.setString(1, Bukkit.getOfflinePlayer(player).getName());
 				newPlayer.execute();
 				newPlayer.close();
 			}
@@ -368,7 +360,7 @@ public class KitAPI {
 		
 		try {
 			
-			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getPlayer(player))){
+			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
 				
 				if(money < getXPToNextLVL(player)){
 
@@ -453,7 +445,7 @@ public class KitAPI {
 			}
 			else{
 				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0,0)");
-				newPlayer.setString(1, Bukkit.getPlayer(player).getName());
+				newPlayer.setString(1, Bukkit.getOfflinePlayer(player).getName());
 				newPlayer.execute();
 				newPlayer.close();
 			}
@@ -468,7 +460,7 @@ public class KitAPI {
 		
 		try {
 
-			if (Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getPlayer(player))) {
+			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
 
 				if(money < getXPToNextLVL(player)){
 					
@@ -544,7 +536,7 @@ public class KitAPI {
 				
 			} else {
 				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0,0)");
-				newPlayer.setString(1, Bukkit.getPlayer(player).getName());
+				newPlayer.setString(1, Bukkit.getOfflinePlayer(player).getName());
 				newPlayer.execute();
 				newPlayer.close();
 			}
@@ -558,7 +550,7 @@ public class KitAPI {
 	public int getlevel(String player){
 		try {
 			
-			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getPlayer(player))){
+			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
 
 				PreparedStatement sql = connection.prepareStatement("SELECT levels FROM `player_data` WHERE player = ?;");
 				sql.setString(1, player);
@@ -572,7 +564,7 @@ public class KitAPI {
 			}
 			else{
 				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0,0)");
-				newPlayer.setString(1, Bukkit.getPlayer(player).getName());
+				newPlayer.setString(1, Bukkit.getOfflinePlayer(player).getName());
 				newPlayer.execute();
 				newPlayer.close();
 			}
@@ -587,7 +579,7 @@ public class KitAPI {
 		
 		try {
 			
-			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getPlayer(player))){
+			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
 				
 				if(money >= 50){
 					
@@ -628,7 +620,7 @@ public class KitAPI {
 			}
 			else{
 				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0,0)");
-				newPlayer.setString(1, Bukkit.getPlayer(player).getName());
+				newPlayer.setString(1, Bukkit.getOfflinePlayer(player).getName());
 				newPlayer.execute();
 				newPlayer.close();
 			}
@@ -643,7 +635,7 @@ public class KitAPI {
 		
 		try {
 
-			if (Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getPlayer(player))) {
+			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
 				
 				if(money >= 50){
 					
@@ -691,7 +683,7 @@ public class KitAPI {
 				
 			} else {
 				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0,0)");
-				newPlayer.setString(1, Bukkit.getPlayer(player).getName());
+				newPlayer.setString(1, Bukkit.getOfflinePlayer(player).getName());
 				newPlayer.execute();
 				newPlayer.close();
 			}
@@ -1089,7 +1081,6 @@ public class KitAPI {
 						if(minutes >= minutes){
 							minutes = minutes + 1;
 							data.set(uuid + ".playTime.minutes", minutes);
-							Main.saveDataFile();
 							DataYML.saveFile();
 						}
 						

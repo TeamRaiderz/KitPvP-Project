@@ -6,8 +6,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.bukkit.entity.Player;
-
 public class MySQLManager {
 	private static Connection connection;
 	
@@ -38,10 +36,10 @@ public class MySQLManager {
 		}
 	}
 	
-	public synchronized boolean playerDataContainsPlayer(Player p){
+	public synchronized boolean playerDataContainsPlayer(String p){
 		try{
 			PreparedStatement sql = connection.prepareStatement("SELECT * FROM `player_data` WHERE player=?;");
-			sql.setString(1, p.getName());
+			sql.setString(1, p);
 			
 			ResultSet set = sql.executeQuery();
 			
