@@ -6,23 +6,33 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import kitpvp.MySQL.MySQLManager;
 import kitpvp.Util.DataYML;
 import kitpvp.Util.KitAPI;
 import kitpvp.Util.KitsYML;
+import kitpvp.Util.PacketUtils;
+import kitpvp.commands.CommandDB;
+import kitpvp.commands.CommandStats;
 import kitpvp.commands.CommandTest;
 import kitpvp.commands.KitCommand;
 import kitpvp.commands.LangCommand;
 import kitpvp.commands.PrefixCommand;
 import kitpvp.listeners.ConnectionListener;
 import kitpvp.listeners.DamageListener;
+import net.milkbowl.vault.chat.Chat;
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.permission.Permission;
 
 public class Main extends JavaPlugin{
 	
 	public static Main instance;
 	public static Main getInstance(){ return instance; }
+	private static Economy econ;
+	private static Permission permission;
+	private static Chat chat;
 	
 	public void onEnable(){
 		
@@ -32,12 +42,18 @@ public class Main extends JavaPlugin{
 		
 		saveDefaultConfig();
 		
+		setupEconomy();
+		setupPermissions();
+		setupChat();
+		
 		registerCommand("kit", new KitCommand());
 		registerCommand("prefix", new PrefixCommand());
 		registerCommand("nick", new PrefixCommand());
 		registerCommand("lang", new LangCommand());
 		registerCommand("kieli", new LangCommand());
 		registerCommand("test", new CommandTest());
+		registerCommand("stats", new CommandStats());
+		registerCommand("db", new CommandDB());
 		
 		registerListener(this, new ConnectionListener());
 		registerListener(this, new PrefixCommand());
@@ -54,6 +70,48 @@ public class Main extends JavaPlugin{
 		
 		MySQLManager.disable();
 		
+	}
+	
+	private boolean setupEconomy() {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+        	System.out.println("This plugin needs the plugin Vault to work!");
+            return false;
+            
+        }
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            return false;
+        }
+        econ = rsp.getProvider();
+        return econ != null;
+    }
+	private boolean setupPermissions() {
+        RegisteredServiceProvider<Permission> permissionProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
+        if (permissionProvider != null) {
+            permission = permissionProvider.getProvider();
+        }
+        return (permission != null);
+    }
+	 private boolean setupChat()
+	    {
+	        RegisteredServiceProvider<Chat> chatProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.chat.Chat.class);
+	        if (chatProvider != null) {
+	            chat = chatProvider.getProvider();
+	        }
+
+	        return (chat != null);
+	    }
+	
+	public static Economy getEconomy(){
+		return econ;
+	}
+	
+	public static Permission getPermissions(){
+		return permission;
+	}
+	
+	public static Chat getChat(){
+		return chat;
 	}
 	
 	public static FileConfiguration getDataFile(){
@@ -95,4 +153,7 @@ public class Main extends JavaPlugin{
 		return new KitAPI();
 	}
 	
+	public static PacketUtils getPacketUtils(){
+		return new PacketUtils();
+	}
 }

@@ -16,3 +16,7 @@ commands:
     description: Change your language
   test: 
     description: Secret
+  stats: 
+    description: See your statistics
+  db: 
+    description: Database commands

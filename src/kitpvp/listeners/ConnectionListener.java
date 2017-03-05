@@ -49,6 +49,13 @@ public class ConnectionListener implements Listener{
 			
 		}
 		
+		//Sending join title
+		if(Main.getAPI().getLanguage(p.getName()) == Language.FINNISH){
+			Main.getPacketUtils().sendTitle(p, "§a§lFINSKACRAFT!", "§7Suomen paskin servu!", 20, 40, 20);
+		}
+		else if(Main.getAPI().getLanguage(p.getName()) == Language.ENGLISH){
+			Main.getPacketUtils().sendTitle(p, "§a§lFINSKACRAFT!", "§7Shittiest server in Finland!", 20, 40, 20);
+		}
 	}
 	
 }
