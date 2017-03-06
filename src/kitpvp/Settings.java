@@ -93,11 +93,7 @@ public class Settings implements CommandExecutor, Listener {
 			else if (item.getType() == Material.REDSTONE && item.hasItemMeta()){
 				if(!p.hasPermission("settings.yt")){
 					p.closeInventory();
-					if(Main.getAPI().getLanguage(p.getName()) == Language.FINNISH){
-						ChatUtils.sendMessageWithPrefix(p, "§7Tähän tarvitset rankin §c§lYT§7!");
-					} else if(Main.getAPI().getLanguage(p.getName()) == Language.ENGLISH){
-						ChatUtils.sendMessageWithPrefix(p, "§7You need the rank §c§lYT §7to do this!");
-					}
+					ChatUtils.sendPermissionMessageYT(p);
 				}
 				else{
 					openSettingsYTGUI(p);
@@ -106,11 +102,7 @@ public class Settings implements CommandExecutor, Listener {
 			else if (item.getType() == Material.GOLD_INGOT && item.hasItemMeta()){
 				if(!p.hasPermission("settings.vip")){
 					p.closeInventory();
-					if(Main.getAPI().getLanguage(p.getName()) == Language.FINNISH){
-						ChatUtils.sendMessageWithPrefix(p, "§7Tähän tarvitset rankin §3§lBOOSTER§7!");
-					} else if(Main.getAPI().getLanguage(p.getName()) == Language.ENGLISH){
-						ChatUtils.sendMessageWithPrefix(p, "§7You need the rank §3§lBOOSTER §7to do this!");
-					}
+					ChatUtils.sendPermissionMessageBooster(p);
 				}
 				else{
 					openSettingsVIPGUI(p);
@@ -156,7 +148,7 @@ public class Settings implements CommandExecutor, Listener {
 				}
 			}
 			else if(item.getType() == Material.MAP && !data.getBoolean(uuid + ".privateMsg")){
-				data.set(uuid + "privateMsg", true);
+				data.set(uuid + ".privateMsg", true);
 				p.closeInventory();
 				Main.saveDataFile();
 				if(Main.getAPI().getLanguage(p.getName()) == Language.FINNISH){
@@ -206,7 +198,7 @@ public class Settings implements CommandExecutor, Listener {
 				}
 			}
 			else if(item.getType() == Material.MAP && !data.getBoolean(uuid + ".privateMsg")){
-				data.set(uuid + "privateMsg", true);
+				data.set(uuid + ".privateMsg", true);
 				p.closeInventory();
 				Main.saveDataFile();
 				if(Main.getAPI().getLanguage(p.getName()) == Language.FINNISH){
@@ -320,10 +312,10 @@ public class Settings implements CommandExecutor, Listener {
 			}
 			 if (data.getBoolean(uuid + ".privateAccount")) {
 				api.createItem(inv, 14, Material.NETHER_STAR, 1, "§b§lYksityinen", Arrays.asList("§7Jos tämä on päällä käyttäjäsi on", "§7yksityinen, eikä kukaan", 
-						"§7voi nähdä esim. statsejasi.", "", "§7Tila: §a§lKäytössä"));
+						"§7voi nähdä statsejasi tai profiiliasi", "", "§7Tila: §a§lKäytössä"));
 			} else if (!data.getBoolean(uuid + ".privateAccount")) {
 				api.createItem(inv, 14, Material.NETHER_STAR, 1, "§b§lYksityinen", Arrays.asList("§7Jos tämä on päällä käyttäjäsi on", "§7yksityinen, eikä kukaan", 
-						"§7voi nähdä esim. statsejasi.", "", "§7Tila: §c§lEi käytössä"));
+						"§7voi nähdä statsejasi tai profiiliasi", "", "§7Tila: §c§lEi käytössä"));
 			}
 			
 			api.createItem(inv, 27, Material.ARROW, 1, "§aTavalliset asetukset", Arrays.asList("§7Klikkaa päästäksesi takaisin", "§7tavallisiin asetuksiin!"));
@@ -340,17 +332,17 @@ public class Settings implements CommandExecutor, Listener {
 				api.createItem(inv, 10, Material.PAPER, 1, "§b§lChat", Arrays.asList("§7If this is in use", "§7you wont receive chat messages.", "", "§7State: §c§lNot using"));
 			}
 			 if (data.getBoolean(uuid + ".privateMsg")) {
-				api.createItem(inv, 12, Material.MAP, 1, "§b§lPrivate messages", Arrays.asList("§7If this is in use, you", "§7wont receive chat messages.",
+				api.createItem(inv, 12, Material.MAP, 1, "§b§lPrivate messages", Arrays.asList("§7If this is in use, you", "§7wont receive private messages.",
 						"", "§7State: §a§lUsing"));
 			} else if (!data.getBoolean(uuid + ".privateMsg")) {
-				api.createItem(inv, 12, Material.MAP, 1, "§b§lBroadcasts", Arrays.asList("§7If this is not in use, you", "§7wont receive chat messages.",
+				api.createItem(inv, 12, Material.MAP, 1, "§b§lPrivate messages", Arrays.asList("§7If this is not in use, you", "§7wont receive private messages.",
 						"", "§7State: §c§lNot using"));
 			}
 			 if (data.getBoolean(uuid + ".privateAccount")) {
-				api.createItem(inv, 14, Material.NETHER_STAR, 1, "§b§lPrivate account", Arrays.asList("§7If this in use, your account will be", "§7private and nobody can see your stats.",
+				api.createItem(inv, 14, Material.NETHER_STAR, 1, "§b§lPrivate account", Arrays.asList("§7If this in use, your account will be", "§7private and nobody can see your stats or profile.",
 						"", "§7State: §a§lUsing"));
 			} else if (!data.getBoolean(uuid + ".privateAccount")) {
-				api.createItem(inv, 14, Material.NETHER_STAR, 1, "§b§lPrivate account", Arrays.asList("§7If this in use, your account will be", "§7private and nobody can see your stats.",
+				api.createItem(inv, 14, Material.NETHER_STAR, 1, "§b§lPrivate account", Arrays.asList("§7If this in use, your account will be", "§7private and nobody can see your stats or profile.",
 						"", "§7State: §c§lNot using"));
 			}
 			
@@ -374,15 +366,15 @@ public class Settings implements CommandExecutor, Listener {
 				api.createItem(inv, 10, Material.MAP, 1, "§b§lYksityisviestit", Arrays.asList("§7Jos tämä on päällä, et", "§7saa tulevia yksityisviestejä!",
 						"", "§7Tila: §a§lKäytössä"));
 			} else if (!data.getBoolean(uuid + ".privateMsg")) {
-				api.createItem(inv, 10, Material.MAP, 1, "§b§lJulkiset ilmoitukset", Arrays.asList("§7Jos tämä on päällä, et", "§7saa tulevia yksityisviestejä!",
+				api.createItem(inv, 10, Material.MAP, 1, "§b§lYksityisviestit", Arrays.asList("§7Jos tämä on päällä, et", "§7saa tulevia yksityisviestejä!",
 						"", "§7Tila: §c§lEi käytössä"));
 			}
 			 if (data.getBoolean(uuid + ".privateAccount")) {
 				api.createItem(inv, 12, Material.NETHER_STAR, 1, "§b§lYksityinen", Arrays.asList("§7Jos tämä on päällä käyttäjäsi on", "§7yksityinen, eikä kukaan", 
-						"§7voi nähdä esim. statsejasi.", "", "§7Tila: §a§lKäytössä"));
+						"§7voi nähdä statsejasi tai profiiliasi", "", "§7Tila: §a§lKäytössä"));
 			} else if (!data.getBoolean(uuid + ".privateAccount")) {
 				api.createItem(inv, 12, Material.NETHER_STAR, 1, "§b§lYksityinen", Arrays.asList("§7Jos tämä on päällä käyttäjäsi on", "§7yksityinen, eikä kukaan", 
-						"§7voi nähdä esim. statsejasi.", "", "§7Tila: §c§lEi käytössä"));
+						"§7voi nähdä statsejasi tai profiiliasi.", "", "§7Tila: §c§lEi käytössä"));
 			}
 			
 			api.createItem(inv, 27, Material.ARROW, 1, "§aTavalliset asetukset", Arrays.asList("§7Klikkaa päästäksesi takaisin", "§7tavallisiin asetuksiin!"));
@@ -401,10 +393,10 @@ public class Settings implements CommandExecutor, Listener {
 						"", "§7State: §c§lNot using"));
 			}
 			 if (data.getBoolean(uuid + ".privateAccount")) {
-				api.createItem(inv, 12, Material.NETHER_STAR, 1, "§b§lPrivate account", Arrays.asList("§7If this in use, your account will be", "§7private and nobody can see your stats.",
+				api.createItem(inv, 12, Material.NETHER_STAR, 1, "§b§lPrivate account", Arrays.asList("§7If this in use, your account will be", "§7private and nobody can see your stats or profile.",
 						"", "§7State: §a§lUsing"));
 			} else if (!data.getBoolean(uuid + ".privateAccount")) {
-				api.createItem(inv, 12, Material.NETHER_STAR, 1, "§b§lPrivate account", Arrays.asList("§7If this in use, your account will be", "§7private and nobody can see your stats.",
+				api.createItem(inv, 12, Material.NETHER_STAR, 1, "§b§lPrivate account", Arrays.asList("§7If this in use, your account will be", "§7private and nobody can see your stats or profile.",
 						"", "§7State: §c§lNot using"));
 			}
 			

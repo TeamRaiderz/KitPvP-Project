@@ -209,11 +209,7 @@ public class PrefixCommand implements Listener, CommandExecutor {
 			Player p = (Player) sender;
 			
 			if(!p.hasPermission("kitpvp.nick")){
-				if (Main.getAPI().getLanguage(p.getName()) == Language.FINNISH) {
-					ChatUtils.sendMessageWithPrefix(p, "§7Tähän toimintoon tarvitset rankin §3§lBOOSTER§7!");
-				} else if (Main.getAPI().getLanguage(p.getName()) == Language.ENGLISH) {
-					ChatUtils.sendMessageWithPrefix(p, "§7You must have the rank §3§lBOOSTER §7to do this!");
-				}
+				ChatUtils.sendPermissionMessageBooster(sender);
 				return true;
 			}
 			

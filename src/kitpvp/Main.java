@@ -70,6 +70,7 @@ public class Main extends JavaPlugin{
 		registerCommand("list", new CommandList());
 		registerCommand("profile", new Profile());
 		registerCommand("info", new Info());
+		registerCommand("booster", new Booster());
 		
 		getCommand("list").setAliases(Arrays.asList("who", "online", "players"));
 		
@@ -84,6 +85,7 @@ public class Main extends JavaPlugin{
 		registerListener(this, new ChatEvent());
 		registerListener(this, new Profile());
 		registerListener(this, new Info());
+		registerListener(this, new Booster());
 		
 		for(Player online : Bukkit.getOnlinePlayers()){
 			getAPI().startPlayTimeCount(online);

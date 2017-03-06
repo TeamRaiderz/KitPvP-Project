@@ -54,6 +54,8 @@ public class ConnectionListener implements Listener{
 			data.set(uuid + ".chat", true);
 			data.set(uuid + ".privateMsg", true);
 			data.set(uuid + ".privateAccount", false);
+			data.set(uuid + ".levelInChat", true);
+			data.set(uuid + ".boosters", 0);
 			
 			data.set(p.getName(), "ENG");
 			Main.getAPI().setNick(p.getName(), NameColor.DEFAULT);

@@ -40,3 +40,6 @@ commands:
     aliases: [profiili]
   info: 
     description: Server info
+  booster: 
+    description: Boosters
+    aliases: [amplifier, boost, amp]

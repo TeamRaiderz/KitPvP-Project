@@ -27,6 +27,10 @@ import kitpvp.Language;
 import kitpvp.Main;
 import kitpvp.commands.PrefixCommand.NameColor;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.minecraft.server.v1_8_R3.NBTTagCompound;
 
 public class KitAPI {
@@ -35,7 +39,16 @@ public class KitAPI {
 	private List<String> staffMembers = new ArrayList<String>();
 	private Connection connection = Main.getMySQLManager().getConnection();
 	private HashMap<String, Integer> killStreak = new HashMap<String, Integer>();
+	private boolean booster;
 	
+	public boolean isBoosterInUse() {
+		return booster;
+	}
+
+	public void setBoosterInUse(boolean value) {
+		this.booster = value;
+	}
+
 	public int getKills(String player){
 		try {
 			
@@ -1123,4 +1136,144 @@ public class KitAPI {
 				
 			}.runTaskTimerAsynchronously(Main.getInstance(), 0, 1200);
 		}
+      
+      public int getBoosters(String player){
+    	  OfflinePlayer p = Bukkit.getOfflinePlayer(player);
+    	  String uuid = p.getUniqueId().toString();
+    	  return Main.getDataFile().getInt(uuid + ".boosters");
+      }
+      
+      public void setBoosters(String player, int value){
+		OfflinePlayer p = Bukkit.getOfflinePlayer(player);
+		String uuid = p.getUniqueId().toString();
+		Main.getDataFile().set(uuid + ".boosters", value);
+		DataYML.saveFile();
+      }
+      
+	public void addBoosters(String player, int value) {
+		OfflinePlayer p = Bukkit.getOfflinePlayer(player);
+		String uuid = p.getUniqueId().toString();
+		int boosters = Main.getDataFile().getInt(uuid + ".boosters");
+		Main.getDataFile().set(uuid + ".boosters", boosters + value);
+		DataYML.saveFile();
+	}
+      
+	public void activateBooster(String player){
+		
+		if(isBoosterInUse()){ return; }
+		
+		booster = true;
+		
+		setBoosters(player, getBoosters(player) - 1);
+		
+		FileConfiguration config = Main.getConfigFile();
+		
+		config.set("Booster.inUse", true);
+		config.set("Booster.currentUser", player);
+		config.set("Booster.timePassed.hours", 2);
+		config.set("Booster.timePassed.minutes", 60);
+		config.set("Booster.timePassed.seconds", 60);
+		Main.getInstance().saveConfig();
+		
+		for(Player online : Bukkit.getOnlinePlayers()){
+			if(getLanguage(online.getName()) == Language.FINNISH){
+				ChatUtils.sendMessageWithPrefix(online, "ß7Boosteri on aloitettu! Boosterin aloitti ßc" + config.getString("Booster.currentUser") + "ß7! Boosteri loppuu ßc2 tunnin ß7p‰‰st‰!");
+				TextComponent message = new TextComponent("ßbKlikkaa kiitt‰‰ksesi ja molemmat saatte 10$!");
+				message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/booster thank " + player));
+				message.setHoverEvent( new HoverEvent( HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("ß7ßoKlikkaa kiitt‰‰ksesi!").create() ) );
+				online.spigot().sendMessage(message);
+			}
+			else if(getLanguage(online.getName()) == Language.ENGLISH){
+				ChatUtils.sendMessageWithPrefix(online, "ß7A booster has been started! The booster was started by ßc" + config.getString("Booster.currentUser") + "ß7! The booster will end in ßc2 hoursß7!");
+				TextComponent message = new TextComponent("ßbClick to thank, and you'll both receive 10$!");
+				message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/booster thank " + player));
+				message.setHoverEvent( new HoverEvent( HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("ß7ßoClick to thank!").create() ) );
+				online.spigot().sendMessage(message);
+			}	
+		}
+		
+		new BukkitRunnable(){
+
+			@Override
+			public void run() {
+				
+				int seconds = config.getInt("Booster.timePassed.seconds");
+				int minutes = config.getInt("Booster.timePassed.minutes");
+				int hours = config.getInt("Booster.timePassed.hours");
+				
+				seconds -= 1;
+				config.set("Booster.timePassed.seconds", seconds);
+				Main.getInstance().saveConfig();
+				
+				if(seconds <= 0){
+					seconds = 60;
+					minutes -= 1;
+					config.set("Booster.timePassed.minutes", minutes);
+					config.set("Booster.timePassed.seconds", seconds);
+					Main.getInstance().saveConfig();
+				}
+				if(minutes <= 0){
+					minutes = 60;
+					hours -= 1;
+					config.set("Booster.timePassed.minutes", minutes);
+					config.set("Booster.timePassed.hours", hours);
+					Main.getInstance().saveConfig();
+				}
+				if(hours <= 0){
+					deActivateBooster();
+					cancel();
+					return;
+				}
+			}
+			
+		}.runTaskTimerAsynchronously(Main.getInstance(), 20, 20);
+		
+	}
+	
+	public void deActivateBooster(){
+		
+		if(!isBoosterInUse()){ return; }
+		
+		booster = false;
+		
+		FileConfiguration config = Main.getConfigFile();
+		
+		for(Player online : Bukkit.getOnlinePlayers()){
+			if(getLanguage(online.getName()) == Language.FINNISH){
+				ChatUtils.sendMessageWithPrefix(online, "ß7Nykyinen boosteri on loppunut! Boosterin aloitti ßc" + config.getString("Booster.currentUser") + "ß7!");
+			}
+			else if(getLanguage(online.getName()) == Language.ENGLISH){
+				ChatUtils.sendMessageWithPrefix(online, "ß7The current booster has ended! The booster was started by ßc" + config.getString("Booster.currentUser") + "ß7!");
+			}	
+		}
+		
+		config.set("Booster.inUse", false);
+		config.set("Booster.currentUser", "");
+		config.set("Booster.timePassed.hours", 0);
+		config.set("Booster.timePassed.minutes", 0);
+		config.set("Booster.timePassed.seconds", 0);
+		Main.getInstance().saveConfig();
+	}
+	
+	public String getCurrentBoosterUser(){
+		if(!isBoosterInUse()) return "";
+		return Main.getConfigFile().getString("Booster.currentUser");
+	}
+	
+	public boolean hasPlayerStartedBooster(String target){
+		if(Main.getConfigFile().getString("Booster.currentUser") == target) return true;
+		return false;
+	}
+	
+	public String getBoosterTimeLeft(){
+		if(!isBoosterInUse()) return "0min";
+		FileConfiguration config = Main.getConfigFile();
+		
+		int seconds = config.getInt("Booster.timePassed.seconds");
+		int minutes = config.getInt("Booster.timePassed.minutes");
+		int hours = config.getInt("Booster.timePassed.hours");
+		
+		return hours + "h " + minutes + "min " + seconds + "sec";
+		
+	}
 }

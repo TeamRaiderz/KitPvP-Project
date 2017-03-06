@@ -29,7 +29,10 @@ public class KitCommand implements CommandExecutor{
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		
-		if(!(sender.isOp())){ return true; }
+		if(!(sender.isOp())){
+			ChatUtils.sendPermissionMessageAdmin(sender);
+			return true;
+		}
 		
 		if(args.length == 0){
 			sender.sendMessage("§cDo /kit ? to see command help.");

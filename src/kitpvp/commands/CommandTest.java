@@ -17,6 +17,7 @@ public class CommandTest implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		
 		if(!(sender.isOp())){
+			ChatUtils.sendPermissionMessageAdmin(sender);
 			return true;
 		}
 		
