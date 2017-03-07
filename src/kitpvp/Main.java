@@ -29,6 +29,9 @@ import kitpvp.commands.PrefixCommand;
 import kitpvp.listeners.ChatEvent;
 import kitpvp.listeners.ConnectionListener;
 import kitpvp.listeners.DamageListener;
+import kitpvp.punishment.BlacklistCommand;
+import kitpvp.punishment.PunishCommand;
+import kitpvp.punishment.PunishmentManager;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -71,6 +74,9 @@ public class Main extends JavaPlugin{
 		registerCommand("profile", new Profile());
 		registerCommand("info", new Info());
 		registerCommand("booster", new Booster());
+		registerCommand("punish", new PunishCommand());
+		registerCommand("blacklist", new BlacklistCommand());
+		registerCommand("unblacklist", new BlacklistCommand());
 		
 		getCommand("list").setAliases(Arrays.asList("who", "online", "players"));
 		
@@ -86,6 +92,7 @@ public class Main extends JavaPlugin{
 		registerListener(this, new Profile());
 		registerListener(this, new Info());
 		registerListener(this, new Booster());
+		registerListener(this, new PunishmentManager());
 		
 		for(Player online : Bukkit.getOnlinePlayers()){
 			getAPI().startPlayTimeCount(online);
@@ -185,4 +192,9 @@ public class Main extends JavaPlugin{
 	public static PacketUtils getPacketUtils(){
 		return new PacketUtils();
 	}
+	
+	public static PunishmentManager getPunishmentManager(){
+		return new PunishmentManager();
+	}
+	
 }

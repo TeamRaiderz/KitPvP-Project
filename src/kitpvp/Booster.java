@@ -46,33 +46,25 @@ public class Booster implements Listener, CommandExecutor{
 				sender.sendMessage("§c----------------------");
 				
 			}
-			else{
-				sender.sendMessage("§c/booster ?");
-				return true;
-			}
-		}
-		else if (args.length == 2){
-			if(args[0].equalsIgnoreCase("thank")){
+			else if(args[0].equalsIgnoreCase("thank")){
 				
-				Player target = Bukkit.getPlayer(args[1]);
-				
-				if(target == null || !target.isOnline() || !Main.getAPI().isBoosterInUse() || !Main.getAPI().hasPlayerStartedBooster(target.getName())){ 
+				if(!Main.getAPI().isBoosterInUse()){ 
 					if(Main.getAPI().getLanguage(p.getName()) == Language.FINNISH){
-						ChatUtils.sendMessageWithPrefix(p, "§7Tuo pelaaja ei ole servulla tai boosteri ei ole käynnissä.");
+						ChatUtils.sendMessageWithPrefix(p, "§7Boosteri ei ole käynnissä.");
 					}
 					else if(Main.getAPI().getLanguage(p.getName()) == Language.ENGLISH){
-						ChatUtils.sendMessageWithPrefix(p, "§7That player is not online or a booster is not in use!");
+						ChatUtils.sendMessageWithPrefix(p, "§7A booster is not in use!");
 					}
 					return true; 
 				}
 				
 				if(Main.getAPI().getLanguage(p.getName()) == Language.FINNISH){
-					ChatUtils.sendMessageWithPrefix(p, "§7Kiitit pelaajaa §c" + target.getName() + " §7ja sait siitä §c10$§7!");
+					ChatUtils.sendMessageWithPrefix(p, "§7Kiitit pelaajaa §c" + Main.getAPI().getCurrentBoosterUser() + " §7ja sait siitä §c10$§7!");
 				}
 				else if(Main.getAPI().getLanguage(p.getName()) == Language.ENGLISH){
-					ChatUtils.sendMessageWithPrefix(p, "§7You thanked the player §c" + target.getName() + " §7and you received §c10$§7!");
+					ChatUtils.sendMessageWithPrefix(p, "§7You thanked the player §c" + Main.getAPI().getCurrentBoosterUser() + " §7and you received §c10$§7!");
 				}
-				Main.getAPI().addBalance(target.getName(), 10);
+				Main.getAPI().addBalance(Main.getAPI().getCurrentBoosterUser(), 10);
 				Main.getAPI().addBalance(p.getName(), 10);
 				
 			}

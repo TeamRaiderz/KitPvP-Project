@@ -39,16 +39,10 @@ public class KitAPI {
 	private List<String> staffMembers = new ArrayList<String>();
 	private Connection connection = Main.getMySQLManager().getConnection();
 	private HashMap<String, Integer> killStreak = new HashMap<String, Integer>();
-	private boolean booster;
 	
 	public boolean isBoosterInUse() {
-		return booster;
+		return Main.getConfigFile().getBoolean("Booster.inUse");
 	}
-
-	public void setBoosterInUse(boolean value) {
-		this.booster = value;
-	}
-
 	public int getKills(String player){
 		try {
 			
@@ -1156,13 +1150,21 @@ public class KitAPI {
 		int boosters = Main.getDataFile().getInt(uuid + ".boosters");
 		Main.getDataFile().set(uuid + ".boosters", boosters + value);
 		DataYML.saveFile();
+		
+		if(p.isOnline()){
+			if(getLanguage(p.getName()) == Language.FINNISH){
+				ChatUtils.sendMessageWithPrefix(p.getPlayer(), "ß7Sin‰ sait ßc" + value + " ß7uutta boosteria!");
+			}
+			if(getLanguage(p.getName()) == Language.ENGLISH){
+				ChatUtils.sendMessageWithPrefix(p.getPlayer(), "ß7You got ßc" + value + " ß7new boosters!");
+			}
+		}
+		
 	}
       
 	public void activateBooster(String player){
 		
 		if(isBoosterInUse()){ return; }
-		
-		booster = true;
 		
 		setBoosters(player, getBoosters(player) - 1);
 		
@@ -1177,15 +1179,17 @@ public class KitAPI {
 		
 		for(Player online : Bukkit.getOnlinePlayers()){
 			if(getLanguage(online.getName()) == Language.FINNISH){
-				ChatUtils.sendMessageWithPrefix(online, "ß7Boosteri on aloitettu! Boosterin aloitti ßc" + config.getString("Booster.currentUser") + "ß7! Boosteri loppuu ßc2 tunnin ß7p‰‰st‰!");
-				TextComponent message = new TextComponent("ßbKlikkaa kiitt‰‰ksesi ja molemmat saatte 10$!");
+				ChatUtils.sendMessage(online, "ß3ßlBOOSTER ª ß7ßlBoosteri on aloitettu! Boosterin aloitti ßcßl" + config.getString("Booster.currentUser") + 
+						"ß7ßl! Boosteri loppuu ßcßl2 tunnin ß7ßlp‰‰st‰!");
+				TextComponent message = new TextComponent("ß3ßlBOOSTER ª ßbßlKlikkaa kiitt‰‰ksesi ja molemmat saatte ß3ßl10$!");
 				message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/booster thank " + player));
 				message.setHoverEvent( new HoverEvent( HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("ß7ßoKlikkaa kiitt‰‰ksesi!").create() ) );
 				online.spigot().sendMessage(message);
 			}
 			else if(getLanguage(online.getName()) == Language.ENGLISH){
-				ChatUtils.sendMessageWithPrefix(online, "ß7A booster has been started! The booster was started by ßc" + config.getString("Booster.currentUser") + "ß7! The booster will end in ßc2 hoursß7!");
-				TextComponent message = new TextComponent("ßbClick to thank, and you'll both receive 10$!");
+				ChatUtils.sendMessage(online, "ß3ßlBOOSTER ª ß7ßlA booster has been started! The booster was started by ßcßl" + config.getString("Booster.currentUser") + 
+						"ß7ßl! The booster will end in ßcßl2 hoursß7ßl!");
+				TextComponent message = new TextComponent("ß3ßlBOOSTER ª ßbßlClick to thank, and you'll both receive ß3ßl10$!");
 				message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/booster thank " + player));
 				message.setHoverEvent( new HoverEvent( HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("ß7ßoClick to thank!").create() ) );
 				online.spigot().sendMessage(message);
@@ -1233,8 +1237,6 @@ public class KitAPI {
 	public void deActivateBooster(){
 		
 		if(!isBoosterInUse()){ return; }
-		
-		booster = false;
 		
 		FileConfiguration config = Main.getConfigFile();
 		

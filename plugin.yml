@@ -43,3 +43,7 @@ commands:
   booster: 
     description: Boosters
     aliases: [amplifier, boost, amp]
+  blacklist: 
+    description: Put a player to the blacklist
+  unblacklist: 
+    description: Remove a player from the blacklist
