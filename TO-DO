@@ -34,7 +34,7 @@ Custom saavutukset:
       tappaja 2 100 kill
       tappaja 3 1000kill
 
-Cps test:
+Cps test: (DONE)
    Samantyylinen kuin rulettaja.net
 Bow aim test:
 
@@ -70,7 +70,7 @@ NS COSMETIC BOX     UNFINISHED
     
 
 
-LEVELSYSTEEMI:    UNFINISHED
+LEVELSYSTEEMI:    TEHTY
       
       ns "valuuttana" xp
 
@@ -85,7 +85,7 @@ LEVELSYSTEEMI:    UNFINISHED
       
       
       
- SPAWN ITEMIT:      UNFINISHED
+ SPAWN ITEMIT:      UNFINISHED (75%)
     -hide players
     -ns cosmetic "crate" mistä saa avattua nimen värejä, partikkelejä, nuolijanoja yms
     -joku info kirja
