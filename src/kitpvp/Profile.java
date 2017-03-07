@@ -23,7 +23,6 @@ import kitpvp.Util.KitAPI;
 public class Profile implements Listener, CommandExecutor {
 
 	private KitAPI api = Main.getAPI();
-	private String target;
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -34,7 +33,6 @@ public class Profile implements Listener, CommandExecutor {
 		if(args.length == 0){
 			
 			openProfileMenu(p);
-			target = p.getName();
 			
 		}
 		else if (args.length == 1){
@@ -62,8 +60,6 @@ public class Profile implements Listener, CommandExecutor {
 				}
 				return true;
 			}
-			
-			this.target = target.getName();
 			openProfileMenu(p, target.getName());
 			
 		}
@@ -75,7 +71,6 @@ public class Profile implements Listener, CommandExecutor {
 	public void openProfileMenu(Player opener, String target){
 		
 		OfflinePlayer offTarget = Bukkit.getOfflinePlayer(target);
-		String uuid = offTarget.getUniqueId().toString();
 		
 		if(Main.getAPI().getLanguage(opener.getName()) == Language.FINNISH){
 			
@@ -90,7 +85,7 @@ public class Profile implements Listener, CommandExecutor {
 			
 			inv.setItem(13, user);
 			
-			api.createItem(inv, 19, Material.BOOK, 1, "§a§lStats", Arrays.asList("§7Klikkaa nähdäksesi sinun", "§7statsit!"));
+			api.createItem(inv, 19, Material.BOOK, 1, "§a§lTilastot", Arrays.asList("§7Klikkaa nähdäksesi sinun", "§7tilastot!"));
 			api.createItem(inv, 21, Material.NETHER_STAR, 1, "§b§lInfo", Arrays.asList("§7Rank: §a" + Main.getPermissions().getPrimaryGroup(opener.getWorld().getName(), offTarget), 
 					"§7Paikalla: §a" + offTarget.isOnline(), "§7Peliaika: §a" + Main.getAPI().getPlayTime(target), "§7Viim. kirjautuminen: §a" + Main.getAPI().getLastLogin(target)));
 			api.createItem(inv, 23, Material.PAPER, 1, "§e§lSaavutukset", Arrays.asList("§7Klikkaa nähdäksesi hänen", "§7saavutuksensa!"));
@@ -122,8 +117,6 @@ public class Profile implements Listener, CommandExecutor {
 	
 	public void openProfileMenu(Player p){
 		
-		String uuid = p.getUniqueId().toString();
-		
 		if(Main.getAPI().getLanguage(p.getName()) == Language.FINNISH){
 			
 			Inventory inv = Bukkit.createInventory(null, 36, "Profiili");
@@ -137,7 +130,7 @@ public class Profile implements Listener, CommandExecutor {
 			
 			inv.setItem(13, user);
 			
-			api.createItem(inv, 19, Material.BOOK, 1, "§a§lStats", Arrays.asList("§7Klikkaa nähdäksesi sinun", "§7statsit!"));
+			api.createItem(inv, 19, Material.BOOK, 1, "§a§lTilastot", Arrays.asList("§7Klikkaa nähdäksesi sinun", "§7tilastot!"));
 			api.createItem(inv, 21, Material.NETHER_STAR, 1, "§b§lInfo", Arrays.asList("§7Rank: §a" + Main.getPermissions().getPrimaryGroup(p), 
 					"§7Paikalla: §a" + p.isOnline(), "§7Peliaika: §a" + Main.getAPI().getPlayTime(p.getName())));
 			api.createItem(inv, 23, Material.PAPER, 1, "§e§lSaavutukset", Arrays.asList("§7Klikkaa nähdäksesi sinun", "§7saavutukset!"));

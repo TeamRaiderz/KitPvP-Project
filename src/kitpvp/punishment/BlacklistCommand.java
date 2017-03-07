@@ -46,6 +46,9 @@ public class BlacklistCommand implements CommandExecutor{
 			
 			if(args.length == 1){
 				
+				OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
+				
+				Main.getPunishmentManager().setBlacklisted(target.getName(), false, sender.getName());
 			}
 			else{
 				return true;

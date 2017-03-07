@@ -47,3 +47,5 @@ commands:
     description: Put a player to the blacklist
   unblacklist: 
     description: Remove a player from the blacklist
+  punish: 
+    description: Punish a player

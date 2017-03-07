@@ -842,7 +842,7 @@ public class KitAPI {
 			
 			if(getLanguage(receiver.getName()) == Language.FINNISH){
 
-				receiver.sendMessage("§7§m------§a§l Sinun statsit §7§m------");
+				receiver.sendMessage("§7§m------§a§l Sinun tilastot §7§m------");
 				receiver.sendMessage("§7Tapot: §a" + kills);
 				receiver.sendMessage("§7Kuolemat: §a" + deaths);
 				receiver.sendMessage("§7K/D: §a" + KD);
@@ -850,7 +850,7 @@ public class KitAPI {
 				receiver.sendMessage("§7Level: §a" + level + "/50");
 				receiver.sendMessage("§7XP: §a" + xp + "/" + getlevel(target) * 100);
 				receiver.sendMessage("§7Kieli: §a" + String.valueOf(getLanguage(target)));
-				receiver.sendMessage("§7Peliaika: §a" + getPlayTime(target)); // Add this later on.
+				receiver.sendMessage("§7Peliaika: §a" + getPlayTime(target));
 				receiver.sendMessage("§7§m---------------------------------------------");
 				
 			}
@@ -863,7 +863,7 @@ public class KitAPI {
 				receiver.sendMessage("§7Level: §a" + level + "/50");
 				receiver.sendMessage("§7XP: §a" + xp + "/" + getlevel(target) * 100);
 				receiver.sendMessage("§7Language: §a" + String.valueOf(getLanguage(target)));
-				receiver.sendMessage("§7Playtime: §a" + getPlayTime(target)); // Add this later on.
+				receiver.sendMessage("§7Playtime: §a" + getPlayTime(target)); 
 				receiver.sendMessage("§7§m---------------------------------------------");
 			}
 		}
@@ -897,7 +897,7 @@ public class KitAPI {
 			
 			if(getLanguage(receiver.getName()) == Language.FINNISH){
 
-				receiver.sendMessage("§7§m------§a§l Pelaajan " + offTarget.getName() + " statsit §7§m------");
+				receiver.sendMessage("§7§m------§a§l Pelaajan " + offTarget.getName() + " tilastot §7§m------");
 				receiver.sendMessage("§7Tapot: §a" + kills);
 				receiver.sendMessage("§7Kuolemat: §a" + deaths);
 				receiver.sendMessage("§7K/D: §a" + KD);

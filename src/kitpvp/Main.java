@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import kitpvp.MySQL.MySQLManager;
 import kitpvp.Util.DataYML;
@@ -93,10 +94,22 @@ public class Main extends JavaPlugin{
 		registerListener(this, new Info());
 		registerListener(this, new Booster());
 		registerListener(this, new PunishmentManager());
+		registerListener(this, new PunishCommand());
 		
 		for(Player online : Bukkit.getOnlinePlayers()){
 			getAPI().startPlayTimeCount(online);
 		}
+		
+		new BukkitRunnable(){
+
+			@Override
+			public void run() {
+				if(getMySQLManager().getConnection() == null){
+					getMySQLManager().openConnection();
+				}
+			}
+			
+		}.runTaskTimerAsynchronously(this, 20, 20 * 60 * 5);
 		
 	}
 	
