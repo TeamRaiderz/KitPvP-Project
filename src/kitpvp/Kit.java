@@ -71,18 +71,12 @@ public class Kit {
         for(ItemStack item : content){
         	if(item  == null) continue;
         	
-        	int amount = file.getInt(name + ".items." + item + ".amount");
-        	
-        	item.setAmount(amount);
         	player.getInventory().addItem(item);
         }
         
         for(ItemStack item : armor){
         	if(item  == null) continue;
         	
-        	int amount = file.getInt(name + ".armor." + item + ".amount");
-        	
-        	item.setAmount(amount);
         	if(item.getType() == Material.LEATHER_HELMET || item.getType() == Material.GOLD_HELMET || item.getType() == Material.IRON_HELMET
         			|| item.getType() == Material.DIAMOND_HELMET || item.getType() == Material.CHAINMAIL_HELMET){
         		player.getInventory().setHelmet(item);

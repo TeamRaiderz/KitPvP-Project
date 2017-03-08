@@ -95,6 +95,9 @@ public class KitCommand implements CommandExecutor{
 					
 					for(ItemStack item : p.getInventory().getContents()){
 						if (item != null && item.getItemMeta() != null) {
+							if(item.getAmount() <= 1){
+								item.setAmount(1);
+							}
 							item.setAmount(item.getAmount());
 							ItemMeta meta = item.getItemMeta();
 							meta.spigot().setUnbreakable(true);
@@ -105,6 +108,9 @@ public class KitCommand implements CommandExecutor{
 					
 					for(ItemStack armor : p.getInventory().getArmorContents()){
 						if (armor != null && armor.getItemMeta() != null) {
+							if(armor.getAmount() <= 1){
+								armor.setAmount(1);
+							}
 							armor.setAmount(armor.getAmount());
 							ItemMeta meta = armor.getItemMeta();
 							meta.spigot().setUnbreakable(true);

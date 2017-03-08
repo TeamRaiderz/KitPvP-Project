@@ -3,6 +3,7 @@ package kitpvp.Util;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -44,6 +45,14 @@ public class KitAPI {
 		return Main.getConfigFile().getBoolean("Booster.inUse");
 	}
 	public int getKills(String player){
+		
+		try {
+			if(Main.getMySQLManager().getConnection().isClosed()){
+				Main.getMySQLManager().openConnection();
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
 		try {
 			
 			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
@@ -72,6 +81,14 @@ public class KitAPI {
 	}
 	
 	public void setKills(String player, int kills){
+		
+		try {
+			if(Main.getMySQLManager().getConnection().isClosed()){
+				Main.getMySQLManager().openConnection();
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
 		try {
 			
 			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
@@ -106,6 +123,14 @@ public class KitAPI {
 	}
 	
 	public void addKills(String player, int kills){
+		
+		try {
+			if(Main.getMySQLManager().getConnection().isClosed()){
+				Main.getMySQLManager().openConnection();
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
 		try {
 			
 			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
@@ -140,6 +165,14 @@ public class KitAPI {
 	}
 	
 	public int getDeaths(String player){
+		
+		try {
+			if(Main.getMySQLManager().getConnection().isClosed()){
+				Main.getMySQLManager().openConnection();
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
 		try {
 			
 			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
@@ -168,6 +201,14 @@ public class KitAPI {
 	}
 	
 	public void setDeaths(String player, int deaths){
+		
+		try {
+			if(Main.getMySQLManager().getConnection().isClosed()){
+				Main.getMySQLManager().openConnection();
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
 		try {
 			
 			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
@@ -202,6 +243,14 @@ public class KitAPI {
 	}
 	
 	public void addDeaths(String player, int deaths){
+		
+		try {
+			if(Main.getMySQLManager().getConnection().isClosed()){
+				Main.getMySQLManager().openConnection();
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
 		try {
 			
 			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
@@ -236,6 +285,14 @@ public class KitAPI {
 	}
 	
 	public int getBalance(String player){
+		
+		try {
+			if(Main.getMySQLManager().getConnection().isClosed()){
+				Main.getMySQLManager().openConnection();
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
 		try {
 			
 			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
@@ -264,6 +321,14 @@ public class KitAPI {
 	}
 	
 	public void setBalance(String player, int money){
+		
+		try {
+			if(Main.getMySQLManager().getConnection().isClosed()){
+				Main.getMySQLManager().openConnection();
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
 		
 		try {
 			
@@ -301,6 +366,14 @@ public class KitAPI {
 	public void addBalance(String player, int money) {
 		
 		try {
+			if(Main.getMySQLManager().getConnection().isClosed()){
+				Main.getMySQLManager().openConnection();
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+		
+		try {
 
 			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
 
@@ -336,6 +409,14 @@ public class KitAPI {
 	}
 	
 	public int getXp(String player){
+		
+		try {
+			if(Main.getMySQLManager().getConnection().isClosed()){
+				Main.getMySQLManager().openConnection();
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
 		try {
 			
 			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
@@ -364,6 +445,14 @@ public class KitAPI {
 	}
 	
 	public void setXp(String player, int money){
+		
+		try {
+			if(Main.getMySQLManager().getConnection().isClosed()){
+				Main.getMySQLManager().openConnection();
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
 		
 		try {
 			
@@ -466,6 +555,14 @@ public class KitAPI {
 	public void addXp(String player, int money) {
 		
 		try {
+			if(Main.getMySQLManager().getConnection().isClosed()){
+				Main.getMySQLManager().openConnection();
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+		
+		try {
 
 			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
 
@@ -555,6 +652,14 @@ public class KitAPI {
 	}
 	
 	public int getlevel(String player){
+		
+		try {
+			if(Main.getMySQLManager().getConnection().isClosed()){
+				Main.getMySQLManager().openConnection();
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
 		try {
 			
 			if(Main.getMySQLManager().playerDataContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
@@ -583,6 +688,14 @@ public class KitAPI {
 	}
 	
 	public void setlevel(String player, int money){
+		
+		try {
+			if(Main.getMySQLManager().getConnection().isClosed()){
+				Main.getMySQLManager().openConnection();
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
 		
 		try {
 			
@@ -639,6 +752,14 @@ public class KitAPI {
 	}
 	
 	public void addLevel(String player, int money) {
+		
+		try {
+			if(Main.getMySQLManager().getConnection().isClosed()){
+				Main.getMySQLManager().openConnection();
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
 		
 		try {
 
@@ -1054,13 +1175,13 @@ public class KitAPI {
 				return  hour + "h " + min + "min";
 			}
 			 if (hour >= 1 && day >= 1 && month == 0 && year == 0 && min >= 0){
-				return  day + "vrk " + hour + "h " + min + "min";
+				return  day + "d " + hour + "h " + min + "min";
 			}
 			 if (hour >= 1 && day >= 1 && month >= 1 && year == 0 && min >= 0){
-				return  month + "kk " + day + "vrk " + hour + "h " + min + "min";
+				return  month + "m " + day + "d " + hour + "h " + min + "min";
 			}
 			 if (hour >= 1 && day >= 1 && month >= 1 && year >= 1 && min >= 0){
-				return  year + "v " + month + "kk " + day + "vrk " + hour + "h " + min + "min";
+				return  year + "y " + month + "m " + day + "d " + hour + "h " + min + "min";
 			}
       	
 			return null;
@@ -1173,8 +1294,8 @@ public class KitAPI {
 		config.set("Booster.inUse", true);
 		config.set("Booster.currentUser", player);
 		config.set("Booster.timePassed.hours", 2);
-		config.set("Booster.timePassed.minutes", 60);
-		config.set("Booster.timePassed.seconds", 60);
+		config.set("Booster.timePassed.minutes", 0);
+		config.set("Booster.timePassed.seconds", 0);
 		Main.getInstance().saveConfig();
 		
 		for(Player online : Bukkit.getOnlinePlayers()){
@@ -1182,7 +1303,7 @@ public class KitAPI {
 				ChatUtils.sendMessage(online, "ß3ßlBOOSTER ª ß7ßlBoosteri on aloitettu! Boosterin aloitti ßcßl" + config.getString("Booster.currentUser") + 
 						"ß7ßl! Boosteri loppuu ßcßl2 tunnin ß7ßlp‰‰st‰!");
 				TextComponent message = new TextComponent("ß3ßlBOOSTER ª ßbßlKlikkaa kiitt‰‰ksesi ja molemmat saatte ß3ßl10$!");
-				message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/booster thank " + player));
+				message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/booster thank"));
 				message.setHoverEvent( new HoverEvent( HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("ß7ßoKlikkaa kiitt‰‰ksesi!").create() ) );
 				online.spigot().sendMessage(message);
 			}
@@ -1190,7 +1311,7 @@ public class KitAPI {
 				ChatUtils.sendMessage(online, "ß3ßlBOOSTER ª ß7ßlA booster has been started! The booster was started by ßcßl" + config.getString("Booster.currentUser") + 
 						"ß7ßl! The booster will end in ßcßl2 hoursß7ßl!");
 				TextComponent message = new TextComponent("ß3ßlBOOSTER ª ßbßlClick to thank, and you'll both receive ß3ßl10$!");
-				message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/booster thank " + player));
+				message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/booster thank"));
 				message.setHoverEvent( new HoverEvent( HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("ß7ßoClick to thank!").create() ) );
 				online.spigot().sendMessage(message);
 			}	
@@ -1217,7 +1338,7 @@ public class KitAPI {
 					Main.getInstance().saveConfig();
 				}
 				if(minutes <= 0){
-					minutes = 60;
+					minutes = 59;
 					hours -= 1;
 					config.set("Booster.timePassed.minutes", minutes);
 					config.set("Booster.timePassed.hours", hours);

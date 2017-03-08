@@ -49,3 +49,6 @@ commands:
     description: Remove a player from the blacklist
   punish: 
     description: Punish a player
+    aliases: [ban, tempban, kick, warn, p]
+  rename: 
+    description: Rename an item

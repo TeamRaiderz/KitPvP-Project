@@ -27,13 +27,13 @@ public class PunishCommand implements CommandExecutor, Listener {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		
-		if(!(sender instanceof Player)) return true;
-		
 		if(args.length < 2){
 			sender.sendMessage("§c/punish (player) (reason)");
 			return true;
 		}
 		else if (args.length >= 2 && !args[0].equalsIgnoreCase("unban")){
+			
+			if(!(sender instanceof Player)) return true;
 			
 			StringBuilder sb = new StringBuilder();
 			for (int i =1; i<args.length; i++){
@@ -54,6 +54,7 @@ public class PunishCommand implements CommandExecutor, Listener {
 				if(Main.getPunishmentManager().isBanned(target.getName())){
 					Main.getPunishmentManager().unbanPlayer(target.getName());
 				}
+				ChatUtils.sendMessageWithPrefix(sender, "§7Unbanned §c" + target.getName() + "§7!");
 			}
 			
 		}
@@ -68,6 +69,7 @@ public class PunishCommand implements CommandExecutor, Listener {
 		KitAPI api = Main.getAPI();
 		
 		api.createItem(inv, 13, Material.STAINED_GLASS_PANE, 1, "§c§lPunishments", Arrays.asList("§7Here you can punish the player", "§a" + target + "§7!"));
+		api.createItem(inv, 22, Material.BOOK, 1, "§b§lHistory", Arrays.asList("§7Click to see the history of", "§a" + target + "§7!"));
 		
 		api.createItem(inv, 10, Material.SIGN, 1, "§c§lBAN", Arrays.asList("§7Below there are the", "§7ban time options."));
 		api.createWoolItem(inv, 19, DyeColor.GREEN, "§a§l1 Day", Arrays.asList("§7Click to ban §a" + target + " §7for §a1 Day§7 for the reason:", "§a" + reason));
@@ -104,17 +106,17 @@ public class PunishCommand implements CommandExecutor, Listener {
 			
 			if(item.getType() == Material.WOOL && item.getData().getData() == DyeColor.GREEN.getData()){
 				p.closeInventory();
-				Main.getPunishmentManager().tempBanDays(off.getName(), 1, p.getName(), reason);
+				Main.getPunishmentManager().tempBanDays(off.getName(), 1, p.getName(), reason, 86400000);
 				ChatUtils.sendMessageWithPrefix(p, "§7The player §c" + off.getName() + " §7has been banned for §c1 Day§7!");
 			}
 			else if(item.getType() == Material.WOOL && item.getData().getData() == DyeColor.ORANGE.getData()){
 				p.closeInventory();
-				Main.getPunishmentManager().tempBanDays(off.getName(), 30, p.getName(), reason);
+				Main.getPunishmentManager().tempBanDays(off.getName(), 30, p.getName(), reason, 86400000);
 				ChatUtils.sendMessageWithPrefix(p, "§7The player §c" + off.getName() + " §7has been banned for §c30 days§7!");
 			}
 			else if(item.getType() == Material.WOOL && item.getData().getData() == DyeColor.RED.getData()){
 				p.closeInventory();
-				Main.getPunishmentManager().tempBanDays(off.getName(), 90, p.getName(), reason);
+				Main.getPunishmentManager().tempBanDays(off.getName(), 90, p.getName(), reason, 86400000);
 				ChatUtils.sendMessageWithPrefix(p, "§7The player §c" + off.getName() + " §7has been banned for §c3 Months§7!");
 			}
 			else if(item.getType() == Material.REDSTONE){
@@ -131,6 +133,10 @@ public class PunishCommand implements CommandExecutor, Listener {
 			else if(item.getType() == Material.PAPER){
 				p.closeInventory();
 				Main.getPunishmentManager().warnPlayer(off.getName(), reason, p);
+			}
+			else if(item.getType() == Material.BOOK){
+				p.closeInventory();
+				Main.getPunishmentManager().getHistory(p, off.getName());
 			}
 			else{ return; }
 			

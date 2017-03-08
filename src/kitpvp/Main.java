@@ -22,6 +22,7 @@ import kitpvp.commands.CommandDB;
 import kitpvp.commands.CommandKill;
 import kitpvp.commands.CommandList;
 import kitpvp.commands.CommandMsg;
+import kitpvp.commands.CommandRename;
 import kitpvp.commands.CommandStats;
 import kitpvp.commands.CommandTest;
 import kitpvp.commands.KitCommand;
@@ -78,6 +79,7 @@ public class Main extends JavaPlugin{
 		registerCommand("punish", new PunishCommand());
 		registerCommand("blacklist", new BlacklistCommand());
 		registerCommand("unblacklist", new BlacklistCommand());
+		registerCommand("rename", new CommandRename());
 		
 		getCommand("list").setAliases(Arrays.asList("who", "online", "players"));
 		
@@ -110,6 +112,10 @@ public class Main extends JavaPlugin{
 			}
 			
 		}.runTaskTimerAsynchronously(this, 20, 20 * 60 * 5);
+		
+		if(getAPI().isBoosterInUse()){
+			getAPI().activateBooster(getDataFile().getString("Booster.currentUser"));
+		}
 		
 	}
 	

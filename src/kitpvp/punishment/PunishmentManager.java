@@ -3,6 +3,7 @@ package kitpvp.punishment;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -19,6 +20,7 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 
 import kitpvp.Main;
+import kitpvp.Util.ChatUtils;
 
 public class PunishmentManager implements Listener{
 	
@@ -36,12 +38,16 @@ public class PunishmentManager implements Listener{
 		return (Main.getDataFile().getBoolean(p.getUniqueId().toString() + ".blacklist.blacklisted"));
 	}
 	
-	public void tempBanDays(String target, int days, String punisher, String reason){
+	public void tempBanDays(String target, int time, String punisher, String reason, int multi){
 		OfflinePlayer p = Bukkit.getOfflinePlayer(target);
 		
-		long current = System.currentTimeMillis();
-	    long endOfBan = (current / 1000) + (24 * 60 * 60) * days;
+		if(isBanned(p.getName())){
+			ChatUtils.sendMessageWithPrefix(Bukkit.getPlayer(punisher), "§7That player is already banned!");
+			return;
+		}
 		
+		    long endOfBan = (System.currentTimeMillis()/1000) + (24 * 60 * 60) * time;
+		    
 		Main.getDataFile().set(p.getUniqueId().toString() + ".ban.punished", true);
 		Main.getDataFile().set(p.getUniqueId().toString() + ".ban.banTime", endOfBan);
 		Main.getDataFile().set(p.getUniqueId().toString() + ".ban.punisher", punisher);
@@ -60,6 +66,9 @@ public class PunishmentManager implements Listener{
 	public void unbanPlayer(String target){
 		OfflinePlayer p = Bukkit.getOfflinePlayer(target);
 		Main.getDataFile().set(p.getUniqueId().toString() + ".ban.punished", false);
+		Main.getDataFile().set(p.getUniqueId().toString() + ".ban.banTime", 0);
+		Main.getDataFile().set(p.getUniqueId().toString() + ".ban.punisher", "");
+		Main.getDataFile().set(p.getUniqueId().toString() + ".ban.reason", "");
 		Main.saveDataFile();
 	}
 	
@@ -72,36 +81,32 @@ public class PunishmentManager implements Listener{
 	
 	public String getBanTimeLeft(String player) {
 		OfflinePlayer p = Bukkit.getOfflinePlayer(player);
-		String uuid = p.getUniqueId().toString();
-		 long current = System.currentTimeMillis();
-		    long endOfban = getEndOfBan(uuid).longValue();
-		    long millis = current - endOfban;
-		    
-		    int seconds = 0;
-		    int minutes = 0;
-		    int hours = 0;
-		    int days = 0;
+		
+		long current = (System.currentTimeMillis()/1000);
+	    long endOfban = getEndOfBan(p.getName()).longValue();
+	    long millis = endOfban - current;
 
-		    while (millis < 0) {
-		      millis += 1000L;
-		      seconds--;
-		    }
-		    while (seconds < 0) {
-		      seconds += 60;
-		      minutes--;
-		    }
-		    while (minutes <= 0) {
-		      minutes += 60;
-		      hours--;
-		    }
-		    while (hours < 0) {
-		      hours += 24;
-		      if(days <= 1){
-		    	  days = 0;
-		      }else{
-			      days--;
-		      }
-		    }
+	    int seconds = 0;
+	    int minutes = 0;
+	    int hours = 0;
+	    int days = 0;
+
+	    while (millis > 1L) {
+	      millis -= 1L;
+	      seconds++;
+	    }
+	    while (seconds > 60) {
+	      seconds -= 60;
+	      minutes++;
+	    }
+	    while (minutes > 60) {
+	      minutes -= 60;
+	      hours++;
+	    }
+	    while (hours > 24) {
+	      hours -= 24;
+	      days++;
+	    }
 		    
 		    return days + "d " + hours + "h " + minutes + "min " + seconds + "s";
 	}
@@ -136,18 +141,18 @@ public class PunishmentManager implements Listener{
 			Main.saveDataFile();
 		}
 		else if (Main.getDataFile().get(p.getUniqueId().toString() + ".lastWarn") == null &&
-				Main.getDataFile().getInt(p.getUniqueId().toString() + ".lastWarn") - day >= 7){
+				day - Main.getDataFile().getInt(p.getUniqueId().toString() + ".lastWarn") >= 7){
 			setWarnings(p.getName(), 1);
 			Main.getDataFile().set(p.getUniqueId().toString() + ".lastWarn", day);
 			Main.saveDataFile();
 		}
 		else if (Main.getDataFile().get(p.getUniqueId().toString() + ".lastWarn") == null &&
-				Main.getDataFile().getInt(p.getUniqueId().toString() + ".lastWarn") - day < 7){
+				day - Main.getDataFile().getInt(p.getUniqueId().toString() + ".lastWarn") < 7){
 			addWarnings(p.getName(), 1);
 			Main.getDataFile().set(p.getUniqueId().toString() + ".lastWarn", day);
 			Main.saveDataFile();
 			if(getWarnings(p.getName()) > 2){
-				tempBanDays(p.getName(), 7, punisher.getName(), reason);
+				tempBanDays(p.getName(), 7, punisher.getName(), reason, 86400000);
 			}
 		}
 		
@@ -155,7 +160,20 @@ public class PunishmentManager implements Listener{
 	
 	public void getHistory(Player receiver, String target){
 		OfflinePlayer p = Bukkit.getOfflinePlayer(target);
-		String uuid = p.getUniqueId().toString();
+		
+		int kicks = getKicks(p.getName());
+		int bans = getBans(p.getName());
+		int warnings = getWarnings(p.getName());
+		boolean isBanned = isBanned(p.getName());
+		int overall = kicks + bans + warnings;
+		
+		receiver.sendMessage("§7§m-------§a§l History of " + p.getName() + " §7§m-------");
+		receiver.sendMessage("§7Kicks: §a" + kicks);
+		receiver.sendMessage("§7Bans: §a" + bans);
+		receiver.sendMessage("§7Warnings: §a" + warnings);
+		receiver.sendMessage("§7Overall punishments: §a" + overall);
+		receiver.sendMessage("§7Banned: §a" + isBanned);
+		receiver.sendMessage("§7§m-------------------------------------------------");
 		
 	}
 	
@@ -169,6 +187,9 @@ public class PunishmentManager implements Listener{
 		
 		Player p = e.getPlayer();
 		
+		long current = System.currentTimeMillis() / 1000;
+		long end = getEndOfBan(p.getName()).longValue();
+		
 		if(isBlacklisted(p.getName())){
 			String punisher = Main.getDataFile().getString(p.getUniqueId().toString() + ".blacklist.punisher");
 			e.disallow(Result.KICK_BANNED, "§cYou have been blacklisted from this server! \n §7You were blacklisted by: §c" + punisher + "§7!");
@@ -176,13 +197,29 @@ public class PunishmentManager implements Listener{
 		else if (isBanned(p.getName())){
 			String punisher = Main.getDataFile().getString(p.getUniqueId().toString() + ".ban.punisher");
 			String reason = Main.getDataFile().getString(p.getUniqueId().toString() + ".ban.reason");
-			e.disallow(Result.KICK_BANNED, "§cYou have been banned from this server! \n §7Reason: §c" + reason + " \n §7Banned by: §c" + punisher +
-					"\n §7You will be unbanned in: §c" + getBanTimeLeft(p.getName()));
+			
+			if(current < end){
+				e.disallow(Result.KICK_BANNED, "§cYou have been banned from this server! \n §7Reason: §c" + reason + " \n §7Banned by: §c" + punisher +
+						"\n §7You will be unbanned in: §c" + getBanTimeLeft(p.getName().toString()));
+			}
+			else if (end < current){
+				unbanPlayer(p.getName());
+			}
+			
 		}
 		
 	}
 	
 	public int getWarnings(String player){
+		
+		try {
+			if(Main.getMySQLManager().getConnection().isClosed()){
+				Main.getMySQLManager().openConnection();
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+		
 		try {
 			
 			if(Main.getMySQLManager().punishmentContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
@@ -211,6 +248,15 @@ public class PunishmentManager implements Listener{
 	}
 	
 	public void setWarnings(String player, int warnings){
+		
+		try {
+			if(Main.getMySQLManager().getConnection().isClosed()){
+				Main.getMySQLManager().openConnection();
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+		
 		try {
 			
 			if(Main.getMySQLManager().punishmentContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
@@ -245,6 +291,15 @@ public class PunishmentManager implements Listener{
 	}
 	
 	public void addWarnings(String player, int warnings){
+		
+		try {
+			if(Main.getMySQLManager().getConnection().isClosed()){
+				Main.getMySQLManager().openConnection();
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+		
 		try {
 			
 			if(Main.getMySQLManager().punishmentContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
@@ -279,6 +334,14 @@ public class PunishmentManager implements Listener{
 	}
 	
 	public int getBans(String player){
+		
+		try {
+			if(Main.getMySQLManager().getConnection().isClosed()){
+				Main.getMySQLManager().openConnection();
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
 		try {
 			
 			if(Main.getMySQLManager().punishmentContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
@@ -307,6 +370,14 @@ public class PunishmentManager implements Listener{
 	}
 	
 	public void setBans(String player, int bans){
+		
+		try {
+			if(Main.getMySQLManager().getConnection().isClosed()){
+				Main.getMySQLManager().openConnection();
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
 		try {
 			
 			if(Main.getMySQLManager().punishmentContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
@@ -341,6 +412,14 @@ public class PunishmentManager implements Listener{
 	}
 	
 	public void addBans(String player, int bans){
+		
+		try {
+			if(Main.getMySQLManager().getConnection().isClosed()){
+				Main.getMySQLManager().openConnection();
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
 		try {
 			
 			if(Main.getMySQLManager().punishmentContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
@@ -375,6 +454,14 @@ public class PunishmentManager implements Listener{
 	}
 	
 	public int getKicks(String player){
+		
+		try {
+			if(Main.getMySQLManager().getConnection().isClosed()){
+				Main.getMySQLManager().openConnection();
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
 		try {
 			
 			if(Main.getMySQLManager().punishmentContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
@@ -403,6 +490,14 @@ public class PunishmentManager implements Listener{
 	}
 	
 	public void setKicks(String player, int kicks){
+		
+		try {
+			if(Main.getMySQLManager().getConnection().isClosed()){
+				Main.getMySQLManager().openConnection();
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
 		try {
 			
 			if(Main.getMySQLManager().punishmentContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
@@ -437,6 +532,14 @@ public class PunishmentManager implements Listener{
 	}
 	
 	public void addKicks(String player, int kicks){
+		
+		try {
+			if(Main.getMySQLManager().getConnection().isClosed()){
+				Main.getMySQLManager().openConnection();
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
 		try {
 			
 			if(Main.getMySQLManager().punishmentContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
