@@ -19,19 +19,6 @@ public class Kit {
 	private List<ItemStack> armor;
 	private PotionEffect[] effect;
 	
-	public Kit(String name, List<ItemStack> items, List<ItemStack> armor) {
-		this.name = name.toLowerCase();
-		this.items = items;
-		this.armor = armor;
-	}
-	
-	public Kit(String name, List<ItemStack> items, List<ItemStack> armor, PotionEffect[] effect) {
-		this.name = name.toLowerCase();
-		this.items = items;
-		this.armor = armor;
-		this.effect = effect;
-	}
-	
 	public String getName() {
 		return ChatColor.translateAlternateColorCodes('&', name);
 	}
@@ -44,7 +31,7 @@ public class Kit {
 	public PotionEffect[] getEffects(){
 		return effect;
 	}
-	public void giveKit(Player player){
+	public void giveKit(Player player, String name){
 		
 		if(player.getActivePotionEffects() != null){
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "effect " + player.getName() + " clear");
@@ -126,7 +113,7 @@ public class Kit {
 		
 		try{
 			
-			file.set(name.toLowerCase(), " ");
+			file.set(name.toLowerCase(), null);
 			Main.saveKitFile();
 			
 		} catch (NullPointerException ex) {

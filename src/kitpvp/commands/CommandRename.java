@@ -6,6 +6,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import kitpvp.Util.ChatUtils;
 
@@ -34,7 +36,13 @@ public class CommandRename implements CommandExecutor{
 			
 			if(p.getItemInHand() == null || p.getItemInHand().getType() == Material.AIR) return true;
 			
-			p.getItemInHand().getItemMeta().setDisplayName(ChatColor.translateAlternateColorCodes('&', msg));
+			ItemStack item = p.getItemInHand();
+			ItemMeta meta = item.getItemMeta();
+			meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', msg));
+			item.setItemMeta(meta);
+			
+			p.setItemInHand(item);
+			ChatUtils.sendMessageWithPrefix(sender, "§7Renamed the item: " + ChatColor.translateAlternateColorCodes('&', msg));
 			
 		}
 		
