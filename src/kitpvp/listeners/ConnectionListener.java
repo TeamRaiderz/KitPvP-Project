@@ -16,6 +16,8 @@ import kitpvp.Main;
 import kitpvp.Util.ChatUtils;
 import kitpvp.commands.LangCommand;
 import kitpvp.commands.PrefixCommand.NameColor;
+import net.minecraft.server.v1_8_R3.Container;
+import net.minecraft.server.v1_8_R3.EntityPlayer;
 
 public class ConnectionListener implements Listener{
 
@@ -23,7 +25,6 @@ public class ConnectionListener implements Listener{
 	public void onJoin(PlayerJoinEvent e){
 		
 		Player p = e.getPlayer();
-		
 
 		if(p.hasPermission("online.staff")){
 			Main.getAPI().getOnlineStaffMembers().add(p.getName());
@@ -37,6 +38,8 @@ public class ConnectionListener implements Listener{
 				Main.getAPI().Silent(ex);
 			}
 		}
+		
+		EntityPlayer cont;
 		
 		if(Main.getDataFile().get(p.getUniqueId().toString()) == null){
 			ChatUtils.broadcastWithPrefix("§c§lWelcome §7" + p.getName() + " §c§lto the server!");
@@ -60,11 +63,17 @@ public class ConnectionListener implements Listener{
 			data.set(p.getName(), "ENG");
 			Main.getAPI().setNick(p.getName(), NameColor.DEFAULT);
 			
-			LangCommand.openLangGUI(p);
-			
 			Main.saveDataFile();
 			
+			//LangCommand.openLangGUI(p);
 		}
+		
+		FileConfiguration data = Main.getDataFile();
+		String uuid = p.getUniqueId().toString();
+		
+		data.set(uuid + ".currentName", p.getName());
+		data.set(uuid + ".ipAddress", p.getAddress().getAddress().toString());
+		Main.saveDataFile();
 		
 		//Sending join title
 		if(Main.getAPI().getLanguage(p.getName()) == Language.FINNISH){

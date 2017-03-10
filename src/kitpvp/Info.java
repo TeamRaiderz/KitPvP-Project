@@ -89,17 +89,6 @@ public class Info implements Listener, CommandExecutor {
 		
 	}
 	
-	@EventHandler
-	public void onCommandPreProcess(PlayerCommandPreprocessEvent e){
-		
-		Player p = e.getPlayer();
-		
-		if(e.getMessage().startsWith("info")){
-			openInfoMenu(p);
-		}
-		
-	}
-	
 	public static void sendCommandHelp(Player p){
 		
 		if(Main.getAPI().getLanguage(p.getName()) == Language.FINNISH){
