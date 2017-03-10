@@ -15,7 +15,10 @@ public class CommandKill implements CommandExecutor{
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		
-		if(!(sender.isOp())) { return true; }
+		if(!(sender.isOp())) {
+			ChatUtils.sendPermissionMessageAdmin(sender);
+			return true; 
+		}
 		
 		//pvpkill sendMessage (Player)
 		

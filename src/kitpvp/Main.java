@@ -19,7 +19,9 @@ import kitpvp.Util.KitAPI;
 import kitpvp.Util.KitsYML;
 import kitpvp.Util.PacketUtils;
 import kitpvp.commands.CommandDB;
+import kitpvp.commands.CommandDiscord;
 import kitpvp.commands.CommandKill;
+import kitpvp.commands.CommandLevelToggle;
 import kitpvp.commands.CommandList;
 import kitpvp.commands.CommandMsg;
 import kitpvp.commands.CommandRename;
@@ -80,6 +82,8 @@ public class Main extends JavaPlugin{
 		registerCommand("blacklist", new BlacklistCommand());
 		registerCommand("unblacklist", new BlacklistCommand());
 		registerCommand("rename", new CommandRename());
+		registerCommand("lvl", new CommandLevelToggle());
+		registerCommand("discord", new CommandDiscord());
 		
 		getCommand("list").setAliases(Arrays.asList("who", "online", "players"));
 		

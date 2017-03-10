@@ -23,28 +23,40 @@ public class ChatFormat implements Listener{
 		
 		String prefix = ChatColor.translateAlternateColorCodes('&', Main.getChat().getGroupPrefix(p.getWorld(), Main.getChat().getPrimaryGroup(p)));
 		String nick = ChatColor.translateAlternateColorCodes('&', Main.getDataFile().getString(uuid + ".nick"));
-		String formatString = ChatColor.translateAlternateColorCodes('&', getLevelInChat(p) + "§r" + prefix + " §r" + nick + " §a§l>> §r" + e.getMessage());
-		String formatString1 = ChatColor.translateAlternateColorCodes('&', getLevelInChat(p) + "§r" + prefix + " §r" + nick + " §a§l>> §r") + e.getMessage();
-		String formatString2 = ChatColor.translateAlternateColorCodes('&', getLevelInChat(p) + "§r" + nick + " §a§l>> §r" + e.getMessage());
+		String formatString = ChatColor.translateAlternateColorCodes('&', getLevelInChat(p) + "§r" + prefix + " §r" + nick + " §a§l>> §r");
+		String formatString1 = ChatColor.translateAlternateColorCodes('&', getLevelInChat(p) + "§r" + prefix + " §r" + nick + " §a§l>> §r");
+		String formatString2 = ChatColor.translateAlternateColorCodes('&', getLevelInChat(p) + "§r" + nick + " §a§l>> §r");
 		
 		TextComponent format = new TextComponent(formatString);
-		format.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/stats " + p.getName()));
-		format.setHoverEvent( new HoverEvent( HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§7§oClick to see the stats!").create() ) );
+		format.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/profile " + p.getName()));
+		format.setHoverEvent( new HoverEvent( HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§7§oClick to see the profile!").create() ) );
 		
 		TextComponent format1 = new TextComponent(formatString1);
-		format.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/stats " + p.getName()));
-		format.setHoverEvent( new HoverEvent( HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§7§oClick to see the stats!").create() ) );
+		format.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/profile " + p.getName()));
+		format.setHoverEvent( new HoverEvent( HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§7§oClick to see the profile!").create() ) );
 		
 		TextComponent format2 = new TextComponent(formatString2);
-		format.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/stats " + p.getName()));
-		format.setHoverEvent( new HoverEvent( HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§7§oClick to see the stats!").create() ) );
+		format.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/profile " + p.getName()));
+		format.setHoverEvent( new HoverEvent( HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§7§oClick to see the profile!").create() ) );
 		
+		if(e.getMessage().length() <= 1 && !p.hasPermission("server.mod")){
+			if(Main.getAPI().getLanguage(p.getName()) == Language.FINNISH){
+				e.setCancelled(true);
+				ChatUtils.sendMessageWithPrefix(p, "§7Viestisi täytyy olla väh. §c2 §7kirjainta pitkä!");
+			}
+			else if(Main.getAPI().getLanguage(p.getName()) == Language.ENGLISH){
+				e.setCancelled(true);
+				ChatUtils.sendMessageWithPrefix(p, "§7Your message must be at least §c2 §7letters long!");
+			}
+			return;
+		}
 		
 		if(p.hasPermission("chat.color") && Main.getPermissions().getPrimaryGroup(p) != null){
 			e.setCancelled(true);
 			for(Player online : Bukkit.getOnlinePlayers()){
 				if(Main.getDataFile().getBoolean(online.getUniqueId().toString() + ".chat")){
-					online.spigot().sendMessage(format);
+					TextComponent msg = new TextComponent(ChatColor.translateAlternateColorCodes('&', e.getMessage()));
+					online.spigot().sendMessage(format, msg);
 				}
 			}
 			ChatUtils.sendConsoleMessage("<" + p.getName() + "> " + e.getMessage());
@@ -53,7 +65,8 @@ public class ChatFormat implements Listener{
 			e.setCancelled(true);
 			for(Player online : Bukkit.getOnlinePlayers()){
 				if(Main.getDataFile().getBoolean(online.getUniqueId().toString() + ".chat")){
-					online.spigot().sendMessage(format1);
+					TextComponent msg = new TextComponent(e.getMessage());
+					online.spigot().sendMessage(format1, msg);
 				}
 			}
 			ChatUtils.sendConsoleMessage("<" + p.getName() + "> " + e.getMessage());
@@ -61,8 +74,9 @@ public class ChatFormat implements Listener{
 		else if(p.hasPermission("chat.color") && Main.getPermissions().getPrimaryGroup(p) != null){
 			e.setCancelled(true);
 			for(Player online : Bukkit.getOnlinePlayers()){
+				TextComponent msg = new TextComponent(ChatColor.translateAlternateColorCodes('&', e.getMessage()));
 				if(Main.getDataFile().getBoolean(online.getUniqueId().toString() + ".chat")){
-					online.spigot().sendMessage(format2);
+					online.spigot().sendMessage(format2, msg);
 				}
 			}
 			ChatUtils.sendConsoleMessage("<" + p.getName() + "> " + e.getMessage());

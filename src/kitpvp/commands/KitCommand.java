@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
 
 import kitpvp.Kit;
 import kitpvp.Language;
@@ -41,9 +42,7 @@ public class KitCommand implements CommandExecutor{
 		else if (args.length == 1){
 			if(args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?")){
 				sender.sendMessage("§7§m----------§c§l KitPvP Command Help §7§----------");
-				sender.sendMessage("§c/kit (kit) create §7Create a kit.");
-				sender.sendMessage("§c/kit (kit) delete §7Remove a kit.");
-				sender.sendMessage("§c/kit (kit) give (player) §7Give a kit to a player.");
+				sender.sendMessage("§c/kit (kit) (player) §7Give a kit to a player");
 				sender.sendMessage("§c/kit reload §7Reload the files.");
 				sender.sendMessage("§7§m-----------------------------------------");
 			}
@@ -57,22 +56,6 @@ public class KitCommand implements CommandExecutor{
 				} else if (Main.getAPI().getLanguage(sender.getName()) == Language.ENGLISH) {
 					ChatUtils.sendMessageWithPrefix(sender, "§7Reloaded the plugin");
 				}
-				
-			}
-			else if (args[0].equalsIgnoreCase("openInv")){
-				
-				if(!(sender instanceof Player)){
-					ChatUtils.sendConsoleMessageWithPrefix("§cOnly for players!");
-					return true;
-				}
-				
-				Inventory inv = Bukkit.createInventory(null, 36, "Random inventory");
-				
-				Player p = (Player) sender;
-				p.openInventory(inv);
-				
-				Main.getAPI().addBalance(p.getName(), 5);
-				p.sendMessage("Balance: " + Main.getAPI().getBalance(p.getName()));
 				
 			}
 			else{
@@ -91,94 +74,6 @@ public class KitCommand implements CommandExecutor{
 				
 				Player p = (Player) sender;
 				
-				if(args[1].equalsIgnoreCase("create")){
-					
-					for(ItemStack item : p.getInventory().getContents()){
-						if (item != null && item.getItemMeta() != null) {
-							if(item.getAmount() <= 1){
-								item.setAmount(1);
-							}
-							item.setAmount(item.getAmount());
-							ItemMeta meta = item.getItemMeta();
-							meta.spigot().setUnbreakable(true);
-							item.setItemMeta(meta);
-						}
-						items.add(item);
-					}
-					
-					for(ItemStack armor : p.getInventory().getArmorContents()){
-						if (armor != null && armor.getItemMeta() != null) {
-							if(armor.getAmount() <= 1){
-								armor.setAmount(1);
-							}
-							armor.setAmount(armor.getAmount());
-							ItemMeta meta = armor.getItemMeta();
-							meta.spigot().setUnbreakable(true);
-							armor.setItemMeta(meta);
-						}
-						armors.add(armor);
-					}
-					
-					Kit kit = new Kit(args[0].toLowerCase(), items, armors, null);
-					
-					kit.loadToFile();
-					ChatUtils.sendMessageWithPrefix(p, "§7You created a new kit §c" + kit.getName() + "§7!");
-					
-				}
-				else if(args[1].equalsIgnoreCase("delete")){
-					
-					Kit kit = new Kit(args[0], items, armors);
-					
-					if (Main.getAPI().getLanguage(sender.getName()) == Language.FINNISH) {
-						ChatUtils.sendMessageWithPrefix(sender, "§7Poistit kitin §c" + kit.getName() + "§7!");
-					} else if (Main.getAPI().getLanguage(sender.getName()) == Language.ENGLISH) {
-						ChatUtils.sendMessageWithPrefix(sender, "§7You removed the kit §c" + kit.getName() + "§7!");
-					}
-					kit.removeFromFile();
-					
-				}
-				
-			}
-			
-		}
-		else if (args.length == 3){
-			
-			if(args[1].equalsIgnoreCase("give") || args[1].equalsIgnoreCase("setability") || args[1].equalsIgnoreCase("removeability")){
-				
-				if(args[1].equalsIgnoreCase("give")){
-					
-					Player target = Bukkit.getPlayer(args[2]);
-					
-					if(target == null || !target.isOnline()){
-						ChatUtils.sendMessageWithPrefix(sender, "§cThat player is not online!");
-						return true;
-					}
-					
-					//Give the kit
-					
-					Kit kit = new Kit(args[0], items, armors);
-					
-					if(Main.getKitFile().get(kit.getName()) == null){
-						
-						if (Main.getAPI().getLanguage(sender.getName()) == Language.FINNISH) {
-							ChatUtils.sendMessageWithPrefix(sender, "§7Tuota kittiä ei ole olemassa!");
-						} else if (Main.getAPI().getLanguage(sender.getName()) == Language.ENGLISH) {
-							ChatUtils.sendMessageWithPrefix(sender, "§7That kit does not exist!");
-						}
-						return true;
-					}
-					
-					kit.giveKit(target);
-					
-					if (Main.getAPI().getLanguage(sender.getName()) == Language.FINNISH) {
-						ChatUtils.sendMessageWithPrefix(sender,
-								"§7Annoit kitin §c" + kit.getName() + " §7pelaajalle §c" + target.getName() + "§7!");
-					} else if (Main.getAPI().getLanguage(sender.getName()) == Language.ENGLISH) {
-						ChatUtils.sendMessageWithPrefix(sender, "§7You gave the kit §c" + kit.getName()
-								+ " §7to the player §c" + target.getName() + "§7!");
-					}
-					
-				}
 				
 			}
 			

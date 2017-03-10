@@ -21,7 +21,7 @@ public class CommandRename implements CommandExecutor{
 		
 		Player p = (Player) sender;
 		
-		if(!(p.hasPermission("item.rename"))){
+		if(!(p.isOp())){
 			ChatUtils.sendPermissionMessageAdmin(sender);
 			return true;
 		}

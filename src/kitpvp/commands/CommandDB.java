@@ -8,6 +8,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import kitpvp.Main;
+import kitpvp.Util.ChatUtils;
 import kitpvp.Util.KitAPI;
 
 public class CommandDB implements CommandExecutor {
@@ -20,7 +21,7 @@ public class CommandDB implements CommandExecutor {
 		if(label.equalsIgnoreCase("db") || label.equalsIgnoreCase("database")){
 			
 			if(!(sender.isOp())){
-				sender.sendMessage("§cNo permission");
+				ChatUtils.sendPermissionMessageAdmin(sender);
 				return true;
 			}
 			

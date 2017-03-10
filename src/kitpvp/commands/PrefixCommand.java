@@ -208,7 +208,7 @@ public class PrefixCommand implements Listener, CommandExecutor {
 			
 			Player p = (Player) sender;
 			
-			if(!p.hasPermission("kitpvp.nick")){
+			if(!p.hasPermission("server.nick")){
 				ChatUtils.sendPermissionMessageBooster(sender);
 				return true;
 			}

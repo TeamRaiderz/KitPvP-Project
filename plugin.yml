@@ -40,6 +40,7 @@ commands:
     aliases: [profiili]
   info: 
     description: Server info
+    aliases: [help, ?]
   booster: 
     description: Boosters
     aliases: [amplifier, boost, amp]
@@ -52,3 +53,20 @@ commands:
     aliases: [ban, tempban, kick, warn, p]
   rename: 
     description: Rename an item
+  lvl: 
+    description: Level commands
+    aliases: [level]
+  discord: 
+    description: Discord
+    
+permissions:
+  server.mod:
+    default: op
+  server.yt:
+    default: op
+    children: 
+      server.nick: true
+  server.booster:
+    default: op
+    children:
+      server.nick: true

@@ -27,6 +27,11 @@ public class PunishCommand implements CommandExecutor, Listener {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		
+		if(!(sender.hasPermission("server.mod"))){
+			ChatUtils.sendPermissionMessageMod(sender);
+			return true;
+		}
+		
 		if(args.length < 2){
 			sender.sendMessage("§c/punish (player) (reason)");
 			return true;

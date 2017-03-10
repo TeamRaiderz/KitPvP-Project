@@ -65,15 +65,15 @@ public class CommandMsg implements CommandExecutor{
 				String msg = sb.toString().trim();
 				
 				if(Main.getAPI().getLanguage(sender.getName()) == Language.FINNISH){
-					ChatUtils.sendMessage(target, "§2§lMinä §a-> §2§l" + target.getName() + " §a: " + msg);
+					ChatUtils.sendMessage(sender, "§2§lMinä §a-> §2§l" + target.getName() + " §a: " + msg);
 				} else if(Main.getAPI().getLanguage(sender.getName()) == Language.ENGLISH){
-					ChatUtils.sendMessage(target, "§2§lMe §a-> §2§l" + target.getName() + " §a: " + msg);
+					ChatUtils.sendMessage(sender, "§2§lMe §a-> §2§l" + target.getName() + " §a: " + msg);
 				}
 				
 				if(Main.getAPI().getLanguage(target.getName()) == Language.FINNISH){
-					ChatUtils.sendMessageWithPrefix(target, "§2§l" + sender.getName() + " §a-> §2§lMinä §a: " + msg);
+					ChatUtils.sendMessage(target, "§2§l" + sender.getName() + " §a-> §2§lMinä §a: " + msg);
 				} else if(Main.getAPI().getLanguage(target.getName()) == Language.ENGLISH){
-					ChatUtils.sendMessageWithPrefix(target, "§2§l" + sender.getName() + " §a-> §2§lMe §a: " + msg);
+					ChatUtils.sendMessage(target, "§2§l" + sender.getName() + " §a-> §2§lMe §a: " + msg);
 				}
 				
 				
