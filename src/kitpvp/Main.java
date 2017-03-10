@@ -18,8 +18,10 @@ import kitpvp.Util.DataYML;
 import kitpvp.Util.KitAPI;
 import kitpvp.Util.KitsYML;
 import kitpvp.Util.PacketUtils;
+import kitpvp.commands.CommandCommands;
 import kitpvp.commands.CommandDB;
 import kitpvp.commands.CommandDiscord;
+import kitpvp.commands.CommandHelp;
 import kitpvp.commands.CommandKill;
 import kitpvp.commands.CommandLevelToggle;
 import kitpvp.commands.CommandList;
@@ -84,6 +86,8 @@ public class Main extends JavaPlugin{
 		registerCommand("rename", new CommandRename());
 		registerCommand("lvl", new CommandLevelToggle());
 		registerCommand("discord", new CommandDiscord());
+		registerCommand("help", new CommandHelp());
+		registerCommand("commands", new CommandCommands());
 		
 		getCommand("list").setAliases(Arrays.asList("who", "online", "players"));
 		

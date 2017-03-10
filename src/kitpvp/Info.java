@@ -11,8 +11,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.inventory.Inventory;
 
+import kitpvp.Util.ChatUtils;
 import kitpvp.Util.KitAPI;
 
 public class Info implements Listener, CommandExecutor {
@@ -68,7 +70,7 @@ public class Info implements Listener, CommandExecutor {
 			
 			if(e.getCurrentItem().getType() == Material.BOOK_AND_QUILL){
 				p.closeInventory();
-				Bukkit.dispatchCommand(p, "commands");
+				sendCommandHelp(p);
 			}
 			else if(e.getCurrentItem().getType() == Material.BOOK){
 				p.closeInventory();
@@ -83,6 +85,42 @@ public class Info implements Listener, CommandExecutor {
 				Bukkit.dispatchCommand(p, "discord");
 			}
 			
+		}
+		
+	}
+	
+	@EventHandler
+	public void onCommandPreProcess(PlayerCommandPreprocessEvent e){
+		
+		Player p = e.getPlayer();
+		
+		if(e.getMessage().startsWith("info")){
+			openInfoMenu(p);
+		}
+		
+	}
+	
+	public static void sendCommandHelp(Player p){
+		
+		if(Main.getAPI().getLanguage(p.getName()) == Language.FINNISH){
+			ChatUtils.sendMessage(p, "ß7ßm--------ßaßl Komennot ß7ßm--------");
+			p.sendMessage("ßa/stats ß7N‰‰ itsesi tai muiden tilastot!");
+			p.sendMessage("ßa/profiili ß7N‰‰ itsesi tai muiden profiilin!");
+			p.sendMessage("ßa/asetukset ß7Avaa asetusvalikko.");
+			p.sendMessage("ßa/? ß7N‰‰ t‰rke‰‰ infoa serverist‰!");
+			p.sendMessage("ßa/help ß7L‰het‰ yll‰pidolle kysymys tai pyyd‰ apua. ß7ßoƒl‰ k‰yt‰ turhaan!");
+			p.sendMessage("ßa/discord ß7Liity meid‰n Discordiin!");
+			ChatUtils.sendMessage(p, "ß7ßm--------------------------");
+		}
+		else if(Main.getAPI().getLanguage(p.getName()) == Language.ENGLISH){
+			ChatUtils.sendMessage(p, "ß7ßm--------ßaßl Commands ß7ßm--------");
+			p.sendMessage("ßa/stats ß7See yours or others stats!");
+			p.sendMessage("ßa/profile ß7See yours or others profiles!");
+			p.sendMessage("ßa/settings ß7Open the settings menu.");
+			p.sendMessage("ßa/? ß7See important info about the server!");
+			p.sendMessage("ßa/help ß7Send a message or ask for help from online staff! ß7ßoOnly use if necessary!");
+			p.sendMessage("ßa/discord ß7Join our discord!");
+			ChatUtils.sendMessage(p, "ß7ßm--------------------------");
 		}
 		
 	}

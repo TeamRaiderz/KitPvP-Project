@@ -157,7 +157,7 @@ public class SpawnItems implements Listener {
 			}
 		}
 		else if(item.getType() == Material.BOOK && item.hasItemMeta() && meta.getDisplayName().contains("§3Info")){
-			Bukkit.dispatchCommand(p, "help");
+			Bukkit.dispatchCommand(p, "?");
 		}
 		else if(item.getType() == Material.ENDER_CHEST && item.hasItemMeta()){
 			Bukkit.dispatchCommand(p, "cosmeticbox");
