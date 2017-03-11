@@ -35,6 +35,7 @@ import kitpvp.commands.PrefixCommand;
 import kitpvp.listeners.ChatEvent;
 import kitpvp.listeners.ConnectionListener;
 import kitpvp.listeners.DamageListener;
+import kitpvp.listeners.PlayerListeners;
 import kitpvp.punishment.BlacklistCommand;
 import kitpvp.punishment.PunishCommand;
 import kitpvp.punishment.PunishmentManager;
@@ -42,7 +43,7 @@ import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
-public class Main extends JavaPlugin{
+public class Main extends JavaPlugin implements Plugin{
 	
 	public static Main instance;
 	public static Main getInstance(){ return instance; }
@@ -78,7 +79,8 @@ public class Main extends JavaPlugin{
 		registerCommand("whisper", new CommandMsg());
 		registerCommand("list", new CommandList());
 		registerCommand("profile", new Profile());
-		registerCommand("info", new Info());
+		registerCommand("serverinfo", new Info());
+		registerCommand("?", new Info());
 		registerCommand("booster", new Booster());
 		registerCommand("punish", new PunishCommand());
 		registerCommand("blacklist", new BlacklistCommand());
@@ -88,8 +90,6 @@ public class Main extends JavaPlugin{
 		registerCommand("discord", new CommandDiscord());
 		registerCommand("help", new CommandHelp());
 		registerCommand("commands", new CommandCommands());
-		
-		getCommand("list").setAliases(Arrays.asList("who", "online", "players"));
 		
 		registerListener(this, new ConnectionListener());
 		registerListener(this, new PrefixCommand());
@@ -105,6 +105,7 @@ public class Main extends JavaPlugin{
 		registerListener(this, new Booster());
 		registerListener(this, new PunishmentManager());
 		registerListener(this, new PunishCommand());
+		registerListener(this, new PlayerListeners());
 		
 		for(Player online : Bukkit.getOnlinePlayers()){
 			getAPI().startPlayTimeCount(online);
@@ -122,7 +123,7 @@ public class Main extends JavaPlugin{
 		}.runTaskTimerAsynchronously(this, 20, 20 * 60 * 5);
 		
 		if(getAPI().isBoosterInUse()){
-			getAPI().activateBooster(getDataFile().getString("Booster.currentUser"));
+			getAPI().startBoosterCountdown();
 		}
 		
 	}

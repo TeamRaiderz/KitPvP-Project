@@ -830,6 +830,9 @@ public class KitAPI {
 		else if(Main.getDataFile().getString(player).equalsIgnoreCase("FIN")){
 			return Language.FINNISH;
 		}
+		else if(Main.getDataFile().getString(player).equalsIgnoreCase("DEF")){
+			return Language.DEFAULT;
+		}
 		return null;
 	}
 	
@@ -847,6 +850,10 @@ public class KitAPI {
 			break;
 		case ENGLISH:
 			Main.getDataFile().set(player, "ENG");
+			Main.saveDataFile();
+			break;
+		case DEFAULT:
+			Main.getDataFile().set(player, "DEF");
 			Main.saveDataFile();
 			break;
 		}
@@ -1073,9 +1080,8 @@ public class KitAPI {
 	}
 	
 	public void addKillToKillStreak(Player p){
-		if(!killStreak.containsKey(p.getName())){
+		if(killStreak.get(p.getName()) == null){
 			killStreak.put(p.getName(), 1);
-			return;
 		}
 		else killStreak.put(p.getName(), killStreak.get(p.getName()) + 1);
 		
@@ -1091,13 +1097,18 @@ public class KitAPI {
 	}
 	
 	public int onlineStaff(){
+		for(Player p : Bukkit.getOnlinePlayers()){
+			if(p.hasPermission("server.mod")){
+				onlineStaff++;
+			}
+		}
 		return onlineStaff;
 	}
 	
 	public List<String> getOnlineStaffMembers(){
 		
 		for(Player p : Bukkit.getOnlinePlayers()){
-			if(p.hasPermission("staff.online")){
+			if(p.hasPermission("server.mod")){
 				staffMembers.add(p.getName());
 			}
 		}
@@ -1249,7 +1260,7 @@ public class KitAPI {
 					
 				}
 				
-			}.runTaskTimerAsynchronously(Main.getInstance(), 0, 1200);
+			}.runTaskTimer(Main.getInstance(), 0, 1200);
 		}
       
       public int getBoosters(String player){
@@ -1316,6 +1327,14 @@ public class KitAPI {
 				online.spigot().sendMessage(message);
 			}	
 		}
+		
+		startBoosterCountdown();
+		
+	}
+	
+	public void startBoosterCountdown(){
+		
+		FileConfiguration config = Main.getConfigFile();
 		
 		new BukkitRunnable(){
 

@@ -65,7 +65,7 @@ public class ConnectionListener implements Listener{
 			
 			Main.saveDataFile();
 			
-			//LangCommand.openLangGUI(p);
+			Main.getAPI().setLanguage(p.getName(), Language.DEFAULT);
 		}
 		
 		FileConfiguration data = Main.getDataFile();

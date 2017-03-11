@@ -2,6 +2,6 @@ package kitpvp;
 
 public enum Language {
 
-	ENGLISH, FINNISH;
+	ENGLISH, FINNISH, DEFAULT;
 	
 }

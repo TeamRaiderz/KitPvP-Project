@@ -39,9 +39,10 @@ commands:
   profile:
     description: See others profile
     aliases: [profiili]
-  info: 
+  serverinfo: 
     description: Server info
-    aliases: [?]
+  ?:
+    description: Server info
   booster: 
     description: Boosters
     aliases: [amplifier, boost, amp]

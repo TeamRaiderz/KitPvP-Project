@@ -49,15 +49,15 @@ public class LangCommand implements CommandExecutor, Listener{
 		
 		if (Main.getAPI().getLanguage(p.getName()) == Language.FINNISH) {
 			
-			Inventory inv = Bukkit.createInventory(null, 27, "Vaihda kieli");
+			Inventory inv = Bukkit.createInventory(null, 27, "Valitse kieli");
 			
 			//FINNISH
 			
 			api.createWoolItem(inv, 10, DyeColor.RED, "ßcßlENGLISH", Arrays.asList("ß7Change your language to English."));
 			api.createWoolItem(inv, 16, DyeColor.BLUE, "ß9ßlSUOMI", Arrays.asList("ß7Vaihda kielesi suomeksi."));
 			
-			api.createItem(inv, 13, Material.STAINED_GLASS_PANE, 1, "ßfVaihda kielesi!", 
-					Arrays.asList("ß7T‰‰ll‰ voit muokata kielt‰si.", "ß7Oletuksena se on englantina.", "ß7Meill‰ on t‰ll‰ hetkell‰ kaksi kielt‰.", 
+			api.createItem(inv, 13, Material.STAINED_GLASS_PANE, 1, "ßfValitse kielesi!", 
+					Arrays.asList("ß7T‰‰ll‰ voit muokata kielt‰si.", "ß7Meill‰ on t‰ll‰ hetkell‰ kaksi kielt‰.", 
 							"ß7Suomi ja englanti. Lis‰‰ kielivaihtoehtoja", "ß7tulossa myˆhemmin..."));
 			
 			p.openInventory(inv);
@@ -65,16 +65,31 @@ public class LangCommand implements CommandExecutor, Listener{
 		} 
 		else if (Main.getAPI().getLanguage(p.getName()) == Language.ENGLISH) {
 			
-			Inventory inv = Bukkit.createInventory(null, 27, "Change language");
+			Inventory inv = Bukkit.createInventory(null, 27, "Select language");
 			
 			//ENGLISH
 			
 			api.createWoolItem(inv, 10, DyeColor.RED, "ßcßlENGLISH", Arrays.asList("ß7Change your language to English."));
 			api.createWoolItem(inv, 16, DyeColor.BLUE, "ß9ßlSUOMI", Arrays.asList("ß7Vaihda kielesi suomeksi."));
 			
-			api.createItem(inv, 13, Material.STAINED_GLASS_PANE, 1, "ßfChange your language!", 
-					Arrays.asList("ß7Here you can change your language.", "ß7By default it's English.", "ß7Currently we have two languages.", "ß7English and Finnish. More languages", 
+			api.createItem(inv, 13, Material.STAINED_GLASS_PANE, 1, "ßlSelect your language!", 
+					Arrays.asList("ß7Here you can change your language.", "ß7Currently we have two languages.", "ß7English and Finnish. More languages", 
 							"ß7are coming soon..."));
+			
+			p.openInventory(inv);
+		}
+		else if (Main.getAPI().getLanguage(p.getName()) == Language.DEFAULT) {
+			
+			Inventory inv = Bukkit.createInventory(null, 27, "Select language");
+			
+			//ENGLISH
+			
+			api.createWoolItem(inv, 10, DyeColor.RED, "ßcßlENGLISH", Arrays.asList("ß7Change your language to English."));
+			api.createWoolItem(inv, 16, DyeColor.BLUE, "ß9ßlSUOMI", Arrays.asList("ß7Vaihda kielesi suomeksi."));
+			
+			api.createItem(inv, 13, Material.STAINED_GLASS_PANE, 1, "ßlSelect your language!", 
+					Arrays.asList("ß7Please select your language.", "ß7Currently we have two languages.", "ß7English and Finnish. More languages", 
+							"ß7are coming soon...", "", "ß7ßoYou can change your language later with", "ß7ßothe command ßa/langß7ßo!"));
 			
 			p.openInventory(inv);
 		}
@@ -88,7 +103,7 @@ public class LangCommand implements CommandExecutor, Listener{
 		ItemStack item = e.getCurrentItem();
 		KitAPI api = Main.getAPI();
 		
-		if(e.getInventory().getName().equals("Change language") || e.getInventory().getName().equals("Vaihda kieli") && item != null && item.getType() != Material.AIR){
+		if(e.getInventory().getName().equals("Select language") || e.getInventory().getName().equals("Valitse kieli") && item != null && item.getType() != Material.AIR){
 			
 			e.setCancelled(true);
 			

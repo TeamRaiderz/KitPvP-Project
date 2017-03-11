@@ -1,5 +1,8 @@
 package kitpvp.commands;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -11,9 +14,11 @@ import kitpvp.Main;
 import kitpvp.Util.ChatUtils;
 
 public class CommandHelp implements CommandExecutor{
-
+	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		
+		if(!(sender instanceof Player)) return true;
 		
 		if(args.length < 1){
 			if(Main.getAPI().getLanguage(sender.getName()) == Language.FINNISH){
@@ -33,11 +38,10 @@ public class CommandHelp implements CommandExecutor{
 			for(Player staff : Bukkit.getOnlinePlayers()){
 				
 				if(staff.hasPermission("server.mod")){
-					staff.sendMessage("§7[§d§lHELP§7] §c§o" + sender.getName() + ":§d " + msg);
+					staff.sendMessage("§7[§d§lHELP§7] §c§o" + Main.getChat().getPrimaryGroup((Player) sender) + " " + sender.getName() + ":§d " + msg);
 				}
 				
 			}
-			
 		}
 		
 		return true;
