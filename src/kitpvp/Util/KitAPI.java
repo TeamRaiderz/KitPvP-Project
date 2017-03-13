@@ -32,6 +32,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.minecraft.server.v1_8_R3.EntityPlayer;
 import net.minecraft.server.v1_8_R3.NBTTagCompound;
 
 public class KitAPI {
@@ -1418,4 +1419,9 @@ public class KitAPI {
 		return hours + "h " + minutes + "min " + seconds + "sec";
 		
 	}
+
+	public void giveScoreboard(Player p){
+		ScoreboardManager sm = 
+	}
+	
 }
