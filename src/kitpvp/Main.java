@@ -12,6 +12,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scoreboard.DisplaySlot;
 
 import kitpvp.MySQL.MySQLManager;
 import kitpvp.Util.DataYML;
@@ -109,6 +110,10 @@ public class Main extends JavaPlugin implements Plugin{
 		
 		for(Player online : Bukkit.getOnlinePlayers()){
 			getAPI().startPlayTimeCount(online);
+			
+			if(Main.getDataFile().getBoolean(online.getUniqueId().toString() + ".scoreboard")){ 
+				getAPI().giveScoreboard(online);
+			}
 		}
 		
 		new BukkitRunnable(){

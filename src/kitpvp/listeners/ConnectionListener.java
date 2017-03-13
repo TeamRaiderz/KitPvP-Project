@@ -39,8 +39,6 @@ public class ConnectionListener implements Listener{
 			}
 		}
 		
-		EntityPlayer cont;
-		
 		if(Main.getDataFile().get(p.getUniqueId().toString()) == null){
 			ChatUtils.broadcastWithPrefix("§c§lWelcome §7" + p.getName() + " §c§lto the server!");
 			
@@ -84,6 +82,7 @@ public class ConnectionListener implements Listener{
 		}
 		
 		Main.getAPI().startPlayTimeCount(p);
+		Main.getAPI().giveScoreboard(p);
 		
 	}
 	

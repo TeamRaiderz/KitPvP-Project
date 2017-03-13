@@ -23,6 +23,11 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 
 import kitpvp.Language;
 import kitpvp.Main;
@@ -1421,7 +1426,207 @@ public class KitAPI {
 	}
 
 	public void giveScoreboard(Player p){
-		ScoreboardManager sm = 
+		
+		if(!Main.getDataFile().getBoolean(p.getUniqueId().toString() + ".scoreboard")){ return; }
+		
+		double absKD = (double) getKills(p.getName()) / (double) getDeaths(p.getName());
+		
+		double KD = Math.round(absKD * 10000.0D) / 10000.0D;
+		
+		if(getLanguage(p.getName()) == Language.FINNISH){
+			
+			Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
+			Objective obj = board.registerNewObjective("dash", "dummy");
+			obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+			obj.setDisplayName("§c§lFinskaCraft");
+			
+			Team viiva = board.registerNewTeam("paska");
+			viiva.addEntry(ChatColor.ITALIC.toString());
+			viiva.setPrefix("§7§m------------");
+			obj.getScore(ChatColor.ITALIC.toString()).setScore(14);
+			
+			Team pelaajat = board.registerNewTeam("online");
+			pelaajat.addEntry(ChatColor.BOLD.toString());
+			pelaajat.setPrefix("§7• Pelaajat: ");
+			pelaajat.setSuffix("§c" + String.valueOf(Bukkit.getOnlinePlayers().size()));
+			obj.getScore(ChatColor.BOLD.toString()).setScore(13);
+
+			Team viiva1 = board.registerNewTeam("klffs");
+			viiva1.addEntry(ChatColor.STRIKETHROUGH.toString());
+			viiva1.setPrefix("§7§m------------");
+			obj.getScore(ChatColor.STRIKETHROUGH.toString()).setScore(12);
+			
+			Team kills = board.registerNewTeam("kills");
+			kills.addEntry(ChatColor.DARK_GRAY.toString());
+			kills.setPrefix("§7• Tapot: ");
+			kills.setSuffix("§c" + getKills(p.getName()));
+			obj.getScore(ChatColor.DARK_GRAY.toString()).setScore(11);
+			
+			Team deaths = board.registerNewTeam("deaths");
+			deaths.addEntry(ChatColor.BLACK.toString());
+			deaths.setPrefix("§7• Kuolemat: ");
+			deaths.setSuffix("§c" + getDeaths(p.getName()));
+			obj.getScore(ChatColor.BLACK.toString()).setScore(10);
+
+			Team kdr = board.registerNewTeam("kdr");
+			kdr.addEntry(ChatColor.RESET.toString());
+			kdr.setPrefix("§7• K/D: ");
+			kdr.setSuffix("§c" + String.valueOf(KD));
+			obj.getScore(ChatColor.RESET.toString()).setScore(9);
+			
+			Team viiva2 = board.registerNewTeam("gvfnsabf");
+			viiva2.addEntry(ChatColor.DARK_BLUE.toString());
+			viiva2.setPrefix("§7§m------------");
+			obj.getScore(ChatColor.DARK_BLUE.toString()).setScore(8);
+			
+			Team balance = board.registerNewTeam("balance");
+			balance.addEntry(ChatColor.YELLOW.toString());
+			balance.setPrefix("§7• Raha: ");
+			balance.setSuffix("§c" + getBalance(p.getName()));
+			obj.getScore(ChatColor.YELLOW.toString()).setScore(7);
+			
+			Team tokens = board.registerNewTeam("tokens");
+			tokens.addEntry(ChatColor.LIGHT_PURPLE.toString());
+			tokens.setPrefix("§7• Tokenit: ");
+			tokens.setSuffix("§c0");
+			obj.getScore(ChatColor.LIGHT_PURPLE.toString()).setScore(6);
+			
+			Team viiva3 = board.registerNewTeam("ezpz");
+			viiva3.addEntry(ChatColor.DARK_PURPLE.toString());
+			viiva3.setPrefix("§7§m------------");
+			obj.getScore(ChatColor.DARK_PURPLE.toString()).setScore(5);
+			
+			Team lvl = board.registerNewTeam("lvl");
+			lvl.addEntry(ChatColor.UNDERLINE.toString());
+			lvl.setPrefix("§7• Lvl: ");
+			lvl.setSuffix("§c" + getlevel(p.getName()));
+			obj.getScore(ChatColor.UNDERLINE.toString()).setScore(4);
+			
+			Team xp = board.registerNewTeam("xp");
+			xp.addEntry(ChatColor.DARK_GREEN.toString());
+			xp.setPrefix("§7• XP: ");
+			xp.setSuffix("§c" + getXp(p.getName()) + "/" + getlevel(p.getName()) * 100);
+			obj.getScore(ChatColor.DARK_GREEN.toString()).setScore(3);
+			
+			BukkitScheduler Scheduler = Bukkit.getServer().getScheduler();
+			Scheduler.scheduleAsyncRepeatingTask(Main.getInstance(), new Runnable() {
+				public void run() {
+					
+					if(!Main.getDataFile().getBoolean(p.getUniqueId().toString() + ".scoreboard")){ 
+						p.getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
+						return; 
+					}
+					
+					board.getTeam("online").setSuffix("§c" + String.valueOf(Bukkit.getOnlinePlayers().size()));
+					board.getTeam("kills").setSuffix("§c" + String.valueOf(getKills(p.getName())));
+					board.getTeam("deaths").setSuffix("§c" + String.valueOf(getDeaths(p.getName())));
+					board.getTeam("kdr").setSuffix("§c" + String.valueOf(KD));
+					board.getTeam("balance").setSuffix("§c" + String.valueOf(getBalance(p.getName())));
+					board.getTeam("lvl").setSuffix("§c" + String.valueOf(getlevel(p.getName())));
+					board.getTeam("xp").setSuffix("§c" + String.valueOf(getXp(p.getName()) + "/" + getlevel(p.getName()) * 100));
+				}
+				
+			}, 20, 60);
+			p.setScoreboard(board);
+			return;
+		}
+		else if (getLanguage(p.getName()) == Language.ENGLISH){
+			
+			Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
+			Objective obj = board.registerNewObjective("dash", "dummy");
+			obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+			obj.setDisplayName("§c§lFinskaCraft");
+			
+			Team viiva = board.registerNewTeam("paska");
+			viiva.addEntry(ChatColor.ITALIC.toString());
+			viiva.setPrefix("§7§m------------");
+			obj.getScore(ChatColor.ITALIC.toString()).setScore(14);
+			
+			Team pelaajat = board.registerNewTeam("online");
+			pelaajat.addEntry(ChatColor.BOLD.toString());
+			pelaajat.setPrefix("§7• Online: ");
+			pelaajat.setSuffix("§c" + String.valueOf(Bukkit.getOnlinePlayers().size()));
+			obj.getScore(ChatColor.BOLD.toString()).setScore(13);
+
+			Team viiva1 = board.registerNewTeam("vdsfnsj");
+			viiva1.addEntry(ChatColor.STRIKETHROUGH.toString());
+			viiva1.setPrefix("§7§m------------");
+			obj.getScore(ChatColor.STRIKETHROUGH.toString()).setScore(12);
+			
+			Team kills = board.registerNewTeam("kills");
+			kills.addEntry(ChatColor.DARK_GRAY.toString());
+			kills.setPrefix("§7• Kills: ");
+			kills.setSuffix("§c" + getKills(p.getName()));
+			obj.getScore(ChatColor.DARK_GRAY.toString()).setScore(11);
+			
+			Team deaths = board.registerNewTeam("deaths");
+			deaths.addEntry(ChatColor.BLACK.toString());
+			deaths.setPrefix("§7• Deaths: ");
+			deaths.setSuffix("§c" + getDeaths(p.getName()));
+			obj.getScore(ChatColor.BLACK.toString()).setScore(10);
+
+			Team kdr = board.registerNewTeam("kdr");
+			kdr.addEntry(ChatColor.RESET.toString());
+			kdr.setPrefix("§7• K/D: ");
+			kdr.setSuffix("§c" + String.valueOf(KD));
+			obj.getScore(ChatColor.RESET.toString()).setScore(9);
+			
+			Team viiva2 = board.registerNewTeam("klffs");
+			viiva2.addEntry(ChatColor.DARK_PURPLE.toString());
+			viiva2.setPrefix("§7§m------------");
+			obj.getScore(ChatColor.DARK_PURPLE.toString()).setScore(8);
+			
+			Team balance = board.registerNewTeam("balance");
+			balance.addEntry(ChatColor.UNDERLINE.toString());
+			balance.setPrefix("§7• Balance: ");
+			balance.setSuffix("§c" + getBalance(p.getName()));
+			obj.getScore(ChatColor.UNDERLINE.toString()).setScore(7);
+			
+			Team tokens = board.registerNewTeam("tokens");
+			tokens.addEntry(ChatColor.DARK_RED.toString());
+			tokens.setPrefix("§7• Tokens: ");
+			tokens.setSuffix("§c0");
+			obj.getScore(ChatColor.DARK_RED.toString()).setScore(6);
+			
+			Team viiva3 = board.registerNewTeam("ezpz");
+			viiva3.addEntry(ChatColor.DARK_AQUA.toString());
+			viiva3.setPrefix("§7§m------------");
+			obj.getScore(ChatColor.DARK_AQUA.toString()).setScore(5);
+			
+			Team lvl = board.registerNewTeam("lvl");
+			lvl.addEntry(ChatColor.MAGIC.toString());
+			lvl.setPrefix("§7• Lvl: ");
+			lvl.setSuffix("§c" + getlevel(p.getName()));
+			obj.getScore(ChatColor.MAGIC.toString()).setScore(4);
+			
+			Team xp = board.registerNewTeam("xp");
+			xp.addEntry(ChatColor.DARK_GREEN.toString());
+			xp.setPrefix("§7• XP: ");
+			xp.setSuffix("§c" + getXp(p.getName()) + "/" + getlevel(p.getName()) * 100);
+			obj.getScore(ChatColor.DARK_GREEN.toString()).setScore(3);
+			
+			BukkitScheduler Scheduler = Bukkit.getServer().getScheduler();
+			Scheduler.scheduleAsyncRepeatingTask(Main.getInstance(), new Runnable() {
+				public void run() {
+					
+					if(!Main.getDataFile().getBoolean(p.getUniqueId().toString() + ".scoreboard")){ 
+						p.getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
+						return; 
+					}
+					
+					board.getTeam("online").setSuffix("§c" + String.valueOf(Bukkit.getOnlinePlayers().size()));
+					board.getTeam("kills").setSuffix("§c" + String.valueOf(getKills(p.getName())));
+					board.getTeam("deaths").setSuffix("§c" + String.valueOf(getDeaths(p.getName())));
+					board.getTeam("kdr").setSuffix("§c" + String.valueOf(KD));
+					board.getTeam("balance").setSuffix("§c" + String.valueOf(getBalance(p.getName())));
+					board.getTeam("lvl").setSuffix("§c" + String.valueOf(getlevel(p.getName())));
+					board.getTeam("xp").setSuffix("§c" + String.valueOf(getXp(p.getName()) + "/" + getlevel(p.getName()) * 100));
+				}
+				
+			}, 20, 60);
+			p.setScoreboard(board);
+			return;
+		}
 	}
 	
 }

@@ -15,6 +15,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scoreboard.DisplaySlot;
 
 import kitpvp.Language;
 import kitpvp.Main;
@@ -114,6 +115,8 @@ public class LangCommand implements CommandExecutor, Listener{
 					api.setLanguage(p.getName(), Language.ENGLISH);
 					ChatUtils.sendMessageWithPrefix(p, "§7Your language is now §c§lENGLISH§7!");
 					SpawnItems.giveItems(p, p.getInventory());
+					Main.getAPI().giveScoreboard(p);
+					return;
 				}
 				else if(item.getData().getData() == DyeColor.BLUE.getData()){
 					e.setCancelled(true);
@@ -121,22 +124,12 @@ public class LangCommand implements CommandExecutor, Listener{
 					api.setLanguage(p.getName(), Language.FINNISH);
 					ChatUtils.sendMessageWithPrefix(p, "§7Sinun kielesi on nyt §9§lSUOMI§7!");
 					SpawnItems.giveItems(p, p.getInventory());
+					Main.getAPI().giveScoreboard(p);
+					return;
 				}
 				else if (item.getType() == null) return;
-				else if (item == null) return;
 				else if(item.getType() ==  Material.AIR) return;
 			}
-			else if (item.getType() == Material.BARRIER){
-				e.setCancelled(true);
-				p.closeInventory();
-				Main.getAPI().setNick(p.getName(), NameColor.DEFAULT);
-				if (Main.getAPI().getLanguage(p.getName()) == Language.FINNISH) {
-					ChatUtils.sendMessageWithPrefix(p, "§7Sinun nimesi väri on nyt resetoitu.");
-				} else if (Main.getAPI().getLanguage(p.getName()) == Language.ENGLISH) {
-					ChatUtils.sendMessageWithPrefix(p, "§7Your name's color has been reset.");
-				}
-			}
-			else if (item == null) return;
 			else if (item.getType() == null) return;
 			else if(item.getType() ==  Material.AIR) return;
 			
