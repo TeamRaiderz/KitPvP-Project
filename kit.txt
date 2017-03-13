@@ -1,0 +1,89 @@
+
+KIT NAME: **SPIDER**
+
+
+ABLITY: **U know**
+
+HELMET: **nahka, punainen, enchant: prot1**
+
+CHESTPLATE: -
+
+LEGGINS: -
+
+BOOTS: **nahka, punainen, enchant: prot1**
+
+ASE: **spider eye (sharpness 2)**
+
+
+
+KIT NAME: **FISHER**
+
+
+ABLITY: **U know**
+
+HELMET: **nahka, sininen, enchant: umb1**
+
+CHESTPLATE: **nahka, harmaa, enchant: umb1**
+
+LEGGINS: **nahka, harmaa, enchant: umb1**
+
+BOOTS: **nahka, sininen, enchant: umb1**
+
+ASE: **Stone sworld (sharpness 1)**
+
+
+KIT NAME: **AIRMAN**
+
+
+ABLITY: **U know, sulka jolla leappaa**
+
+HELMET: **nahka, oranssi, enchant: prot1**
+
+CHESTPLATE: **nahka, valkoinen, enchant: umb1**
+
+LEGGINS: **nahka, valkoinen, enchant: umb1**
+
+BOOTS: **nahka, oranssi, enchant: prot1**
+
+ASE: **Wooden sworld (sharpness 1)**
+
+
+KIT NAME: **ARCHER**
+
+
+ABLITY: **RIGHT CLICK BOWILLA. AMPUU NUOLEN KATSOMISKOHTAA PÄIN. OSUESSAAN MAAHAN VETÄÄ PELAAJAA KOHTI OSUMAPISTETTÄ**
+
+HELMET: **nahka, oranssi, enchant: prot1**
+
+CHESTPLATE: **nahka, valkoinen, enchant: umb1**
+
+LEGGINS: **nahka, valkoinen, enchant: umb1**
+
+BOOTS: **nahka, oranssi, enchant: prot1**
+
+ASE: **Wooden sworld (sharpness 1)**
+
+
+KIT NAME: **GHOST**
+
+
+ABLITY: **Ei abilityä, vain näkymättömyys 1**
+
+HELMET: **-**
+
+CHESTPLATE: **-**
+
+LEGGINS: **-**
+
+BOOTS: **-**
+
+ASE: **Wooden sworld (sharpness 1)**
+
+
+
+
+
+
+
+
+
