@@ -89,6 +89,7 @@ public class Settings implements CommandExecutor, Listener {
 				} else if(Main.getAPI().getLanguage(p.getName()) == Language.ENGLISH){
 					ChatUtils.sendMessageWithPrefix(p, "§7Scoreboard is now §aon§7!");
 				}
+				Main.getAPI().giveScoreboard(p);
 			}
 			else if (item.getType() == Material.REDSTONE && item.hasItemMeta()){
 				if(!p.hasPermission("settings.yt")){

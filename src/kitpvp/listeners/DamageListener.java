@@ -1,11 +1,12 @@
 package kitpvp.listeners;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.ItemStack;
 
 import kitpvp.Language;
 import kitpvp.Main;
@@ -29,6 +30,8 @@ public class DamageListener implements Listener{
 		
 		api.addKillToKillStreak(killer);
 		api.clearKillStreak(victim);
+		
+		killer.getInventory().addItem(new ItemStack(Material.GOLDEN_APPLE));
 		
 		e.setDeathMessage(null);
 		

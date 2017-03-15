@@ -51,6 +51,12 @@ public class CommandKill implements CommandExecutor{
 			
 			sender.sendMessage("§cSent the kill message to " + killer.getName() + "!");
 			
+			if(!Main.getAPI().isBoosterInUse()){
+				Main.getAPI().addXp(killer.getName(), amount);
+			}else{
+				Main.getAPI().addXp(killer.getName(), amount * 2);
+			}
+			
 			if(Main.getAPI().getLanguage(killer.getName()) == Language.FINNISH){
 				ChatUtils.sendMessageWithPrefix(killer, "§7Tapoit pelaajan §c" + victim.getName() + " §7ja sait §c" + amount + " §7xp:tä!");
 			}

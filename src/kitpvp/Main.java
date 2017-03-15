@@ -1,9 +1,9 @@
 package kitpvp;
 
 import java.io.File;
-import java.util.Arrays;
 
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -12,7 +12,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scoreboard.DisplaySlot;
 
 import kitpvp.MySQL.MySQLManager;
 import kitpvp.Util.DataYML;
@@ -33,6 +32,8 @@ import kitpvp.commands.CommandTest;
 import kitpvp.commands.KitCommand;
 import kitpvp.commands.LangCommand;
 import kitpvp.commands.PrefixCommand;
+import kitpvp.kits.KitManager;
+import kitpvp.listeners.AbilityListener;
 import kitpvp.listeners.ChatEvent;
 import kitpvp.listeners.ConnectionListener;
 import kitpvp.listeners.DamageListener;
@@ -95,7 +96,7 @@ public class Main extends JavaPlugin implements Plugin{
 		registerListener(this, new ConnectionListener());
 		registerListener(this, new PrefixCommand());
 		registerListener(this, new ChatFormat());
-	//	registerListener(this, new AbilityListener());
+		registerListener(this, new AbilityListener());
 		registerListener(this, new DamageListener());
 		registerListener(this, new LangCommand());
 		registerListener(this, new SpawnItems());
@@ -130,8 +131,15 @@ public class Main extends JavaPlugin implements Plugin{
 		if(getAPI().isBoosterInUse()){
 			getAPI().startBoosterCountdown();
 		}
+	
+		for(World w : Bukkit.getWorlds()){
+			while(w.getTime() < 1000 || w.getTime() > 1000){
+				w.setTime(1000);
+			}
+		}
 		
 	}
+	
 	
 	public void onDisable(){
 		
@@ -181,6 +189,10 @@ public class Main extends JavaPlugin implements Plugin{
 	
 	public static Chat getChat(){
 		return chat;
+	}
+	
+	public static KitManager getKitManager(){
+		return new KitManager();
 	}
 	
 	public static FileConfiguration getDataFile(){

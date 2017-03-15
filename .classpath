@@ -4,5 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="C:/Users/Niklas/Videos/Downloads/spigot-1.8.8.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Niklas/Desktop/Servy/plugins/Vault.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Niklas/Desktop/Servy/plugins/PermissionsEx-1.23.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

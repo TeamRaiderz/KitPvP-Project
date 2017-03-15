@@ -4,23 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.potion.PotionEffect;
 
-import kitpvp.Kit;
 import kitpvp.Language;
 import kitpvp.Main;
 import kitpvp.Util.ChatUtils;
 import kitpvp.Util.DataYML;
 import kitpvp.Util.KitsYML;
+import kitpvp.kits.KitManager.Kit;
 
 public class KitCommand implements CommandExecutor{
 	
@@ -42,7 +37,7 @@ public class KitCommand implements CommandExecutor{
 		else if (args.length == 1){
 			if(args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?")){
 				sender.sendMessage("§7§m----------§c§l KitPvP Command Help §7§----------");
-				sender.sendMessage("§c/kit (kit) (player) §7Give a kit to a player");
+				sender.sendMessage("§c/kit (kit) [player] §7Give a kit to a player");
 				sender.sendMessage("§c/kit reload §7Reload the files.");
 				sender.sendMessage("§7§m-----------------------------------------");
 			}
@@ -59,14 +54,7 @@ public class KitCommand implements CommandExecutor{
 				
 			}
 			else{
-				sender.sendMessage("§cDo /kit ? to see command help.");
-				return true;
-			}
-		}
-		else if (args.length == 2){
-			
-			if(args[1].equalsIgnoreCase("create") || args[1].equalsIgnoreCase("delete")){
-			
+				
 				if(!(sender instanceof Player)){
 					ChatUtils.sendConsoleMessageWithPrefix("§cOnly for players!");
 					return true;
@@ -74,9 +62,25 @@ public class KitCommand implements CommandExecutor{
 				
 				Player p = (Player) sender;
 				
+				String rawKitName = args[0].toUpperCase();
+				Kit kit = Kit.valueOf(rawKitName);
 				
+				Main.getKitManager().giveKit(p, kit);
+				
+				return true;
 			}
+		}
+		else if (args.length == 2){
 			
+				Player target = Bukkit.getPlayer(args[1]);
+				
+				if(target == null || !target.isOnline()){ return true; }
+			
+				String rawKitName = args[0].toUpperCase();
+				Kit kit = Kit.valueOf(rawKitName);
+				
+				Main.getKitManager().giveKit(target, kit);
+				
 		}
 		return true;
 	}
