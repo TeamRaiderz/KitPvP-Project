@@ -83,7 +83,7 @@ public class ChatFormat implements Listener{
 	
 	public String getLevelInChat(Player p){
 		
-		int lvl = Main.getAPI().getlevel(p.getName());
+		int lvl = Main.getAPI().getLevel(p.getName());
 		
 		if(lvl >= 0 && lvl <= 10 && Main.getDataFile().getBoolean(p.getUniqueId().toString() + ".levelInChat")){
 			return "§8[§7" + lvl + "§8] ";

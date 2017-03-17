@@ -14,10 +14,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import kitpvp.Language;
 import kitpvp.Main;
 import kitpvp.Util.ChatUtils;
-import kitpvp.commands.LangCommand;
 import kitpvp.commands.PrefixCommand.NameColor;
-import net.minecraft.server.v1_8_R3.Container;
-import net.minecraft.server.v1_8_R3.EntityPlayer;
 
 public class ConnectionListener implements Listener{
 
@@ -82,7 +79,7 @@ public class ConnectionListener implements Listener{
 		}
 		
 		Main.getAPI().startPlayTimeCount(p);
-		Main.getAPI().giveScoreboard(p);
+		//Main.getAPI().giveScoreboard(p);
 		
 	}
 	

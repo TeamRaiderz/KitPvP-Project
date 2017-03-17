@@ -77,7 +77,7 @@ public class CommandDB implements CommandExecutor {
 				OfflinePlayer target = Bukkit.getOfflinePlayer(args[1]);
 				
 				if(args[0].equalsIgnoreCase("getLevel")){
-					sender.sendMessage("§cThe level of the player " + target.getName() + " is: " + api.getlevel(target.getName()));
+					sender.sendMessage("§cThe level of the player " + target.getName() + " is: " + api.getLevel(target.getName()));
 				}
 				else if(args[0].equalsIgnoreCase("getXP")){
 					sender.sendMessage("§cThe XP of the player " + target.getName() + " is: " + api.getXp(target.getName()));

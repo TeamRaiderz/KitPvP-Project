@@ -112,9 +112,9 @@ public class Main extends JavaPlugin implements Plugin{
 		for(Player online : Bukkit.getOnlinePlayers()){
 			getAPI().startPlayTimeCount(online);
 			
-			if(Main.getDataFile().getBoolean(online.getUniqueId().toString() + ".scoreboard")){ 
-				getAPI().giveScoreboard(online);
-			}
+//			if(Main.getDataFile().getBoolean(online.getUniqueId().toString() + ".scoreboard")){ 
+//				getAPI().giveScoreboard(online);
+//			}
 		}
 		
 		new BukkitRunnable(){
@@ -137,6 +137,7 @@ public class Main extends JavaPlugin implements Plugin{
 				w.setTime(1000);
 			}
 		}
+		
 		
 	}
 	
