@@ -102,7 +102,7 @@ public class KitAPI {
 				System.out.println("2");
 			}
 			
-		}.runTaskAsynchronously(Main.getInstance());
+		}.runTaskLaterAsynchronously(Main.getInstance(), 1);
 		
 		if(kills.containsKey(p)){
 			System.out.println("3");

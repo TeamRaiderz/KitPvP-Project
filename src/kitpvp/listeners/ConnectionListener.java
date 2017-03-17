@@ -36,6 +36,7 @@ public class ConnectionListener implements Listener{
 			}
 		}
 		
+		
 		if(Main.getDataFile().get(p.getUniqueId().toString()) == null){
 			ChatUtils.broadcastWithPrefix("§c§lWelcome §7" + p.getName() + " §c§lto the server!");
 			
