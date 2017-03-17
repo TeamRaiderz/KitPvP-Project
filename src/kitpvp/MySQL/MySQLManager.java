@@ -74,6 +74,25 @@ public class MySQLManager {
 		}
 	}
 	
+	public synchronized boolean cosmeticContainsPlayer(String p){
+		try{
+			PreparedStatement sql = connection.prepareStatement("SELECT * FROM `cosmetic_data` WHERE player=?;");
+			sql.setString(1, p);
+			
+			ResultSet set = sql.executeQuery();
+			
+			boolean containsPlayer = set.next();
+			
+			sql.close();
+			set.close();
+			
+			return containsPlayer;
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 	public Connection getConnection(){
 		return connection;
 	}

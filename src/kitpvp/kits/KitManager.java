@@ -166,6 +166,7 @@ public class KitManager {
 		Inventory inv = p.getInventory();
 		
 		p.getInventory().clear();
+		p.getInventory().setArmorContents(null);
 		
 		ItemStack gapple = new ItemStack(Material.GOLDEN_APPLE);
 		gapple.setAmount(5);

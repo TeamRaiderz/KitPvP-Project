@@ -20,6 +20,7 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 
 import kitpvp.Main;
+import kitpvp.MySQL.MySQLManager;
 import kitpvp.Util.ChatUtils;
 
 public class PunishmentManager implements Listener{
@@ -213,8 +214,9 @@ public class PunishmentManager implements Listener{
 	public int getWarnings(String player){
 		
 		try {
-			if(Main.getMySQLManager().getConnection().isClosed()){
-				Main.getMySQLManager().openConnection();
+			MySQLManager m = new MySQLManager();
+			if(m.getConnection().isClosed()){
+				m.openConnection();
 			}
 		} catch (SQLException e1) {
 			e1.printStackTrace();
@@ -250,8 +252,9 @@ public class PunishmentManager implements Listener{
 	public void setWarnings(String player, int warnings){
 		
 		try {
-			if(Main.getMySQLManager().getConnection().isClosed()){
-				Main.getMySQLManager().openConnection();
+			MySQLManager m = new MySQLManager();
+			if(m.getConnection().isClosed()){
+				m.openConnection();
 			}
 		} catch (SQLException e1) {
 			e1.printStackTrace();
@@ -293,8 +296,9 @@ public class PunishmentManager implements Listener{
 	public void addWarnings(String player, int warnings){
 		
 		try {
-			if(Main.getMySQLManager().getConnection().isClosed()){
-				Main.getMySQLManager().openConnection();
+			MySQLManager m = new MySQLManager();
+			if(m.getConnection().isClosed()){
+				m.openConnection();
 			}
 		} catch (SQLException e1) {
 			e1.printStackTrace();
@@ -336,8 +340,9 @@ public class PunishmentManager implements Listener{
 	public int getBans(String player){
 		
 		try {
-			if(Main.getMySQLManager().getConnection().isClosed()){
-				Main.getMySQLManager().openConnection();
+			MySQLManager m = new MySQLManager();
+			if(m.getConnection().isClosed()){
+				m.openConnection();
 			}
 		} catch (SQLException e1) {
 			e1.printStackTrace();
@@ -372,8 +377,9 @@ public class PunishmentManager implements Listener{
 	public void setBans(String player, int bans){
 		
 		try {
-			if(Main.getMySQLManager().getConnection().isClosed()){
-				Main.getMySQLManager().openConnection();
+			MySQLManager m = new MySQLManager();
+			if(m.getConnection().isClosed()){
+				m.openConnection();
 			}
 		} catch (SQLException e1) {
 			e1.printStackTrace();
@@ -414,8 +420,9 @@ public class PunishmentManager implements Listener{
 	public void addBans(String player, int bans){
 		
 		try {
-			if(Main.getMySQLManager().getConnection().isClosed()){
-				Main.getMySQLManager().openConnection();
+			MySQLManager m = new MySQLManager();
+			if(m.getConnection().isClosed()){
+				m.openConnection();
 			}
 		} catch (SQLException e1) {
 			e1.printStackTrace();
@@ -456,8 +463,9 @@ public class PunishmentManager implements Listener{
 	public int getKicks(String player){
 		
 		try {
-			if(Main.getMySQLManager().getConnection().isClosed()){
-				Main.getMySQLManager().openConnection();
+			MySQLManager m = new MySQLManager();
+			if(m.getConnection().isClosed()){
+				m.openConnection();
 			}
 		} catch (SQLException e1) {
 			e1.printStackTrace();
@@ -492,8 +500,9 @@ public class PunishmentManager implements Listener{
 	public void setKicks(String player, int kicks){
 		
 		try {
-			if(Main.getMySQLManager().getConnection().isClosed()){
-				Main.getMySQLManager().openConnection();
+			MySQLManager m = new MySQLManager();
+			if(m.getConnection().isClosed()){
+				m.openConnection();
 			}
 		} catch (SQLException e1) {
 			e1.printStackTrace();
@@ -534,8 +543,9 @@ public class PunishmentManager implements Listener{
 	public void addKicks(String player, int kicks){
 		
 		try {
-			if(Main.getMySQLManager().getConnection().isClosed()){
-				Main.getMySQLManager().openConnection();
+			MySQLManager m = new MySQLManager();
+			if(m.getConnection().isClosed()){
+				m.openConnection();
 			}
 		} catch (SQLException e1) {
 			e1.printStackTrace();

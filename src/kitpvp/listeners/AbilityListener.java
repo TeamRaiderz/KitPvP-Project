@@ -28,6 +28,8 @@ public class AbilityListener implements Listener {
 	
 		Player p = e.getPlayer();
 		
+		if(e.getItem() == null) return;
+		
 		ItemStack item = e.getItem();
 		Material type = item.getType();
 		
@@ -38,7 +40,7 @@ public class AbilityListener implements Listener {
 					e.setCancelled(true);
 					FlyCooldown.add(p.getName());
 
-					Vector v2 = p.getLocation().getDirection().multiply(3.0D).setY(1.5D);
+					Vector v2 = p.getLocation().getDirection().multiply(2.5D).setY(1.0D);
 					p.getWorld().playEffect(p.getLocation().add(0.0D, 0.0D, 0.0D), Effect.FIREWORKS_SPARK, 1);
 					p.getWorld().playEffect(p.getLocation().add(0.0D, 0.5D, 0.0D), Effect.FIREWORKS_SPARK, 1);
 					p.playSound(p.getLocation(), Sound.ENDERDRAGON_WINGS, 500.0F, 500.0F);
