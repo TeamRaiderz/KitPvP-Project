@@ -8,6 +8,8 @@ import java.sql.SQLException;
 
 import org.bukkit.Bukkit;
 
+import kitpvp.Main;
+
 public class MySQLManager {
 	private static Connection connection;
 	
@@ -23,8 +25,14 @@ public class MySQLManager {
 	}
 	
 	public synchronized void openConnection(){
+		
+		String host = Main.getConfigFile().getString("MySQL.hostname");
+		String port = Main.getConfigFile().getString("MySQL.port");
+		String username = Main.getConfigFile().getString("MySQL.username");
+		String password = Main.getConfigFile().getString("MySQL.password");
+		
 		try{
-			connection = DriverManager.getConnection("jdbc:mysql://mysql-pr01.:3306/mc_11138", "mc_11138", "29444c33d1");
+			connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + username, username, password);
 		} catch (Exception e){
 			e.printStackTrace();
 		}

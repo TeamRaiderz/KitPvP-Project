@@ -1,7 +1,7 @@
 MsgPrefix: '&7[&c!&7]'
 MySQL:
   enabled: true
-  hostname: ' mysql-pr01.'
+  hostname: 'localhost'
   port: 3306
-  username: 'mc_11138'
-  password: '29444c33d1'
+  username: 'server'
+  password: 'password123'

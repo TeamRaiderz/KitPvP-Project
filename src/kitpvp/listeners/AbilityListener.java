@@ -2,6 +2,7 @@ package kitpvp.listeners;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -9,6 +10,8 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
@@ -40,6 +43,7 @@ public class AbilityListener implements Listener {
 	 public static List<Projectile> customArrow = new ArrayList<Projectile>();
 	 public static HashMap<String, Location> bombArrowLoc = new HashMap<String, Location>();
 	 public static List<String> bombArrowShot = new ArrayList<String>();
+	 public static HashMap<String, Double> thunderGodCooldown = new HashMap<String, Double>();
 	
 	@EventHandler
 	public void onAbility(PlayerInteractEvent e){
@@ -102,6 +106,52 @@ public class AbilityListener implements Listener {
 				p.playSound(loc, Sound.SPIDER_IDLE, 1.0F, 0.2F);
 				p.setVelocity(v2);
 			}
+			if (type == Material.DIAMOND_AXE && item.hasItemMeta()
+					&& item.getItemMeta().getDisplayName().equals("§7Thunder God")) {
+				
+				if(!(thunderGodCooldown.containsKey(p.getName()))){
+					e.setCancelled(true);
+					thunderGodCooldown.put(p.getName(), 10.0D);
+					
+					Block target = p.getTargetBlock((HashSet<Byte>) null, 100);
+					p.getWorld().strikeLightning(target.getLocation());
+					if(p.getLastDamage() > 0.0D){ p.setLastDamage(0.0D); }
+					for(Entity ent : p.getWorld().getNearbyEntities(target.getLocation(), 5, 5, 5)){
+						if(ent instanceof Player){
+							Player near = (Player) ent;
+							if(near == p) continue;
+							near.setVelocity(new Vector(0, 1, 0));
+							near.damage(5.0);
+						}
+					}
+					
+					new BukkitRunnable() {
+						public void run() {
+							
+							if (thunderGodCooldown.containsKey(p.getName())) {
+
+								Main.getPacketUtils().sendActionBar(p, "§a§lAbility §a- §c"
+										+ (Math.round(thunderGodCooldown.get(p.getName()) * 10.0D) / 10.0D));
+
+								thunderGodCooldown.put(p.getName(), thunderGodCooldown.get(p.getName()) - 0.1D);
+
+								if (thunderGodCooldown.get(p.getName()) <= 0.0D) {
+									thunderGodCooldown.remove(p.getName());
+
+									if (Main.getAPI().getLanguage(p.getName()) == Language.FINNISH) {
+										ChatUtils.sendMessageWithPrefix(p, "§7Voit nyt käyttää abilityäsi!");
+									} else if (Main.getAPI().getLanguage(p.getName()) == Language.ENGLISH) {
+										ChatUtils.sendMessageWithPrefix(p, "§7You can now use your ability!");
+									}
+									cancel();
+								}
+
+							}
+
+						}
+					}.runTaskTimerAsynchronously(Main.getInstance(), 0, 2);
+				}
+			}
 			
 		}
 		//Archer ability
@@ -143,16 +193,20 @@ public class AbilityListener implements Listener {
 			}
 			else if (type == Material.BOW && item.hasItemMeta()
 					&& item.getItemMeta().getDisplayName().equals("§7Bomb Archer")) {
-				if (!(bombArcherCooldown.containsKey(p.getName()))) {
 
-					if (bombArrowLoc.containsKey(p.getName())) {
-						p.teleport(bombArrowLoc.get(p.getName()));
-						p.playSound(p.getLocation(), Sound.NOTE_PIANO, 1f, 0.2f);
-						bombArrowLoc.remove(p.getName());
-					}
+				if (bombArrowLoc.containsKey(p.getName())) {
+					
+					Location arrowLoc = bombArrowLoc.get(p.getName());
+					Location shooterLoc = p.getLocation();
+
+					Vector velocity = arrowLoc.toVector().subtract(shooterLoc.toVector()).normalize().multiply(2.0).setY(1);
+					p.setVelocity(p.getVelocity().add(velocity));
+					
+					p.playSound(p.getLocation(), Sound.NOTE_PIANO, 1f, 0.2f);
+					bombArrowLoc.remove(p.getName());
 				}
-			}
 
+			}
 		}
 		
 	}
@@ -221,6 +275,7 @@ public class AbilityListener implements Listener {
 						if(p instanceof Player){
 							if(p == shooter) continue;
 							p.setVelocity(new Vector(0, 1, 0));
+							((Player) p).damage(2.5D);
 						}
 					}
 					e.getEntity().remove();
@@ -235,49 +290,52 @@ public class AbilityListener implements Listener {
 
 	 }
 	 
-	 @EventHandler
-	 public void onArrowShoot(ProjectileLaunchEvent e){
-		 if (e.getEntity() instanceof Arrow && e.getEntityType() == EntityType.ARROW) {
+	@EventHandler
+	public void onArrowShoot(ProjectileLaunchEvent e) {
+		if (e.getEntity() instanceof Arrow && e.getEntityType() == EntityType.ARROW) {
 			if (e.getEntity().getShooter() != null && e.getEntity().getShooter() instanceof Player) {
 				Player shooter = (Player) e.getEntity().getShooter();
 
-				if (!bombArrowShot.contains(shooter.getName())) {
-					bombArrowShot.add(shooter.getName());
+				if(shooter.getItemInHand().getType() == Material.BOW && shooter.getItemInHand().hasItemMeta()
+						&& shooter.getItemInHand().getItemMeta().getDisplayName().equals("§7Bomb Archer")){
+					if (!bombArrowShot.contains(shooter.getName())) {
+						bombArrowShot.add(shooter.getName());
 
-					bombArcherCooldown.put(shooter.getName(), 8.0D);
-					
-					new BukkitRunnable() {
-						public void run() {
+						bombArcherCooldown.put(shooter.getName(), 8.0D);
 
-							if (bombArcherCooldown.containsKey(shooter.getName())) {
+						new BukkitRunnable() {
+							public void run() {
 
-								Main.getPacketUtils().sendActionBar(shooter, "§a§lAbility §a- §c"
-										+ (Math.round(bombArcherCooldown.get(shooter.getName()) * 10.0D) / 10.0D));
+								if (bombArcherCooldown.containsKey(shooter.getName())) {
 
-								bombArcherCooldown.put(shooter.getName(),
-										bombArcherCooldown.get(shooter.getName()) - 0.1D);
+									Main.getPacketUtils().sendActionBar(shooter, "§a§lAbility §a- §c"
+											+ (Math.round(bombArcherCooldown.get(shooter.getName()) * 10.0D) / 10.0D));
 
-								if (bombArcherCooldown.get(shooter.getName()) <= 0.0D) {
-									bombArcherCooldown.remove(shooter.getName());
+									bombArcherCooldown.put(shooter.getName(),
+											bombArcherCooldown.get(shooter.getName()) - 0.1D);
 
-									if (Main.getAPI().getLanguage(shooter.getName()) == Language.FINNISH) {
-										ChatUtils.sendMessageWithPrefix(shooter, "§7Voit nyt käyttää abilityäsi!");
-									} else if (Main.getAPI().getLanguage(shooter.getName()) == Language.ENGLISH) {
-										ChatUtils.sendMessageWithPrefix(shooter, "§7You can now use your ability!");
+									if (bombArcherCooldown.get(shooter.getName()) <= 0.0D) {
+										bombArcherCooldown.remove(shooter.getName());
+
+										if (Main.getAPI().getLanguage(shooter.getName()) == Language.FINNISH) {
+											ChatUtils.sendMessageWithPrefix(shooter, "§7Voit nyt käyttää abilityäsi!");
+										} else if (Main.getAPI().getLanguage(shooter.getName()) == Language.ENGLISH) {
+											ChatUtils.sendMessageWithPrefix(shooter, "§7You can now use your ability!");
+										}
+										cancel();
 									}
-									cancel();
+
 								}
 
 							}
+						}.runTaskTimerAsynchronously(Main.getInstance(), 0, 2);
 
-						}
-					}.runTaskTimerAsynchronously(Main.getInstance(), 0, 2);
-
+					}
+					else{
+						e.setCancelled(true);
+					}
 				}
-
 			}
-
-			}
-	 }
-	 
+		}
+	}
 }
