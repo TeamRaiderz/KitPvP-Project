@@ -74,6 +74,11 @@ public class KitManager {
 		meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
 		meta.setLore(lore);
 		meta.spigot().setUnbreakable(true);
+		
+		if(item.getType() == Material.BOW){
+			meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+		}
+		
 		item.setItemMeta(meta);
 		inv.addItem(item);
 	}
@@ -86,6 +91,11 @@ public class KitManager {
 		meta.setLore(lore);
 		meta.spigot().setUnbreakable(true);
 		meta.addEnchant(ench, enchLvl, true);
+		
+		if(item.getType() == Material.BOW){
+			meta.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+		}
+		
 		item.setItemMeta(meta);
 		inv.addItem(item);
 	}
@@ -236,8 +246,9 @@ public class KitManager {
 			giveLeatherArmor(p, Material.LEATHER_LEGGINGS, Color.WHITE, "§7Archer", Arrays.asList(""), Enchantment.PROTECTION_ENVIRONMENTAL, 1);
 			giveLeatherArmor(p, Material.LEATHER_BOOTS, Color.ORANGE, "§7Archer", Arrays.asList(""), Enchantment.PROTECTION_ENVIRONMENTAL, 1);
 			giveItem(p, Material.WOOD_SWORD, "§7Archer", Arrays.asList(""), Enchantment.DAMAGE_ALL, 1);
-			giveItem(p, Material.BOW, "§7Archer", Arrays.asList(""), Enchantment.ARROW_INFINITE, 1);
+			giveItem(p, Material.BOW, "§7Archer", Arrays.asList(""));
 			inv.addItem(gapple);
+			inv.addItem(new ItemStack(Material.ARROW));
 			break;
 		case GHOST:
 			Main.getAPI().removePotionEffects(p);
@@ -270,6 +281,7 @@ public class KitManager {
 			giveItem(p, Material.BOW, "§7Pyro", Arrays.asList(""), Enchantment.ARROW_FIRE, 1);
 			
 			inv.addItem(gapple);
+			inv.addItem(new ItemStack(Material.ARROW));
 			break;
 		case BOMB_ARCHER:
 			
@@ -277,9 +289,10 @@ public class KitManager {
 			giveLeatherArmor(p, Material.LEATHER_CHESTPLATE, Color.LIME, "§7Bomb Archer", Arrays.asList(""), Enchantment.PROTECTION_ENVIRONMENTAL, 2);
 			
 			giveItem(p, Material.STICK, "§7Bomb Archer", Arrays.asList(""), Enchantment.DAMAGE_ALL, 3);
-			giveItem(p, Material.BOW, "§7Bomb Archer", Arrays.asList(""), Enchantment.ARROW_INFINITE, 1);
+			giveItem(p, Material.BOW, "§7Bomb Archer", Arrays.asList(""));
 			
 			inv.addItem(gapple);
+			inv.addItem(new ItemStack(Material.ARROW));
 			break;
 		case THUNDER_GOD:
 			
@@ -315,8 +328,6 @@ public class KitManager {
 			
 		}
 	}
-	
-	// GHOST, TANK, PYRO, BOMB_ARCHER, THUNDER_GOD, KNIGHT, BOMBER
 	
 	public void openKitMenu(Player p){
 		if(Main.getAPI().getLanguage(p.getName()) == Language.FINNISH){
