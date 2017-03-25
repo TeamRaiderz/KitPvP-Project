@@ -1,5 +1,5 @@
 main: kitpvp.Main
-version: 0.0.1
+version: 0.1
 name: KitPvP
 author: TeamRaiderz
 
@@ -64,6 +64,9 @@ commands:
     description: Command help
   help: 
     description: Staff help
+  playerinfo: 
+    description: Player info
+    aliases: [pinfo, playeri]
     
 permissions:
   server.mod:

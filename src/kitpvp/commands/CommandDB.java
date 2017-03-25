@@ -35,6 +35,7 @@ public class CommandDB implements CommandExecutor {
 				sender.sendMessage("§c/db setXp (player) (amount)");
 				sender.sendMessage("§c/db setLevel (player) (amount)");
 				sender.sendMessage("§c/db addLevel (player) (amount)");
+				sender.sendMessage("§c/db reset (player)");
 				sender.sendMessage("§c/db getters");
 				sender.sendMessage("§c--------------------------------");
 				
@@ -99,6 +100,10 @@ public class CommandDB implements CommandExecutor {
 				}
 				else if(args[0].equalsIgnoreCase("getNick")){
 					sender.sendMessage("§cThe nick of the player " + target.getName() + " is: " + ChatColor.translateAlternateColorCodes('&', api.getNick(target.getName())));
+				}
+				else if(args[0].equalsIgnoreCase("reset")){
+					Main.getAPI().resetData(target.getName());
+					sender.sendMessage("§cReset the data of the player " + target.getName());
 				}
 				else{
 					sender.sendMessage("§c--------------------------------");

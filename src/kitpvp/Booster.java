@@ -8,7 +8,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,6 +15,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 
 import kitpvp.Util.ChatUtils;
+import kitpvp.cosmetics.CosmeticManager;
 
 public class Booster implements Listener, CommandExecutor{
 
@@ -42,7 +42,8 @@ public class Booster implements Listener, CommandExecutor{
 				sender.sendMessage("§cBooster Admin commands:");
 				sender.sendMessage("§c/booster give (player) (amount)");
 				sender.sendMessage("§c/booster set (player) (amount)");
-				sender.sendMessage("§c/booster thank (player)");
+				sender.sendMessage("§c/booster get (player)");
+				sender.sendMessage("§c/booster thank");
 				sender.sendMessage("§c----------------------");
 				
 			}
@@ -56,6 +57,16 @@ public class Booster implements Listener, CommandExecutor{
 						ChatUtils.sendMessageWithPrefix(p, "§7A booster is not in use!");
 					}
 					return true; 
+				}
+				
+				if(Main.getAPI().getCurrentBoosterUser() == sender.getName()){
+					if(Main.getAPI().getLanguage(p.getName()) == Language.FINNISH){
+						ChatUtils.sendMessageWithPrefix(p, "§7Et voi kiittää itseäsi!");
+					}
+					else if(Main.getAPI().getLanguage(p.getName()) == Language.ENGLISH){
+						ChatUtils.sendMessageWithPrefix(p, "§7You can't thank yourself!");
+					}
+					return true;
 				}
 				
 				if(Main.getAPI().getLanguage(p.getName()) == Language.FINNISH){
@@ -73,6 +84,21 @@ public class Booster implements Listener, CommandExecutor{
 				return true;
 			}
 		}
+		else if (args.length == 2){
+			
+			if(!(sender.isOp())){
+				ChatUtils.sendPermissionMessageAdmin(sender);
+				return true;
+			}
+			
+			OfflinePlayer target = Bukkit.getPlayer(args[1]);
+			
+			if(args[0].equalsIgnoreCase("get")){
+				CosmeticManager cm = new CosmeticManager();
+				sender.sendMessage("§cThe player " + target.getName() + " has " + cm.getBoosters(target.getName()) + " boosters!");
+			}
+			
+		}
 		else if (args.length == 3){
 			
 			if(!(sender.isOp())){
@@ -82,7 +108,6 @@ public class Booster implements Listener, CommandExecutor{
 			
 			
 			OfflinePlayer target = Bukkit.getPlayer(args[1]);
-			FileConfiguration data = Main.getDataFile();
 			int amount = 0;
 
 			try {
@@ -116,19 +141,22 @@ public class Booster implements Listener, CommandExecutor{
 	
 	public void openBoosterMenu(Player p){
 		
+		CosmeticManager cm = new CosmeticManager();
+		
+		int boosters = cm.getBoosters(p.getName());
+		
 		if(Main.getAPI().getLanguage(p.getName()) == Language.FINNISH){
 			
 			Inventory inv = Bukkit.createInventory(null, 27, "Booster");
-			
 			if(Main.getAPI().isBoosterInUse()){
-				Main.getAPI().createItem(inv, 13, Material.EMERALD, 1, "§a§lBooster", Arrays.asList("", "§fSinulla on §a" + Main.getAPI().getBoosters(p.getName()) + " §fboosteria!",
+				Main.getAPI().createItem(inv, 13, Material.EMERALD, 1, "§a§lBooster", Arrays.asList("", "§fSinulla on §a" + boosters + " §fboosteria!",
 						"§7Nykyinen booster: §a" + Main.getAPI().getCurrentBoosterUser(),
 						"§7Aikaa jäljellä: §a" + Main.getAPI().getBoosterTimeLeft(),
 						"", "§7Kun boosteri on käytössä, kaikki", "§7serverin pelaajat saavat §a2 tunnin", "§7ajan tupla rahat ja XP:n!", "", "§7Voit ostaa boosterin nettikaupastamme:",
 						"§astore.finska.com"));
 			}
 			else if(!Main.getAPI().isBoosterInUse()) {
-				Main.getAPI().createItem(inv, 13, Material.EMERALD, 1, "§a§lBooster", Arrays.asList("", "§fSinulla on §a" + Main.getAPI().getBoosters(p.getName()) + " §fboosteria!",
+				Main.getAPI().createItem(inv, 13, Material.EMERALD, 1, "§a§lBooster", Arrays.asList("", "§fSinulla on §a" + Main.getCosmeticManager().getBoosters(p.getName()) + " §fboosteria!",
 						"", "§7Kun boosteri on käytössä, kaikki", "§7serverin pelaajat saavat §a2 tunnin", "§7ajan tupla rahat ja XP:n!", "", "§7Voit ostaa boosterin nettikaupastamme:",
 						"§astore.finska.com"));
 			}
@@ -141,14 +169,14 @@ public class Booster implements Listener, CommandExecutor{
 			Inventory inv = Bukkit.createInventory(null, 27, "Booster");
 			
 			if(Main.getAPI().isBoosterInUse()){
-				Main.getAPI().createItem(inv, 13, Material.EMERALD, 1, "§a§lBooster", Arrays.asList("", "§fYou have §a" + Main.getAPI().getBoosters(p.getName()) + " §fboosters!",
+				Main.getAPI().createItem(inv, 13, Material.EMERALD, 1, "§a§lBooster", Arrays.asList("", "§fYou have §a" + boosters + " §fboosters!",
 						"§7Current booster: §a" + Main.getAPI().getCurrentBoosterUser(),
 						"§7Time left: §a" + Main.getAPI().getBoosterTimeLeft(),
 						"", "§7When a booster is in use, everyone", "§7on the server gets double money and XP", "§7for §a2 hours§7!", "", "§7You can buy boosters at our store:",
 						"§astore.finska.com"));
 			}
 			else if(!Main.getAPI().isBoosterInUse()){
-				Main.getAPI().createItem(inv, 13, Material.EMERALD, 1, "§a§lBooster", Arrays.asList("", "§fYou have §a" + Main.getAPI().getBoosters(p.getName()) + " §fboosters!",
+				Main.getAPI().createItem(inv, 13, Material.EMERALD, 1, "§a§lBooster", Arrays.asList("", "§fYou have §a" + Main.getCosmeticManager().getBoosters(p.getName()) + " §fboosters!",
 						"", "§7When a booster is in use, everyone", "§7on the server gets double money and XP", "§7for §a2 hours§7!", "", "§7You can buy boosters at our store:",
 						"§astore.finska.com"));
 			}

@@ -32,12 +32,12 @@ public class ChatFormat implements Listener{
 		format.setHoverEvent( new HoverEvent( HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§7§oClick to see the profile!").create() ) );
 		
 		TextComponent format1 = new TextComponent(formatString1);
-		format.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/profile " + p.getName()));
-		format.setHoverEvent( new HoverEvent( HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§7§oClick to see the profile!").create() ) );
+		format1.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/profile " + p.getName()));
+		format1.setHoverEvent( new HoverEvent( HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§7§oClick to see the profile!").create() ) );
 		
 		TextComponent format2 = new TextComponent(formatString2);
-		format.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/profile " + p.getName()));
-		format.setHoverEvent( new HoverEvent( HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§7§oClick to see the profile!").create() ) );
+		format2.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/profile " + p.getName()));
+		format2.setHoverEvent( new HoverEvent( HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§7§oClick to see the profile!").create() ) );
 		
 		if(e.getMessage().length() <= 1 && !p.hasPermission("server.mod")){
 			if(Main.getAPI().getLanguage(p.getName()) == Language.FINNISH){
@@ -70,6 +70,15 @@ public class ChatFormat implements Listener{
 			}
 		}
 		else if(p.hasPermission("chat.color") && Main.getPermissions().getPrimaryGroup(p) != null){
+			e.setCancelled(true);
+			for(Player online : Bukkit.getOnlinePlayers()){
+				TextComponent msg = new TextComponent(ChatColor.translateAlternateColorCodes('&', e.getMessage().replace(":)", "☺").replace(":(", "☹")));
+				if(Main.getDataFile().getBoolean(online.getUniqueId().toString() + ".chat")){
+					online.spigot().sendMessage(format2, msg);
+				}
+			}
+		}
+		else{
 			e.setCancelled(true);
 			for(Player online : Bukkit.getOnlinePlayers()){
 				TextComponent msg = new TextComponent(ChatColor.translateAlternateColorCodes('&', e.getMessage().replace(":)", "☺").replace(":(", "☹")));

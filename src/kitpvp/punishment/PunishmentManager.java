@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.TimeZone;
 
 import org.bukkit.Bukkit;
@@ -18,6 +19,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import kitpvp.Main;
 import kitpvp.MySQL.MySQLManager;
@@ -26,6 +28,10 @@ import kitpvp.Util.ChatUtils;
 public class PunishmentManager implements Listener{
 	
 	private Connection connection = Main.getMySQLManager().getConnection();
+	
+	private HashMap<String, Integer> bans = new HashMap<String, Integer>();
+	private HashMap<String, Integer> warnings = new HashMap<String, Integer>();
+	private HashMap<String, Integer> kicks = new HashMap<String, Integer>();
 	
 	public void setBlacklisted(String target, boolean value, String punisher){
 		OfflinePlayer p = Bukkit.getOfflinePlayer(target);
@@ -160,18 +166,21 @@ public class PunishmentManager implements Listener{
 	}
 	
 	public void getHistory(Player receiver, String target){
-		OfflinePlayer p = Bukkit.getOfflinePlayer(target);
 		
-		int kicks = getKicks(p.getName());
-		int bans = getBans(p.getName());
-		int warnings = getWarnings(p.getName());
-		boolean isBanned = isBanned(p.getName());
-		int overall = kicks + bans + warnings;
+		getKicksDB(target);
+		getBansDB(target);
+		getWarningsDB(target);
 		
-		receiver.sendMessage("§7§m-------§a§l History of " + p.getName() + " §7§m-------");
+		int kicks = getKicks(target);
+		int bans = getBans(target);
+		int warns = getWarnings(target);
+		boolean isBanned = isBanned(target);
+		int overall = kicks + bans + warns;
+		
+		receiver.sendMessage("§7§m-------§a§l History of " + target + " §7§m-------");
 		receiver.sendMessage("§7Kicks: §a" + kicks);
 		receiver.sendMessage("§7Bans: §a" + bans);
-		receiver.sendMessage("§7Warnings: §a" + warnings);
+		receiver.sendMessage("§7Warnings: §a" + warns);
 		receiver.sendMessage("§7Overall punishments: §a" + overall);
 		receiver.sendMessage("§7Banned: §a" + isBanned);
 		receiver.sendMessage("§7§m-------------------------------------------------");
@@ -210,383 +219,456 @@ public class PunishmentManager implements Listener{
 		}
 		
 	}
-	
-	public int getWarnings(String player){
-		
+
+	public void getWarningsDB(String player) {
+		MySQLManager m = new MySQLManager();
 		try {
-			MySQLManager m = new MySQLManager();
-			if(m.getConnection().isClosed()){
+			if (m.getConnection().isClosed()) {
 				m.openConnection();
 			}
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
-		
-		try {
-			
-			if(Main.getMySQLManager().punishmentContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
 
-				PreparedStatement sql = connection.prepareStatement("SELECT warnings FROM `punishments` WHERE player = ?;");
+		try {
+
+			if (m.punishmentContainsPlayer(Bukkit.getOfflinePlayer(player).getName())) {
+
+				PreparedStatement sql = connection
+						.prepareStatement("SELECT warnings FROM `punishments` WHERE player = ?;");
 				sql.setString(1, player);
-				
+
 				ResultSet result = sql.executeQuery();
 				result.next();
-				
+
 				int kill = result.getInt("warnings");
-				
-				return kill;
+				warnings.put(player, kill);
+			} else {
+				m.putPlayerToPunishments(player);
 			}
-			else{
-				PreparedStatement newPlayer = connection.prepareStatement("INSERT `punishments` values(?,0,0,0)");
-				newPlayer.setString(1, Bukkit.getOfflinePlayer(player).getName());
-				newPlayer.execute();
-				newPlayer.close();
-			}
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	public int getWarnings(String p) {
+
+		new BukkitRunnable() {
+
+			@Override
+			public void run() {
+				getWarningsDB(p);
+			}
+
+		}.runTaskAsynchronously(Main.getInstance());
+
+		if (warnings.containsKey(p)) {
+			return warnings.get(p);
 		}
 		return 0;
 	}
-	
-	public void setWarnings(String player, int warnings){
-		
-		try {
-			MySQLManager m = new MySQLManager();
-			if(m.getConnection().isClosed()){
-				m.openConnection();
+
+	public void setWarnings(String player, int warnings) {
+
+		new BukkitRunnable() {
+
+			@Override
+			public void run() {
+				MySQLManager m = new MySQLManager();
+				try {
+					if (m.getConnection().isClosed()) {
+						m.openConnection();
+					}
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+
+				try {
+
+					if (m.punishmentContainsPlayer(Bukkit.getOfflinePlayer(player).getName())) {
+
+						PreparedStatement sql = connection
+								.prepareStatement("SELECT warnings FROM `punishments` WHERE player = ?;");
+						sql.setString(1, player);
+
+						ResultSet result = sql.executeQuery();
+						result.next();
+
+						PreparedStatement updatewarnings = connection
+								.prepareStatement("UPDATE `punishments` SET warnings=? WHERE player = ?;");
+						updatewarnings.setInt(1, warnings);
+						updatewarnings.setString(2, player);
+						updatewarnings.executeUpdate();
+
+						updatewarnings.close();
+						sql.close();
+						result.close();
+
+					} else {
+						m.putPlayerToPunishments(player);
+					}
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
-		
-		try {
-			
-			if(Main.getMySQLManager().punishmentContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
-				
-				PreparedStatement sql = connection.prepareStatement("SELECT warnings FROM `punishments` WHERE player = ?;");
-				sql.setString(1, player);
-				
-				ResultSet result = sql.executeQuery();
-				result.next();
-				
-				PreparedStatement updatewarnings = connection.prepareStatement("UPDATE `punishments` SET warnings=? WHERE player = ?;");
-				updatewarnings.setInt(1, warnings);
-				updatewarnings.setString(2, player);
-				updatewarnings.executeUpdate();
-			
-				updatewarnings.close();
-				sql.close();
-				result.close();
-				
-			}
-			else{
-				PreparedStatement newPlayer = connection.prepareStatement("INSERT `punishments` values(?,0,0,0)");
-				newPlayer.setString(1, Bukkit.getOfflinePlayer(player).getName());
-				newPlayer.execute();
-				newPlayer.close();
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		} 
-		
+
+		}.runTaskAsynchronously(Main.getInstance());
+
 	}
-	
-	public void addWarnings(String player, int warnings){
-		
-		try {
-			MySQLManager m = new MySQLManager();
-			if(m.getConnection().isClosed()){
-				m.openConnection();
+
+	public void addWarnings(String player, int warnings) {
+
+		new BukkitRunnable() {
+
+			@Override
+			public void run() {
+				MySQLManager m = new MySQLManager();
+				try {
+					if (m.getConnection().isClosed()) {
+						m.openConnection();
+					}
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+
+				try {
+
+					if (m.punishmentContainsPlayer(Bukkit.getOfflinePlayer(player).getName())) {
+
+						PreparedStatement sql = connection
+								.prepareStatement("SELECT warnings FROM `punishments` WHERE player = ?;");
+						sql.setString(1, player);
+
+						ResultSet result = sql.executeQuery();
+						result.next();
+
+						int kill = result.getInt("warnings");
+
+						PreparedStatement updatewarnings = connection
+								.prepareStatement("UPDATE `punishments` SET warnings=? WHERE player = ?;");
+						updatewarnings.setInt(1, kill + warnings);
+						updatewarnings.setString(2, player);
+						updatewarnings.executeUpdate();
+
+						updatewarnings.close();
+						sql.close();
+						result.close();
+					} else {
+						m.putPlayerToPunishments(player);
+					}
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
-		
-		try {
-			
-			if(Main.getMySQLManager().punishmentContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
-				
-				PreparedStatement sql = connection.prepareStatement("SELECT warnings FROM `punishments` WHERE player = ?;");
-				sql.setString(1, player);
-				
-				ResultSet result = sql.executeQuery();
-				result.next();
-				
-				int kill = result.getInt("warnings");
-				
-				PreparedStatement updatewarnings = connection.prepareStatement("UPDATE `punishments` SET warnings=? WHERE player = ?;");
-				updatewarnings.setInt(1, kill + warnings);
-				updatewarnings.setString(2, player);
-				updatewarnings.executeUpdate();
-				
-				updatewarnings.close();
-				sql.close();
-				result.close();
-			}
-			else{
-				PreparedStatement newPlayer = connection.prepareStatement("INSERT `punishments` values(?,0,0,0)");
-				newPlayer.setString(1, Bukkit.getOfflinePlayer(player).getName());
-				newPlayer.execute();
-				newPlayer.close();
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		} 
+
+		}.runTaskAsynchronously(Main.getInstance());
 	}
-	
-	public int getBans(String player){
-		
+
+	public void getBansDB(String player) {
+		MySQLManager m = new MySQLManager();
 		try {
-			MySQLManager m = new MySQLManager();
-			if(m.getConnection().isClosed()){
+			if (m.getConnection().isClosed()) {
 				m.openConnection();
 			}
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
+
 		try {
-			
-			if(Main.getMySQLManager().punishmentContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
+
+			if (m.punishmentContainsPlayer(Bukkit.getOfflinePlayer(player).getName())) {
 
 				PreparedStatement sql = connection.prepareStatement("SELECT bans FROM `punishments` WHERE player = ?;");
 				sql.setString(1, player);
-				
-				ResultSet result = sql.executeQuery();
-				result.next();
-				
-				int kill = result.getInt("bans");
-				
-				return kill;
-			}
-			else{
-				PreparedStatement newPlayer = connection.prepareStatement("INSERT `punishments` values(?,0,0,0)");
-				newPlayer.setString(1, Bukkit.getOfflinePlayer(player).getName());
-				newPlayer.execute();
-				newPlayer.close();
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return 0;
-	}
-	
-	public void setBans(String player, int bans){
-		
-		try {
-			MySQLManager m = new MySQLManager();
-			if(m.getConnection().isClosed()){
-				m.openConnection();
-			}
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
-		try {
-			
-			if(Main.getMySQLManager().punishmentContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
-				
-				PreparedStatement sql = connection.prepareStatement("SELECT bans FROM `punishments` WHERE player = ?;");
-				sql.setString(1, player);
-				
-				ResultSet result = sql.executeQuery();
-				result.next();
-				
-				PreparedStatement updatebans = connection.prepareStatement("UPDATE `punishments` SET bans=? WHERE player = ?;");
-				updatebans.setInt(1, bans);
-				updatebans.setString(2, player);
-				updatebans.executeUpdate();
-			
-				updatebans.close();
-				sql.close();
-				result.close();
-				
-			}
-			else{
-				PreparedStatement newPlayer = connection.prepareStatement("INSERT `punishments` values(?,0,0,0)");
-				newPlayer.setString(1, Bukkit.getOfflinePlayer(player).getName());
-				newPlayer.execute();
-				newPlayer.close();
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		} 
-		
-	}
-	
-	public void addBans(String player, int bans){
-		
-		try {
-			MySQLManager m = new MySQLManager();
-			if(m.getConnection().isClosed()){
-				m.openConnection();
-			}
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
-		try {
-			
-			if(Main.getMySQLManager().punishmentContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
-				
-				PreparedStatement sql = connection.prepareStatement("SELECT bans FROM `punishments` WHERE player = ?;");
-				sql.setString(1, player);
-				
-				ResultSet result = sql.executeQuery();
-				result.next();
-				
-				int kill = result.getInt("bans");
-				
-				PreparedStatement updatebans = connection.prepareStatement("UPDATE `punishments` SET bans=? WHERE player = ?;");
-				updatebans.setInt(1, kill + bans);
-				updatebans.setString(2, player);
-				updatebans.executeUpdate();
-				
-				updatebans.close();
-				sql.close();
-				result.close();
-			}
-			else{
-				PreparedStatement newPlayer = connection.prepareStatement("INSERT `punishments` values(?,0,0,0)");
-				newPlayer.setString(1, Bukkit.getOfflinePlayer(player).getName());
-				newPlayer.execute();
-				newPlayer.close();
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		} 
-	}
-	
-	public int getKicks(String player){
-		
-		try {
-			MySQLManager m = new MySQLManager();
-			if(m.getConnection().isClosed()){
-				m.openConnection();
-			}
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
-		try {
-			
-			if(Main.getMySQLManager().punishmentContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
 
-				PreparedStatement sql = connection.prepareStatement("SELECT kicks FROM `punishments` WHERE player = ?;");
-				sql.setString(1, player);
-				
 				ResultSet result = sql.executeQuery();
 				result.next();
-				
-				int kill = result.getInt("kicks");
-				
-				return kill;
+
+				int kill = result.getInt("bans");
+				bans.put(player, kill);
+			} else {
+				m.putPlayerToPunishments(player);
 			}
-			else{
-				PreparedStatement newPlayer = connection.prepareStatement("INSERT `punishments` values(?,0,0,0)");
-				newPlayer.setString(1, Bukkit.getOfflinePlayer(player).getName());
-				newPlayer.execute();
-				newPlayer.close();
-			}
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	public int getBans(String p) {
+
+		new BukkitRunnable() {
+
+			@Override
+			public void run() {
+
+				getBansDB(p);
+			}
+
+		}.runTaskAsynchronously(Main.getInstance());
+
+		if (bans.containsKey(p)) {
+			return bans.get(p);
 		}
 		return 0;
 	}
-	
-	public void setKicks(String player, int kicks){
-		
-		try {
-			MySQLManager m = new MySQLManager();
-			if(m.getConnection().isClosed()){
-				m.openConnection();
+
+	public void setBans(String player, int bans) {
+
+		new BukkitRunnable() {
+
+			@Override
+			public void run() {
+				MySQLManager m = new MySQLManager();
+				try {
+					if (m.getConnection().isClosed()) {
+						m.openConnection();
+					}
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+				try {
+
+					if (m.punishmentContainsPlayer(Bukkit.getOfflinePlayer(player).getName())) {
+
+						PreparedStatement sql = connection
+								.prepareStatement("SELECT bans FROM `punishments` WHERE player = ?;");
+						sql.setString(1, player);
+
+						ResultSet result = sql.executeQuery();
+						result.next();
+
+						PreparedStatement updatebans = connection
+								.prepareStatement("UPDATE `punishments` SET bans=? WHERE player = ?;");
+						updatebans.setInt(1, bans);
+						updatebans.setString(2, player);
+						updatebans.executeUpdate();
+
+						updatebans.close();
+						sql.close();
+						result.close();
+
+					} else {
+						m.putPlayerToPunishments(player);
+					}
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
-		try {
-			
-			if(Main.getMySQLManager().punishmentContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
-				
-				PreparedStatement sql = connection.prepareStatement("SELECT kicks FROM `punishments` WHERE player = ?;");
-				sql.setString(1, player);
-				
-				ResultSet result = sql.executeQuery();
-				result.next();
-				
-				PreparedStatement updatekicks = connection.prepareStatement("UPDATE `punishments` SET kicks=? WHERE player = ?;");
-				updatekicks.setInt(1, kicks);
-				updatekicks.setString(2, player);
-				updatekicks.executeUpdate();
-			
-				updatekicks.close();
-				sql.close();
-				result.close();
-				
-			}
-			else{
-				PreparedStatement newPlayer = connection.prepareStatement("INSERT `punishments` values(?,0,0,0)");
-				newPlayer.setString(1, Bukkit.getOfflinePlayer(player).getName());
-				newPlayer.execute();
-				newPlayer.close();
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		} 
-		
+
+		}.runTaskAsynchronously(Main.getInstance());
+
 	}
-	
-	public void addKicks(String player, int kicks){
-		
+
+	public void addBans(String player, int bans) {
+
+		new BukkitRunnable() {
+
+			@Override
+			public void run() {
+				MySQLManager m = new MySQLManager();
+				try {
+					if (m.getConnection().isClosed()) {
+						m.openConnection();
+					}
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+				try {
+
+					if (m.punishmentContainsPlayer(Bukkit.getOfflinePlayer(player).getName())) {
+
+						PreparedStatement sql = connection
+								.prepareStatement("SELECT bans FROM `punishments` WHERE player = ?;");
+						sql.setString(1, player);
+
+						ResultSet result = sql.executeQuery();
+						result.next();
+
+						int kill = result.getInt("bans");
+
+						PreparedStatement updatebans = connection
+								.prepareStatement("UPDATE `punishments` SET bans=? WHERE player = ?;");
+						updatebans.setInt(1, kill + bans);
+						updatebans.setString(2, player);
+						updatebans.executeUpdate();
+
+						updatebans.close();
+						sql.close();
+						result.close();
+					} else {
+						m.putPlayerToPunishments(player);
+					}
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+
+		}.runTaskAsynchronously(Main.getInstance());
+	}
+
+	public void getKicksDB(String player) {
+		MySQLManager m = new MySQLManager();
 		try {
-			MySQLManager m = new MySQLManager();
-			if(m.getConnection().isClosed()){
+			if (m.getConnection().isClosed()) {
 				m.openConnection();
 			}
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
+
 		try {
-			
-			if(Main.getMySQLManager().punishmentContainsPlayer(Bukkit.getOfflinePlayer(player).getName())){
-				
-				PreparedStatement sql = connection.prepareStatement("SELECT kicks FROM `punishments` WHERE player = ?;");
+
+			if (m.punishmentContainsPlayer(Bukkit.getOfflinePlayer(player).getName())) {
+
+				PreparedStatement sql = connection
+						.prepareStatement("SELECT kicks FROM `punishments` WHERE player = ?;");
 				sql.setString(1, player);
-				
+
 				ResultSet result = sql.executeQuery();
 				result.next();
-				
+
 				int kill = result.getInt("kicks");
-				
-				PreparedStatement updatekicks = connection.prepareStatement("UPDATE `punishments` SET kicks=? WHERE player = ?;");
-				updatekicks.setInt(1, kill + kicks);
-				updatekicks.setString(2, player);
-				updatekicks.executeUpdate();
-				
-				updatekicks.close();
-				sql.close();
-				result.close();
+				kicks.put(player, kill);
+			} else {
+				m.putPlayerToPunishments(player);
 			}
-			else{
-				PreparedStatement newPlayer = connection.prepareStatement("INSERT `punishments` values(?,0,0,0)");
-				newPlayer.setString(1, Bukkit.getOfflinePlayer(player).getName());
-				newPlayer.execute();
-				newPlayer.close();
-			}
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
-		} 
+		}
 	}
-	
+
+	public int getKicks(String p) {
+
+		new BukkitRunnable() {
+
+			@Override
+			public void run() {
+
+				int i = 0;
+				i += 1;
+
+				if (i > 10) {
+					cancel();
+				}
+
+				getKicksDB(p);
+			}
+
+		}.runTaskAsynchronously(Main.getInstance());
+
+		if (kicks.containsKey(p)) {
+			return kicks.get(p);
+		}
+		return 0;
+	}
+
+	public void setKicks(String player, int kicks) {
+
+		new BukkitRunnable() {
+
+			@Override
+			public void run() {
+				MySQLManager m = new MySQLManager();
+				try {
+					if (m.getConnection().isClosed()) {
+						m.openConnection();
+					}
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+				try {
+
+					if (m.punishmentContainsPlayer(Bukkit.getOfflinePlayer(player).getName())) {
+
+						PreparedStatement sql = connection
+								.prepareStatement("SELECT kicks FROM `punishments` WHERE player = ?;");
+						sql.setString(1, player);
+
+						ResultSet result = sql.executeQuery();
+						result.next();
+
+						PreparedStatement updatekicks = connection
+								.prepareStatement("UPDATE `punishments` SET kicks=? WHERE player = ?;");
+						updatekicks.setInt(1, kicks);
+						updatekicks.setString(2, player);
+						updatekicks.executeUpdate();
+
+						updatekicks.close();
+						sql.close();
+						result.close();
+
+					} else {
+						m.putPlayerToPunishments(player);
+					}
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+
+		}.runTaskAsynchronously(Main.getInstance());
+
+	}
+
+	public void addKicks(String player, int kicks) {
+
+		new BukkitRunnable() {
+
+			@Override
+			public void run() {
+				MySQLManager m = new MySQLManager();
+				try {
+					if (m.getConnection().isClosed()) {
+						m.openConnection();
+					}
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+				try {
+
+					if (m.punishmentContainsPlayer(Bukkit.getOfflinePlayer(player).getName())) {
+
+						PreparedStatement sql = connection
+								.prepareStatement("SELECT kicks FROM `punishments` WHERE player = ?;");
+						sql.setString(1, player);
+
+						ResultSet result = sql.executeQuery();
+						result.next();
+
+						int kill = result.getInt("kicks");
+
+						PreparedStatement updatekicks = connection
+								.prepareStatement("UPDATE `punishments` SET kicks=? WHERE player = ?;");
+						updatekicks.setInt(1, kill + kicks);
+						updatekicks.setString(2, player);
+						updatekicks.executeUpdate();
+
+						updatekicks.close();
+						sql.close();
+						result.close();
+					} else {
+						m.putPlayerToPunishments(player);
+					}
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+
+		}.runTaskAsynchronously(Main.getInstance());
+	}
+
 	public String getDateFormat(long millis) {
-	    Date date = new Date(millis);
-	    DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-	    return format.format(date);
+		Date date = new Date(millis);
+		DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+		return format.format(date);
 	}
 	
 }

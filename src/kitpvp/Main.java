@@ -26,12 +26,14 @@ import kitpvp.commands.CommandKill;
 import kitpvp.commands.CommandLevelToggle;
 import kitpvp.commands.CommandList;
 import kitpvp.commands.CommandMsg;
+import kitpvp.commands.CommandPlayerInfo;
 import kitpvp.commands.CommandRename;
 import kitpvp.commands.CommandStats;
 import kitpvp.commands.CommandTest;
 import kitpvp.commands.KitCommand;
 import kitpvp.commands.LangCommand;
 import kitpvp.commands.PrefixCommand;
+import kitpvp.cosmetics.CosmeticManager;
 import kitpvp.kits.KitManager;
 import kitpvp.listeners.AbilityListener;
 import kitpvp.listeners.ChatEvent;
@@ -92,6 +94,7 @@ public class Main extends JavaPlugin implements Plugin{
 		registerCommand("discord", new CommandDiscord());
 		registerCommand("help", new CommandHelp());
 		registerCommand("commands", new CommandCommands());
+		registerCommand("playerinfo", new CommandPlayerInfo());
 		
 		registerListener(this, new ConnectionListener());
 		registerListener(this, new PrefixCommand());
@@ -110,11 +113,11 @@ public class Main extends JavaPlugin implements Plugin{
 		registerListener(this, new PlayerListeners());
 		
 		for(Player online : Bukkit.getOnlinePlayers()){
-			getAPI().startPlayTimeCount(online);
+//			getAPI().startPlayTimeCount(online);
 			
-//			if(Main.getDataFile().getBoolean(online.getUniqueId().toString() + ".scoreboard")){ 
-//				getAPI().giveScoreboard(online);
-//			}
+			if(Main.getDataFile().getBoolean(online.getUniqueId().toString() + ".scoreboard")){ 
+				getAPI().giveScoreboard(online);
+			}
 		}
 		
 		new BukkitRunnable(){
@@ -144,9 +147,9 @@ public class Main extends JavaPlugin implements Plugin{
 	
 	public void onDisable(){
 		
-		instance = null;
-		
 		MySQLManager.disable();
+		
+		instance = null;
 		
 	}
 	
@@ -241,6 +244,10 @@ public class Main extends JavaPlugin implements Plugin{
 	
 	public static PunishmentManager getPunishmentManager(){
 		return new PunishmentManager();
+	}
+	
+	public static CosmeticManager getCosmeticManager(){
+		return new CosmeticManager();
 	}
 	
 }

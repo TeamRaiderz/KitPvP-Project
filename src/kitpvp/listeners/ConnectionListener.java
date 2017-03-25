@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -15,6 +16,7 @@ import kitpvp.Language;
 import kitpvp.Main;
 import kitpvp.Util.ChatUtils;
 import kitpvp.commands.PrefixCommand.NameColor;
+import kitpvp.cosmetics.CosmeticManager;
 
 public class ConnectionListener implements Listener{
 
@@ -22,10 +24,6 @@ public class ConnectionListener implements Listener{
 	public void onJoin(PlayerJoinEvent e){
 		
 		Player p = e.getPlayer();
-
-		if(p.hasPermission("online.staff")){
-			Main.getAPI().getOnlineStaffMembers().add(p.getName());
-		}
 		
 		//Silenting zombies
 		Iterator meta = p.getWorld().getLivingEntities().iterator();
@@ -56,12 +54,11 @@ public class ConnectionListener implements Listener{
 			data.set(uuid + ".levelInChat", true);
 			data.set(uuid + ".boosters", 0);
 			
-			data.set(p.getName(), "ENG");
 			Main.getAPI().setNick(p.getName(), NameColor.DEFAULT);
 			
-			Main.saveDataFile();
+			Main.getDataFile().set(p.getName(), "DEF");
 			
-			Main.getAPI().setLanguage(p.getName(), Language.DEFAULT);
+			Main.saveDataFile();
 		}
 		
 		FileConfiguration data = Main.getDataFile();
@@ -79,8 +76,8 @@ public class ConnectionListener implements Listener{
 			Main.getPacketUtils().sendTitle(p, "§a§lFINSKACRAFT!", "§7Shittiest server in Finland!", 20, 40, 20);
 		}
 		
-		Main.getAPI().startPlayTimeCount(p);
-		//Main.getAPI().giveScoreboard(p);
+//		Main.getAPI().startPlayTimeCount(p);
+		Main.getAPI().giveScoreboard(p);
 		
 	}
 	
@@ -90,6 +87,21 @@ public class ConnectionListener implements Listener{
 		Player p = e.getPlayer();
 		
 		Main.getAPI().setLastLogin(p.getName());
+		
+	}
+	
+	@EventHandler
+	public void onAsyncLogin(AsyncPlayerPreLoginEvent e){
+		
+		CosmeticManager cm = new CosmeticManager();
+		
+		String p = e.getName();
+		
+		cm.getBoostersDB(e.getName());
+		cm.getChestsDB(e.getName());
+		cm.getTokensDB(e.getName());
+		
+		System.out.println(e.getName() + "-> Tokens: " + cm.getTokens(p) + " Boosters: " + cm.getBoosters(p) + " Chests: " + cm.getChests(p));
 		
 	}
 	

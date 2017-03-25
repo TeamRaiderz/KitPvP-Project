@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.bukkit.Bukkit;
+
 public class MySQLManager {
 	private static Connection connection;
 	
@@ -95,6 +97,40 @@ public class MySQLManager {
 	
 	public Connection getConnection(){
 		return connection;
+	}
+	
+	public void putPlayerToPlayerData(String player){
+		try{
+			PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0,0)");
+			newPlayer.setString(1, player);
+			newPlayer.execute();
+			newPlayer.close();
+		} catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	public void putPlayerToCosmeticData(String player){
+		try{
+			PreparedStatement newPlayer = connection
+					.prepareStatement("INSERT `cosmetic_data` values(?,0,0,0)");
+			newPlayer.setString(1, player);
+			newPlayer.execute();
+			newPlayer.close();
+		} catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	public void putPlayerToPunishments(String player){
+		try{
+			PreparedStatement newPlayer = connection.prepareStatement("INSERT `punishments` values(?,0,0,0)");
+			newPlayer.setString(1, Bukkit.getOfflinePlayer(player).getName());
+			newPlayer.execute();
+			newPlayer.close();
+		} catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 	
 }

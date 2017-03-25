@@ -2,6 +2,7 @@ package kitpvp.listeners;
 
 import java.util.HashMap;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -29,6 +30,11 @@ public class PlayerListeners implements Listener{
 		if(Main.getAPI().getLanguage(p.getName()) == Language.DEFAULT){
 			p.teleport(e.getFrom());
 			LangCommand.openLangGUI(p);
+			return;
+		}
+		
+		if(e.getTo().getY() < 0.0D){
+			p.teleport(p.getWorld().getSpawnLocation());
 		}
 		
 	}
@@ -44,7 +50,7 @@ public class PlayerListeners implements Listener{
 			return;
 		}
 		
-		if(!cmdCooldown.containsKey(p) || cmdCooldown.get(p) == null && !p.hasPermission("server.cmdcooldown")){
+		if(!cmdCooldown.containsKey(p) && !p.hasPermission("server.cmdcooldown")){
 			cmdCooldown.put(p, 3);
 			
 			new BukkitRunnable(){
@@ -64,7 +70,7 @@ public class PlayerListeners implements Listener{
 			}.runTaskTimer(Main.getInstance(), 20, 20);
 			
 		}
-		else if (cmdCooldown.get(p) != null || cmdCooldown.containsKey(p)){
+		else if (cmdCooldown.containsKey(p)){
 			e.setCancelled(true);
 			if(Main.getAPI().getLanguage(p.getName()) == Language.FINNISH){
 				ChatUtils.sendMessageWithPrefix(p, "§7Voit käyttää komentoja §c" + cmdCooldown.get(p) + " §7sekunnin päästä!");
@@ -80,6 +86,8 @@ public class PlayerListeners implements Listener{
 	public void onChatSend(AsyncPlayerChatEvent e){
 		
 		Player p = e.getPlayer();
+		
+		e.setCancelled(true);
 		
 		if(Main.getAPI().getLanguage(p.getName()) == Language.DEFAULT){
 			e.setCancelled(true);

@@ -24,7 +24,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
@@ -45,7 +44,7 @@ public class KitAPI {
 	
 	private int onlineStaff = 0;
 	private List<String> staffMembers = new ArrayList<String>();
-	private Connection connection = Main.getMySQLManager().getConnection();
+	private Connection connection = new MySQLManager().getConnection();
 	private HashMap<String, Integer> killStreak = new HashMap<String, Integer>();
 	
 	public static HashMap<String, Integer> kills = new HashMap<String, Integer>();
@@ -58,9 +57,9 @@ public class KitAPI {
 		return Main.getConfigFile().getBoolean("Booster.inUse");
 	}
 	public void getKillsDB(String player){
+		MySQLManager m = new MySQLManager();
 		try {
-			MySQLManager m = new MySQLManager();
-			if (m.getConnection().isClosed()) {
+			if (m.getConnection().isClosed() || m.getConnection() == null) {
 				m.openConnection();
 			}
 		} catch (SQLException e1) {
@@ -68,7 +67,7 @@ public class KitAPI {
 		}
 		try {
 
-			if (Main.getMySQLManager().playerDataContainsPlayer(player)) {
+			if (m.playerDataContainsPlayer(player)) {
 
 				PreparedStatement sql = connection
 						.prepareStatement("SELECT kills FROM `player_data` WHERE player = ?;");
@@ -79,13 +78,9 @@ public class KitAPI {
 				while (result.next()) {
 					int kill = result.getInt("kills");
 					kills.put(player, kill);
-					System.out.println("1");
 				}
 			} else {
-				PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0,0)");
-				newPlayer.setString(1, player);
-				newPlayer.execute();
-				newPlayer.close();
+				m.putPlayerToPlayerData(player);
 			}
 
 		} catch (Exception e) {
@@ -94,18 +89,17 @@ public class KitAPI {
 	}
 	
 	public int getKills(String p){
+		
 		new BukkitRunnable(){
 
 			@Override
 			public void run() {
 				getKillsDB(p);
-				System.out.println("2");
 			}
 			
-		}.runTaskLaterAsynchronously(Main.getInstance(), 1);
+		}.runTaskAsynchronously(Main.getInstance());
 		
 		if(kills.containsKey(p)){
-			System.out.println("3");
 			return kills.get(p);
 		}
 		return 0;
@@ -116,10 +110,9 @@ public class KitAPI {
 		Bukkit.getServer().getScheduler().scheduleAsyncDelayedTask(Main.getInstance(), new Runnable(){
 			@Override
 			public void run() {
-
+				MySQLManager m = new MySQLManager();
 				try {
-					MySQLManager m = new MySQLManager();
-					if(m.getConnection().isClosed()){
+					if(m.getConnection().isClosed() || m.getConnection() == null){
 						m.openConnection();
 					}
 				} catch (SQLException e1) {
@@ -127,7 +120,7 @@ public class KitAPI {
 				}
 				try {
 					
-					if(Main.getMySQLManager().playerDataContainsPlayer(player)){
+					if(m.playerDataContainsPlayer(player)){
 						
 						PreparedStatement sql = connection.prepareStatement("SELECT kills FROM `player_data` WHERE player = ?;");
 						sql.setString(1, player);
@@ -148,10 +141,7 @@ public class KitAPI {
 						
 					}
 					else{
-						PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0,0)");
-						newPlayer.setString(1, player);
-						newPlayer.execute();
-						newPlayer.close();
+						m.putPlayerToPlayerData(player);
 					}
 					
 				} catch (Exception e) {
@@ -166,9 +156,9 @@ public class KitAPI {
 		Bukkit.getServer().getScheduler().scheduleAsyncDelayedTask(Main.getInstance(), new Runnable() {
 			@Override
 			public void run() {
+				MySQLManager m = new MySQLManager();
 				try {
-					MySQLManager m = new MySQLManager();
-					if(m.getConnection().isClosed()){
+					if(m.getConnection().isClosed() || m.getConnection() == null){
 						m.openConnection();
 					}
 				} catch (SQLException e1) {
@@ -176,7 +166,7 @@ public class KitAPI {
 				}
 				try {
 					
-					if(Main.getMySQLManager().playerDataContainsPlayer(player)){
+					if(m.playerDataContainsPlayer(player)){
 						
 						PreparedStatement sql = connection.prepareStatement("SELECT kills FROM `player_data` WHERE player = ?;");
 						sql.setString(1, player);
@@ -198,10 +188,7 @@ public class KitAPI {
 						getKillsDB(player);
 					}
 					else{
-						PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0,0)");
-						newPlayer.setString(1, player);
-						newPlayer.execute();
-						newPlayer.close();
+						m.putPlayerToPlayerData(player);
 					}
 					
 				} catch (Exception e) {
@@ -216,10 +203,9 @@ public class KitAPI {
 		BukkitRunnable r = new BukkitRunnable() {
 			   @Override
 			   public void run() {
-				   HashMap<String, Integer> value = new HashMap<String, Integer>();
+					MySQLManager m = new MySQLManager();
 					try {
-						MySQLManager m = new MySQLManager();
-						if(m.getConnection().isClosed()){
+						if(m.getConnection().isClosed() || m.getConnection() == null){
 							m.openConnection();
 						}
 					} catch (SQLException e1) {
@@ -227,7 +213,7 @@ public class KitAPI {
 					}
 					try {
 						
-						if(Main.getMySQLManager().playerDataContainsPlayer(player)){
+						if(m.playerDataContainsPlayer(player)){
 
 							PreparedStatement sql = connection.prepareStatement("SELECT deaths FROM `player_data` WHERE player = ?;");
 							sql.setString(1, player);
@@ -236,15 +222,11 @@ public class KitAPI {
 							
 							while(result.next()){
 								int kill = result.getInt("deaths");
-								value.put(player, kill);
+								deaths.put(player, kill);
 							}
 						}
 						else{
-							PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0,0)");
-							newPlayer.setString(1, player);
-							newPlayer.execute();
-							newPlayer.close();
-							value.put(player, 0);
+							m.putPlayerToPlayerData(player);
 						}
 						
 					} catch (Exception e) {
@@ -257,6 +239,22 @@ public class KitAPI {
 	}
 	
 	public int getDeaths(String p){
+		
+		new BukkitRunnable(){
+
+			@Override
+			public void run() {
+				
+				int i = 0;
+				i += 1;
+				
+				if(i > 10){ cancel(); }
+				
+				getDeathsDB(p);
+			}
+			
+		}.runTaskAsynchronously(Main.getInstance());
+		
 		if(deaths.containsKey(p)){
 			return deaths.get(p);
 		}
@@ -268,9 +266,9 @@ public class KitAPI {
 		Bukkit.getServer().getScheduler().scheduleAsyncDelayedTask(Main.getInstance(), new Runnable(){
 			@Override
 			public void run() {
+				MySQLManager m = new MySQLManager();
 				try {
-					MySQLManager m = new MySQLManager();
-					if(m.getConnection().isClosed()){
+					if(m.getConnection().isClosed() || m.getConnection() == null){
 						m.openConnection();
 					}
 				} catch (SQLException e1) {
@@ -278,7 +276,7 @@ public class KitAPI {
 				}
 				try {
 					
-					if(Main.getMySQLManager().playerDataContainsPlayer(player)){
+					if(m.playerDataContainsPlayer(player)){
 						
 						PreparedStatement sql = connection.prepareStatement("SELECT deaths FROM `player_data` WHERE player = ?;");
 						sql.setString(1, player);
@@ -299,10 +297,7 @@ public class KitAPI {
 						
 					}
 					else{
-						PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0,0)");
-						newPlayer.setString(1, player);
-						newPlayer.execute();
-						newPlayer.close();
+						m.putPlayerToPlayerData(player);
 					}
 					
 				} catch (Exception e) {
@@ -318,9 +313,9 @@ public class KitAPI {
 		Bukkit.getServer().getScheduler().scheduleAsyncDelayedTask(Main.getInstance(), new Runnable(){
 			@Override
 			public void run() {
+				MySQLManager m = new MySQLManager();
 				try {
-					MySQLManager m = new MySQLManager();
-					if(m.getConnection().isClosed()){
+					if(m.getConnection().isClosed() || m.getConnection() == null){
 						m.openConnection();
 					}
 				} catch (SQLException e1) {
@@ -328,7 +323,7 @@ public class KitAPI {
 				}
 				try {
 					
-					if(Main.getMySQLManager().playerDataContainsPlayer(player)){
+					if(m.playerDataContainsPlayer(player)){
 						
 						PreparedStatement sql = connection.prepareStatement("SELECT deaths FROM `player_data` WHERE player = ?;");
 						sql.setString(1, player);
@@ -348,10 +343,7 @@ public class KitAPI {
 						result.close();
 					}
 					else{
-						PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0,0)");
-						newPlayer.setString(1, player);
-						newPlayer.execute();
-						newPlayer.close();
+						m.putPlayerToPlayerData(player);
 					}
 					
 				} catch (Exception e) {
@@ -366,11 +358,10 @@ public class KitAPI {
 		BukkitRunnable r = new BukkitRunnable() {
 			   @Override
 			   public void run() {
-				   HashMap<String, Integer> value = new HashMap<String, Integer>();
+					MySQLManager m = new MySQLManager();
 					
 					try {
-						MySQLManager m = new MySQLManager();
-						if(m.getConnection().isClosed()){
+						if(m.getConnection().isClosed() || m.getConnection() == null){
 							m.openConnection();
 						}
 					} catch (SQLException e1) {
@@ -378,7 +369,7 @@ public class KitAPI {
 					}
 					try {
 						
-						if(Main.getMySQLManager().playerDataContainsPlayer(player)){
+						if(m.playerDataContainsPlayer(player)){
 
 							PreparedStatement sql = connection.prepareStatement("SELECT balance FROM `player_data` WHERE player = ?;");
 							sql.setString(1, player);
@@ -388,15 +379,11 @@ public class KitAPI {
 							while(result.next()){
 								int kill = result.getInt("balance");
 								
-								value.put(player, kill);
+								balance.put(player, kill);
 							}
 						}
 						else{
-							PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0,0)");
-							newPlayer.setString(1, player);
-							newPlayer.execute();
-							newPlayer.close();
-							value.put(player, 0);
+							m.putPlayerToPlayerData(player);
 						}
 						
 					} catch (Exception e) {
@@ -409,6 +396,23 @@ public class KitAPI {
 	}
 	
 	public int getBalance(String p){
+		
+		new BukkitRunnable(){
+
+			@Override
+			public void run() {
+				
+				int i = 0;
+				i += 1;
+				
+				if(i > 10){ cancel(); }
+				
+				getBalanceDB(p);
+			}
+			
+		}.runTaskAsynchronously(Main.getInstance());
+		
+		
 		if(balance.containsKey(p)){
 			return balance.get(p);
 		}
@@ -420,9 +424,9 @@ public class KitAPI {
 		Bukkit.getServer().getScheduler().scheduleAsyncDelayedTask(Main.getInstance(), new Runnable(){
 			@Override
 			public void run() {
+				MySQLManager m = new MySQLManager();
 				try {
-					MySQLManager m = new MySQLManager();
-					if(m.getConnection().isClosed()){
+					if(m.getConnection().isClosed() || m.getConnection() == null){
 						m.openConnection();
 					}
 				} catch (SQLException e1) {
@@ -431,7 +435,7 @@ public class KitAPI {
 				
 				try {
 					
-					if(Main.getMySQLManager().playerDataContainsPlayer(player)){
+					if(m.playerDataContainsPlayer(player)){
 						
 						PreparedStatement sql = connection.prepareStatement("SELECT balance FROM `player_data` WHERE player = ?;");
 						sql.setString(1, player);
@@ -450,10 +454,7 @@ public class KitAPI {
 						
 					}
 					else{
-						PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0,0)");
-						newPlayer.setString(1, player);
-						newPlayer.execute();
-						newPlayer.close();
+						m.putPlayerToPlayerData(player);
 					}
 					
 				} catch (Exception e) {
@@ -469,9 +470,9 @@ public class KitAPI {
 		Bukkit.getServer().getScheduler().scheduleAsyncDelayedTask(Main.getInstance(), new Runnable(){
 			@Override
 			public void run() {
+				MySQLManager m = new MySQLManager();
 				try {
-					MySQLManager m = new MySQLManager();
-					if(m.getConnection().isClosed()){
+					if(m.getConnection().isClosed() || m.getConnection() == null){
 						m.openConnection();
 					}
 				} catch (SQLException e1) {
@@ -480,7 +481,7 @@ public class KitAPI {
 				
 				try {
 
-					if(Main.getMySQLManager().playerDataContainsPlayer(player)){
+					if(m.playerDataContainsPlayer(player)){
 
 						PreparedStatement sql = connection
 								.prepareStatement("SELECT balance FROM `player_data` WHERE player = ?;");
@@ -501,10 +502,7 @@ public class KitAPI {
 						sql.close();
 						result.close();
 					} else {
-						PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0,0)");
-						newPlayer.setString(1, player);
-						newPlayer.execute();
-						newPlayer.close();
+						m.putPlayerToPlayerData(player);
 					}
 
 				} catch (Exception e) {
@@ -520,10 +518,9 @@ public class KitAPI {
 		BukkitRunnable r = new BukkitRunnable() {
 			   @Override
 			   public void run() {
-				   HashMap<String, Integer> value = new HashMap<String, Integer>();
+					MySQLManager m = new MySQLManager();
 					try {
-						MySQLManager m = new MySQLManager();
-						if(m.getConnection().isClosed()){
+						if(m.getConnection().isClosed() || m.getConnection() == null){
 							m.openConnection();
 						}
 					} catch (SQLException e1) {
@@ -531,7 +528,7 @@ public class KitAPI {
 					}
 					try {
 						
-						if(Main.getMySQLManager().playerDataContainsPlayer(player)){
+						if(m.playerDataContainsPlayer(player)){
 
 							PreparedStatement sql = connection.prepareStatement("SELECT xp FROM `player_data` WHERE player = ?;");
 							sql.setString(1, player);
@@ -541,16 +538,12 @@ public class KitAPI {
 							while(result.next()){
 								int kill = result.getInt("xp");
 								
-								value.put(player, kill);
+								xp.put(player, kill);
 							}
 							
 						}
 						else{
-							PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0,0)");
-							newPlayer.setString(1, player);
-							newPlayer.execute();
-							newPlayer.close();
-							value.put(player, 0);
+							m.putPlayerToPlayerData(player);
 						}
 						
 					} catch (Exception e) {
@@ -563,6 +556,18 @@ public class KitAPI {
 	}
 	
 	public int getXp(String p){
+		
+		new BukkitRunnable(){
+
+			@Override
+			public void run() {
+				
+				getXpDB(p);
+			}
+			
+		}.runTaskAsynchronously(Main.getInstance());
+		
+		
 		if(xp.containsKey(p)){
 			return xp.get(p);
 		}
@@ -574,9 +579,9 @@ public class KitAPI {
 		Bukkit.getServer().getScheduler().scheduleAsyncDelayedTask(Main.getInstance(), new Runnable(){
 			@Override
 			public void run() {
+				MySQLManager m = new MySQLManager();
 				try {
-					MySQLManager m = new MySQLManager();
-					if(m.getConnection().isClosed()){
+					if(m.getConnection().isClosed() || m.getConnection() == null){
 						m.openConnection();
 					}
 				} catch (SQLException e1) {
@@ -585,7 +590,7 @@ public class KitAPI {
 				
 				try {
 					
-					if(Main.getMySQLManager().playerDataContainsPlayer(player)){
+					if(m.playerDataContainsPlayer(player)){
 						
 						if(money < getXPToNextLVL(player)){
 
@@ -605,74 +610,67 @@ public class KitAPI {
 							result.close();
 							
 						}
-						else{
+						else {
+							if (money < getXPToNextLVL(player)) {
+								return;
+							}
 							
-							new BukkitRunnable(){
+							if (getXp(player) < 0) {
 
-								@Override
-								public void run() {
-									
-									if(money < getXPToNextLVL(player)){
-										cancel();
-										return;
+								PreparedStatement sql = connection
+										.prepareStatement("SELECT xp FROM `player_data` WHERE player = ?;");
+								sql.setString(1, player);
+
+								ResultSet result = sql.executeQuery();
+								result.next();
+
+								PreparedStatement updateKills = connection
+										.prepareStatement("UPDATE `player_data` SET xp=? WHERE player = ?;");
+								updateKills.setInt(1, 0);
+								updateKills.setString(2, player);
+								updateKills.executeUpdate();
+
+								updateKills.close();
+								sql.close();
+								result.close();
+							} 
+							
+							while (getXp(player) >= getXp(player) * 100) {
+								try {
+
+									PreparedStatement sql = connection
+											.prepareStatement("SELECT xp FROM `player_data` WHERE player = ?;");
+									sql.setString(1, player);
+
+									ResultSet result = sql.executeQuery();
+									result.next();
+
+									PreparedStatement updateKills = connection
+											.prepareStatement("UPDATE `player_data` SET xp=? WHERE player = ?;");
+									if (money - (getLevel(player) * 100) < 0) {
+										updateKills.setInt(1, 0);
+									} else {
+										updateKills.setInt(1, money - (getLevel(player) * 100));
 									}
-									
-									try{
-									
-										if(getXp(player) < 0){
-											
-											PreparedStatement sql = connection.prepareStatement("SELECT xp FROM `player_data` WHERE player = ?;");
-											sql.setString(1, player);
-											
-											ResultSet result = sql.executeQuery();
-											result.next();
-											
-											PreparedStatement updateKills = connection.prepareStatement("UPDATE `player_data` SET xp=? WHERE player = ?;");
-											updateKills.setInt(1, 0);
-											updateKills.setString(2, player);
-											updateKills.executeUpdate();
-											
-											updateKills.close();
-											sql.close();
-											result.close();
-											
-											cancel();
-											return;
-										}
-										
-										PreparedStatement sql = connection.prepareStatement("SELECT xp FROM `player_data` WHERE player = ?;");
-										sql.setString(1, player);
-										
-										ResultSet result = sql.executeQuery();
-										result.next();
-										
-										PreparedStatement updateKills = connection.prepareStatement("UPDATE `player_data` SET xp=? WHERE player = ?;");
-										updateKills.setInt(1, money - getLevel(player) * 100);
-										updateKills.setString(2, player);
-										updateKills.executeUpdate();
-										
-										updateKills.close();
-										sql.close();
-										result.close();
-										
-										addLevel(player, 1);
-										levelUp(player);
-										
-									} catch (Exception e){
-										e.printStackTrace();
-									}
-									
+									updateKills.setString(2, player);
+									updateKills.executeUpdate();
+
+									updateKills.close();
+									sql.close();
+									result.close();
+
+									addLevel(player, 1);
+									levelUp(player, getLevel(player));
+
+								} catch (Exception e) {
+									e.printStackTrace();
 								}
-								
-							}.runTaskTimer(Main.getInstance(), 1, 1);
+							}
 						}
-						
+
 					}
 					else{
-						PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0,0)");
-						newPlayer.setString(1, player);
-						newPlayer.execute();
-						newPlayer.close();
+						m.putPlayerToPlayerData(player);
 					}
 					
 				} catch (Exception e) {
@@ -688,9 +686,9 @@ public class KitAPI {
 		Bukkit.getServer().getScheduler().scheduleAsyncDelayedTask(Main.getInstance(), new Runnable(){
 			@Override
 			public void run() {
+				MySQLManager m = new MySQLManager();
 				try {
-					MySQLManager m = new MySQLManager();
-					if(m.getConnection().isClosed()){
+					if(m.getConnection().isClosed() || m.getConnection() == null){
 						m.openConnection();
 					}
 				} catch (SQLException e1) {
@@ -699,7 +697,7 @@ public class KitAPI {
 				
 				try {
 
-					if(Main.getMySQLManager().playerDataContainsPlayer(player)){
+					if(m.playerDataContainsPlayer(player)){
 
 						if(money < getXPToNextLVL(player)){
 							
@@ -723,61 +721,149 @@ public class KitAPI {
 							sql.close();
 							result.close();
 							
-							
-							
-						}
-						else{
-							
-							new BukkitRunnable(){
+						} else if (money >= getXPToNextLVL(player)) {
 
-								@Override
-								public void run() {
-									
-									if(money < getXPToNextLVL(player)){
-										cancel();
-										return;
-									}
-									
-									if(getXp(player) < 0){
-										setXp(player, 0);
-										cancel();
-										return;
-									}
-									
-									try{
-										
-										PreparedStatement sql = connection
-												.prepareStatement("SELECT xp FROM `player_data` WHERE player = ?;");
-										sql.setString(1, player);
+							if (money == getXPToNextLVL(player)) {
+								try {
 
-										ResultSet result = sql.executeQuery();
-										result.next();
-										PreparedStatement updateKills = connection
-												.prepareStatement("UPDATE `player_data` SET xp=? WHERE player = ?;");
-										updateKills.setInt(1, money - getLevel(player) * 100);
-										updateKills.setString(2, player);
-										updateKills.executeUpdate();
-										
-										updateKills.close();
-										sql.close();
-										result.close();
-										
-										addLevel(player, 1);
-										levelUp(player);
-										
-									} catch (Exception e){ }
+									PreparedStatement sql = connection
+											.prepareStatement("SELECT xp FROM `player_data` WHERE player = ?;");
+									sql.setString(1, player);
+
+									ResultSet result = sql.executeQuery();
+									result.next();
+									PreparedStatement updateKills = connection
+											.prepareStatement("UPDATE `player_data` SET xp=? WHERE player = ?;");
+									if (money - (getLevel(player) * 100) < 0) {
+										updateKills.setInt(1, 0);
+									} else {
+										updateKills.setInt(1, money - (getLevel(player) * 100));
+									}
+									updateKills.setString(2, player);
+									updateKills.executeUpdate();
+
+									updateKills.close();
+									sql.close();
+									result.close();
+
+									addLevel(player, 1);
+									levelUp(player, getLevel(player));
+
+								} catch (Exception e) {
+									e.printStackTrace();
 								}
+							} else {
+
+								xp.put(player, money);
 								
-							}.runTaskTimer(Main.getInstance(), 1, 1);
-							
-							return;
+								new BukkitRunnable() {
+
+									@Override
+									public void run() {
+
+										if (!(xp.containsKey(player)) || !(level.containsKey(player))) {
+											cancel();
+											return;
+										}
+										
+										if (xp.get(player) - (level.get(player) * 100) < 0) {
+											xp.put(player, 0);
+											level.put(player, level.get(player) + 1);
+											levelUp(player, level.get(player));
+											setlevel(player, level.get(player));
+											try {
+												PreparedStatement sql = connection.prepareStatement(
+														"SELECT xp FROM `player_data` WHERE player = ?;");
+												sql.setString(1, player);
+
+												ResultSet result = sql.executeQuery();
+												result.next();
+												PreparedStatement updateKills = connection.prepareStatement(
+														"UPDATE `player_data` SET xp=? WHERE player = ?;");
+												updateKills.setInt(1, xp.get(player));
+
+												updateKills.setString(2, player);
+												updateKills.executeUpdate();
+
+												updateKills.close();
+												sql.close();
+												result.close();
+
+											} catch (Exception e) {
+												e.printStackTrace();
+											}
+											cancel();
+											return;
+										} else if (xp.get(player) - (level.get(player) * 100) > 0){
+											
+											xp.put(player, xp.get(player) - (level.get(player) * 100));
+											level.put(player, level.get(player) + 1);
+											levelUp(player, level.get(player));
+											setlevel(player, level.get(player));
+											
+											try {
+												PreparedStatement sql = connection.prepareStatement(
+														"SELECT xp FROM `player_data` WHERE player = ?;");
+												sql.setString(1, player);
+
+												ResultSet result = sql.executeQuery();
+												result.next();
+												PreparedStatement updateKills = connection.prepareStatement(
+														"UPDATE `player_data` SET xp=? WHERE player = ?;");
+												updateKills.setInt(1, xp.get(player));
+
+												updateKills.setString(2, player);
+												updateKills.executeUpdate();
+
+												updateKills.close();
+												sql.close();
+												result.close();
+
+											} catch (Exception e) {
+												e.printStackTrace();
+											}
+										}
+										else if (xp.get(player) == (level.get(player) * 100)){
+											xp.put(player, 0);
+											level.put(player, level.get(player) + 1);
+											levelUp(player, level.get(player));
+											setlevel(player, level.get(player));
+											
+											try {
+												PreparedStatement sql = connection.prepareStatement(
+														"SELECT xp FROM `player_data` WHERE player = ?;");
+												sql.setString(1, player);
+
+												ResultSet result = sql.executeQuery();
+												result.next();
+												PreparedStatement updateKills = connection.prepareStatement(
+														"UPDATE `player_data` SET xp=? WHERE player = ?;");
+												updateKills.setInt(1, xp.get(player));
+
+												updateKills.setString(2, player);
+												updateKills.executeUpdate();
+
+												updateKills.close();
+												sql.close();
+												result.close();
+
+											} catch (Exception e) {
+												e.printStackTrace();
+											}
+										}
+										else{
+											cancel();
+											return;
+										}
+									}
+
+								}.runTaskTimerAsynchronously(Main.getInstance(), 0, 20);
+
+							}
 						}
-						
+
 					} else {
-						PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0,0)");
-						newPlayer.setString(1, player);
-						newPlayer.execute();
-						newPlayer.close();
+						m.putPlayerToPlayerData(player);
 					}
 
 				} catch (Exception e) {
@@ -785,9 +871,6 @@ public class KitAPI {
 				}
 			}
 			},1);
-		
-		
-
 	}
 	
 	public void getLevelDB(String player){
@@ -795,10 +878,9 @@ public class KitAPI {
 		BukkitRunnable r = new BukkitRunnable() {
 			   @Override
 			   public void run() {
-				   HashMap<String, Integer> value = new HashMap<String, Integer>();
+					MySQLManager m = new MySQLManager();
 					try {
-						MySQLManager m = new MySQLManager();
-						if(m.getConnection().isClosed()){
+						if(m.getConnection().isClosed() || m.getConnection() == null){
 							m.openConnection();
 						}
 					} catch (SQLException e1) {
@@ -806,7 +888,7 @@ public class KitAPI {
 					}
 					try {
 						
-						if(Main.getMySQLManager().playerDataContainsPlayer(player)){
+						if(m.playerDataContainsPlayer(player)){
 
 							PreparedStatement sql = connection.prepareStatement("SELECT levels FROM `player_data` WHERE player = ?;");
 							sql.setString(1, player);
@@ -814,16 +896,12 @@ public class KitAPI {
 							ResultSet result = sql.executeQuery();
 							
 							while(result.next()){
-								value.put(player, result.getInt("levels"));
+								level.put(player, result.getInt("levels"));
 							}
 							
 						}
 						else{
-							PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0,0)");
-							newPlayer.setString(1, player);
-							newPlayer.execute();
-							newPlayer.close();
-							value.put(player, 0);
+							m.putPlayerToPlayerData(player);
 						}
 						
 					} catch (Exception e) {
@@ -836,6 +914,23 @@ public class KitAPI {
 	}
 	
 	public int getLevel(String p){
+		
+		new BukkitRunnable(){
+
+			@Override
+			public void run() {
+				
+				int i = 0;
+				i += 1;
+				
+				if(i > 10){ cancel(); }
+				
+				getLevelDB(p);
+			}
+			
+		}.runTaskAsynchronously(Main.getInstance());
+		
+		
 		if(level.containsKey(p)){
 			return level.get(p);
 		}
@@ -847,9 +942,9 @@ public class KitAPI {
 		Bukkit.getServer().getScheduler().scheduleAsyncDelayedTask(Main.getInstance(), new Runnable(){
 			@Override
 			public void run() {
+				MySQLManager m = new MySQLManager();
 				try {
-					MySQLManager m = new MySQLManager();
-					if(m.getConnection().isClosed()){
+					if(m.getConnection().isClosed() || m.getConnection() == null){
 						m.openConnection();
 					}
 				} catch (SQLException e1) {
@@ -858,7 +953,7 @@ public class KitAPI {
 				
 				try {
 					
-					if(Main.getMySQLManager().playerDataContainsPlayer(player)){
+					if(m.playerDataContainsPlayer(player)){
 						
 						if(money >= 50){
 							
@@ -898,10 +993,7 @@ public class KitAPI {
 						
 					}
 					else{
-						PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0,0)");
-						newPlayer.setString(1, player);
-						newPlayer.execute();
-						newPlayer.close();
+						m.putPlayerToPlayerData(player);
 					}
 					
 				} catch (Exception e) {
@@ -918,9 +1010,9 @@ public class KitAPI {
 		Bukkit.getServer().getScheduler().scheduleAsyncDelayedTask(Main.getInstance(), new Runnable(){
 			@Override
 			public void run() {
+				MySQLManager m = new MySQLManager();
 				try {
-					MySQLManager m = new MySQLManager();
-					if(m.getConnection().isClosed()){
+					if(m.getConnection().isClosed() || m.getConnection() == null){
 						m.openConnection();
 					}
 				} catch (SQLException e1) {
@@ -929,7 +1021,7 @@ public class KitAPI {
 				
 				try {
 
-					if(Main.getMySQLManager().playerDataContainsPlayer(player)){
+					if(m.playerDataContainsPlayer(player)){
 						
 						if(getLevel(player) + money >= 50){
 							
@@ -976,10 +1068,7 @@ public class KitAPI {
 						}
 						
 					} else {
-						PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0,0)");
-						newPlayer.setString(1, player);
-						newPlayer.execute();
-						newPlayer.close();
+						m.putPlayerToPlayerData(player);
 					}
 
 				} catch (Exception e) {
@@ -1127,9 +1216,7 @@ public class KitAPI {
 			int kills = getKills(receiver.getName());
 			int deaths = getDeaths(receiver.getName());
 			
-			double absKD = (double) getKills(receiver.getName()) / (double) getDeaths(receiver.getName());
-			
-			double KD = Math.round(absKD * 10000.0D) / 10000.0D;
+			double KD = getKD(receiver.getName());
 			int balance = getBalance(receiver.getName());
 			int level = getLevel(receiver.getName());
 			int xp = getXp(receiver.getName());
@@ -1182,9 +1269,7 @@ public class KitAPI {
 			int kills = getKills(offTarget.getName());
 			int deaths = getDeaths(offTarget.getName());
 			
-			double absKD = (double) getKills(offTarget.getName()) / (double) getDeaths(offTarget.getName());
-			
-			double KD = Math.round(absKD * 10000.0D) / 10000.0D;
+			double KD = getKD(offTarget.getName());
 			int balance = getBalance(offTarget.getName());
 			int level = getLevel(offTarget.getName());
 			int xp = getXp(offTarget.getName());
@@ -1222,24 +1307,25 @@ public class KitAPI {
 		
 	}
 	
-	public void levelUp(String player){
+	public void levelUp(String player, int newLvl){
 		
-		OfflinePlayer offPlayer = Bukkit.getOfflinePlayer(player);
+		Player p = Bukkit.getPlayer(player);
 		
-		if(offPlayer.isOnline()){
-			Player p = offPlayer.getPlayer();
+		if(p.isOnline()){
 			
 			if(getLanguage(p.getName()) == Language.FINNISH){
-				ChatUtils.sendMessageWithPrefix(p, "§7Ansaitsit uuden levelin! (§c" + getLevel(p.getName()) + "§7)");
+				ChatUtils.sendMessageWithPrefix(p, "§7Ansaitsit uuden levelin! (§c" + newLvl + "§7)");
 			}
 			else if (getLanguage(p.getName()) == Language.ENGLISH){
-				ChatUtils.sendMessageWithPrefix(p, "§7You unlocked a new level! (§c" + getLevel(p.getName()) + "§7)");
+				ChatUtils.sendMessageWithPrefix(p, "§7You unlocked a new level! (§c" + newLvl + "§7)");
 			}
 		}
+		else return;
 		
 	}
 	
 	public int getXPToNextLVL(String player){
+		
 		return (getLevel(player) * 100) - getXp(player);
 	}
 	
@@ -1433,31 +1519,24 @@ public class KitAPI {
 		}
       
       public int getBoosters(String player){
-    	  OfflinePlayer p = Bukkit.getOfflinePlayer(player);
-    	  String uuid = p.getUniqueId().toString();
-    	  return Main.getDataFile().getInt(uuid + ".boosters");
+    	  int i = Main.getCosmeticManager().getBoosters(player);
+    	  return i;
       }
       
       public void setBoosters(String player, int value){
-		OfflinePlayer p = Bukkit.getOfflinePlayer(player);
-		String uuid = p.getUniqueId().toString();
-		Main.getDataFile().set(uuid + ".boosters", value);
-		DataYML.saveFile();
+		Main.getCosmeticManager().setBoosters(player, value);
       }
       
 	public void addBoosters(String player, int value) {
-		OfflinePlayer p = Bukkit.getOfflinePlayer(player);
-		String uuid = p.getUniqueId().toString();
-		int boosters = Main.getDataFile().getInt(uuid + ".boosters");
-		Main.getDataFile().set(uuid + ".boosters", boosters + value);
-		DataYML.saveFile();
 		
-		if(p.isOnline()){
-			if(getLanguage(p.getName()) == Language.FINNISH){
-				ChatUtils.sendMessageWithPrefix(p.getPlayer(), "§7Sinä sait §c" + value + " §7uutta boosteria!");
+		Main.getCosmeticManager().addBoosters(player, value);
+		
+		if(Bukkit.getPlayer(player).isOnline() && Bukkit.getPlayer(player) != null){
+			if(getLanguage(player) == Language.FINNISH){
+				ChatUtils.sendMessageWithPrefix(Bukkit.getPlayer(player), "§7Sinä sait §c" + value + " §7uutta boosteria!");
 			}
-			if(getLanguage(p.getName()) == Language.ENGLISH){
-				ChatUtils.sendMessageWithPrefix(p.getPlayer(), "§7You got §c" + value + " §7new boosters!");
+			if(getLanguage(player) == Language.ENGLISH){
+				ChatUtils.sendMessageWithPrefix(Bukkit.getPlayer(player), "§7You got §c" + value + " §7new boosters!");
 			}
 		}
 		
@@ -1592,10 +1671,6 @@ public class KitAPI {
 		
 		if(!Main.getDataFile().getBoolean(p.getUniqueId().toString() + ".scoreboard")){ return; }
 		
-		double absKD = (double) getKills(p.getName()) / (double) getDeaths(p.getName());
-		
-		double KD = Math.round(absKD * 10000.0D) / 10000.0D;
-		
 		if(getLanguage(p.getName()) == Language.FINNISH){
 			
 			Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
@@ -1634,7 +1709,7 @@ public class KitAPI {
 			Team kdr = board.registerNewTeam("kdr");
 			kdr.addEntry(ChatColor.RESET.toString());
 			kdr.setPrefix("§7• K/D: ");
-			kdr.setSuffix("§c" + String.valueOf(KD));
+			kdr.setSuffix("§c" + String.valueOf(getKD(p.getName())));
 			obj.getScore(ChatColor.RESET.toString()).setScore(9);
 			
 			Team viiva2 = board.registerNewTeam("gvfnsabf");
@@ -1671,25 +1746,26 @@ public class KitAPI {
 			xp.setSuffix("§c" + getXp(p.getName()) + "/" + getLevel(p.getName()) * 100);
 			obj.getScore(ChatColor.DARK_GREEN.toString()).setScore(3);
 			
-			BukkitScheduler Scheduler = Bukkit.getServer().getScheduler();
-			Scheduler.scheduleAsyncRepeatingTask(Main.getInstance(), new Runnable() {
+			new BukkitRunnable(){
+
+				@Override
 				public void run() {
-					
 					if(!Main.getDataFile().getBoolean(p.getUniqueId().toString() + ".scoreboard")){ 
 						p.getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
+						cancel();
 						return; 
 					}
 					
 					board.getTeam("online").setSuffix("§c" + String.valueOf(Bukkit.getOnlinePlayers().size()));
 					board.getTeam("kills").setSuffix("§c" + String.valueOf(getKills(p.getName())));
 					board.getTeam("deaths").setSuffix("§c" + String.valueOf(getDeaths(p.getName())));
-					board.getTeam("kdr").setSuffix("§c" + String.valueOf(KD));
+					board.getTeam("kdr").setSuffix("§c" + String.valueOf(getKD(p.getName())));
 					board.getTeam("balance").setSuffix("§c" + String.valueOf(getBalance(p.getName())));
 					board.getTeam("lvl").setSuffix("§c" + String.valueOf(getLevel(p.getName())));
 					board.getTeam("xp").setSuffix("§c" + String.valueOf(getXp(p.getName()) + "/" + getLevel(p.getName()) * 100));
 				}
 				
-			}, 20, 60);
+			}.runTaskTimerAsynchronously(Main.getInstance(), 20, 60);
 			p.setScoreboard(board);
 			return;
 		}
@@ -1731,7 +1807,7 @@ public class KitAPI {
 			Team kdr = board.registerNewTeam("kdr");
 			kdr.addEntry(ChatColor.RESET.toString());
 			kdr.setPrefix("§7• K/D: ");
-			kdr.setSuffix("§c" + String.valueOf(KD));
+			kdr.setSuffix("§c" + String.valueOf(getKD(p.getName())));
 			obj.getScore(ChatColor.RESET.toString()).setScore(9);
 			
 			Team viiva2 = board.registerNewTeam("klffs");
@@ -1768,25 +1844,27 @@ public class KitAPI {
 			xp.setSuffix("§c" + getXp(p.getName()) + "/" + getLevel(p.getName()) * 100);
 			obj.getScore(ChatColor.DARK_GREEN.toString()).setScore(3);
 			
-			BukkitScheduler Scheduler = Bukkit.getServer().getScheduler();
-			Scheduler.scheduleAsyncRepeatingTask(Main.getInstance(), new Runnable() {
+			new BukkitRunnable(){
+
+				@Override
 				public void run() {
-					
 					if(!Main.getDataFile().getBoolean(p.getUniqueId().toString() + ".scoreboard")){ 
 						p.getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
+						cancel();
 						return; 
 					}
 					
 					board.getTeam("online").setSuffix("§c" + String.valueOf(Bukkit.getOnlinePlayers().size()));
 					board.getTeam("kills").setSuffix("§c" + String.valueOf(getKills(p.getName())));
 					board.getTeam("deaths").setSuffix("§c" + String.valueOf(getDeaths(p.getName())));
-					board.getTeam("kdr").setSuffix("§c" + String.valueOf(KD));
+					board.getTeam("kdr").setSuffix("§c" + String.valueOf(getKD(p.getName())));
 					board.getTeam("balance").setSuffix("§c" + String.valueOf(getBalance(p.getName())));
 					board.getTeam("lvl").setSuffix("§c" + String.valueOf(getLevel(p.getName())));
 					board.getTeam("xp").setSuffix("§c" + String.valueOf(getXp(p.getName()) + "/" + getLevel(p.getName()) * 100));
 				}
 				
-			}, 20, 60);
+			}.runTaskTimerAsynchronously(Main.getInstance(), 20, 60);
+			
 			p.setScoreboard(board);
 			return;
 		}
@@ -1798,9 +1876,25 @@ public class KitAPI {
 		}
 	}
 	
-	 public abstract class Result
-	    {
-	        public abstract void done(int money);
-	    }
+	public void resetData(String player){
+		setBalance(player, 0);
+		setBoosters(player, 0);
+		setDeaths(player, 0);
+		setKills(player, 0);
+		setXp(player, 0);
+		setlevel(player, 0);
+		setNick(player, NameColor.DEFAULT);
+	}
+	
+	public double getKD(String p){
+		
+		if(getKills(p) <= 0 || getDeaths(p) <= 0){ return 0.0D; }
+		
+		double absKD = ((double) getKills(p) / (double) getDeaths(p));
+		
+		double KD = Math.round(absKD * 10000.0D) / 10000.0D;
+		
+		return KD;
+	}
 	
 }

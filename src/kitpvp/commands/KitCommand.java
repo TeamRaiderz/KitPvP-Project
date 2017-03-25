@@ -39,6 +39,7 @@ public class KitCommand implements CommandExecutor{
 				sender.sendMessage("§7§m----------§c§l KitPvP Command Help §7§----------");
 				sender.sendMessage("§c/kit (kit) [player] §7Give a kit to a player");
 				sender.sendMessage("§c/kit reload §7Reload the files.");
+				sender.sendMessage("§c/kit openMenu [player]");
 				sender.sendMessage("§7§m-----------------------------------------");
 			}
 			else if (args[0].equalsIgnoreCase("reload")){
@@ -52,6 +53,14 @@ public class KitCommand implements CommandExecutor{
 					ChatUtils.sendMessageWithPrefix(sender, "§7Reloaded the plugin");
 				}
 				
+			}
+			else if (args[0].equalsIgnoreCase("openMenu")){
+				if(!(sender instanceof Player)){
+					ChatUtils.sendConsoleMessageWithPrefix("§cOnly for players!");
+					return true;
+				}
+				
+				Main.getKitManager().openKitMenu((Player) sender);
 			}
 			else{
 				
@@ -70,17 +79,27 @@ public class KitCommand implements CommandExecutor{
 				return true;
 			}
 		}
-		else if (args.length == 2){
-			
-				Player target = Bukkit.getPlayer(args[1]);
-				
-				if(target == null || !target.isOnline()){ return true; }
-			
+		else if (args.length == 2) {
+
+			Player target = Bukkit.getPlayer(args[1]);
+
+			if (target == null || !target.isOnline()) {
+				return true;
+			}
+
+			if (args[0].equalsIgnoreCase("openMenu")) {
+				if (!(sender instanceof Player)) {
+					ChatUtils.sendConsoleMessageWithPrefix("§cOnly for players!");
+					return true;
+				}
+
+				Main.getKitManager().openKitMenu(target);
+			} else {
 				String rawKitName = args[0].toUpperCase();
 				Kit kit = Kit.valueOf(rawKitName);
-				
+
 				Main.getKitManager().giveKit(target, kit);
-				
+			}
 		}
 		return true;
 	}

@@ -19,6 +19,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import kitpvp.Util.ChatUtils;
 import kitpvp.Util.KitAPI;
+import kitpvp.cosmetics.CosmeticManager;
 
 public class Profile implements Listener, CommandExecutor {
 
@@ -55,7 +56,7 @@ public class Profile implements Listener, CommandExecutor {
 					return true;
 				}
 				else if(api.getLanguage(p.getName()) == Language.ENGLISH){
-					ChatUtils.sendMessageWithPrefix(p, "§7That player's account is private!");
+					ChatUtils.sendMessageWithPrefix(p, "§7That account is private!");
 					return true;
 				}
 				return true;
@@ -72,15 +73,21 @@ public class Profile implements Listener, CommandExecutor {
 		
 		OfflinePlayer offTarget = Bukkit.getOfflinePlayer(target);
 		
+		CosmeticManager cm = new CosmeticManager();
+		
+		int tokens = cm.getTokens(target);
+		int chests =  cm.getChests(target);
+		int boosters =  cm.getBoosters(target);
+		
 		if(Main.getAPI().getLanguage(opener.getName()) == Language.FINNISH){
 			
-			Inventory inv = Bukkit.createInventory(null, 36, "Profiili " + offTarget.getName());
+			Inventory inv = Bukkit.createInventory(null, 36, "Profiili " + target);
 			
 			ItemStack user = new ItemStack(Material.SKULL_ITEM, 1, (byte) SkullType.PLAYER.ordinal());
 			SkullMeta userMeta = (SkullMeta) user.getItemMeta();
 			userMeta.setOwner(target);
 			userMeta.setDisplayName("§e" + target);
-			userMeta.setLore(Arrays.asList("§7§oSinun profiili."));
+			userMeta.setLore(Arrays.asList("§7§oPelaajan §e" + target + " §7§oprofiili."));
 			user.setItemMeta(userMeta);
 			
 			inv.setItem(13, user);
@@ -89,18 +96,20 @@ public class Profile implements Listener, CommandExecutor {
 			api.createItem(inv, 21, Material.NETHER_STAR, 1, "§b§lInfo", Arrays.asList("§7Rank: §a" + Main.getPermissions().getPrimaryGroup(opener.getWorld().getName(), offTarget), 
 					"§7Paikalla: §a" + offTarget.isOnline(), "§7Peliaika: §a" + Main.getAPI().getPlayTime(target), "§7Viim. kirjautuminen: §a" + Main.getAPI().getLastLogin(target)));
 			api.createItem(inv, 23, Material.PAPER, 1, "§e§lSaavutukset", Arrays.asList("§7Klikkaa nähdäksesi hänen", "§7saavutuksensa!"));
+			api.createItem(inv, 25, Material.GOLD_NUGGET, 1, "§6§lKosmetiikka", Arrays.asList("§7Tokenit: §6" + tokens, "§7Chestit: §6" + chests, 
+					"§7Boosterit: §6" + boosters));
 			
 			opener.openInventory(inv);
 		}
 		else if(Main.getAPI().getLanguage(opener.getName()) == Language.ENGLISH){
 			
-			Inventory inv = Bukkit.createInventory(null, 36,  "Profile " + offTarget.getName());
+			Inventory inv = Bukkit.createInventory(null, 36,  "Profile " + target);
 			
 			ItemStack user = new ItemStack(Material.SKULL_ITEM, 1, (byte) SkullType.PLAYER.ordinal());
 			SkullMeta userMeta = (SkullMeta) user.getItemMeta();
 			userMeta.setOwner(target);
 			userMeta.setDisplayName("§e" + target);
-			userMeta.setLore(Arrays.asList("§7§oYour profile."));
+			userMeta.setLore(Arrays.asList("§7§oThe profile of §e" + target + "§7§l."));
 			user.setItemMeta(userMeta);
 			
 			inv.setItem(13, user);
@@ -109,6 +118,8 @@ public class Profile implements Listener, CommandExecutor {
 			api.createItem(inv, 21, Material.NETHER_STAR, 1, "§b§lInfo", Arrays.asList("§7Rank: §a" + Main.getPermissions().getPrimaryGroup(opener.getWorld().getName(), offTarget), 
 					"§7Online: §a" + offTarget.isOnline(), "§7Playtime: §a" + Main.getAPI().getPlayTime(target), "§7Last login: §a" + Main.getAPI().getLastLogin(target)));
 			api.createItem(inv, 23, Material.PAPER, 1, "§e§lAchievements", Arrays.asList("§7Click to see the achievements", "§7of " + target + "!"));
+			api.createItem(inv, 25, Material.GOLD_NUGGET, 1, "§6§lCosmetics", Arrays.asList("§7Tokens: §6" + tokens, "§7Chests: §6" + chests, 
+					"§7Boosters: §6" + boosters));
 			
 			opener.openInventory(inv);
 		}
@@ -116,6 +127,13 @@ public class Profile implements Listener, CommandExecutor {
 	}
 	
 	public void openProfileMenu(Player p){
+		
+		
+		CosmeticManager cm = new CosmeticManager();
+		
+		int tokens = cm.getTokens(p.getName());
+		int chests = cm.getChests(p.getName());
+		int boosters = cm.getBoosters(p.getName());
 		
 		if(Main.getAPI().getLanguage(p.getName()) == Language.FINNISH){
 			
@@ -134,6 +152,8 @@ public class Profile implements Listener, CommandExecutor {
 			api.createItem(inv, 21, Material.NETHER_STAR, 1, "§b§lInfo", Arrays.asList("§7Rank: §a" + Main.getPermissions().getPrimaryGroup(p), 
 					"§7Paikalla: §a" + p.isOnline(), "§7Peliaika: §a" + Main.getAPI().getPlayTime(p.getName())));
 			api.createItem(inv, 23, Material.PAPER, 1, "§e§lSaavutukset", Arrays.asList("§7Klikkaa nähdäksesi sinun", "§7saavutukset!"));
+			api.createItem(inv, 25, Material.GOLD_NUGGET, 1, "§6§lKosmetiikka", Arrays.asList("§7Tokenit: §6" + tokens, "§7Chestit: §6" + chests, 
+					"§7Boosterit: §6" + boosters));
 			
 			p.openInventory(inv);
 		}
@@ -154,6 +174,8 @@ public class Profile implements Listener, CommandExecutor {
 			api.createItem(inv, 21, Material.NETHER_STAR, 1, "§b§lInfo", Arrays.asList("§7Rank: §a" + Main.getPermissions().getPrimaryGroup(p), 
 					"§7Online: §a" + p.isOnline(), "§7Playtime: §a" + Main.getAPI().getPlayTime(p.getName())));
 			api.createItem(inv, 23, Material.PAPER, 1, "§e§lAchievements", Arrays.asList("§7Click to see your achievements!"));
+			api.createItem(inv, 25, Material.GOLD_NUGGET, 1, "§6§lCosmetics", Arrays.asList("§7Tokens: §6" + tokens, "§7Chests: §6" + chests, 
+					"§7Boosters: §6" + boosters));
 			
 			p.openInventory(inv);
 		}

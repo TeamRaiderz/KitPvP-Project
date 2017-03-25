@@ -25,6 +25,39 @@ import ru.tehkode.permissions.bukkit.PermissionsEx;
 
 public class KitManager {
 
+	private final String SPIDER_NAME = "§bSpider", FISHER_NAME = "§bFisher", AIRMAN_NAME = "§bAirman", ARCHER_NAME = "§bArcher", GHOST_NAME = "§bGhost",
+			TANK_NAME = "§bTank", PYRO_NAME = "§bPyro", BOMB_ARCHER_NAME = "§bBomb Archer", THUNDER_GOD_NAME = "§bThunder God", KNIGHT_NAME = "§bKnight", BOMBER_NAME = "§bBomber";
+	
+	public boolean hasPermissionForKit(Player p, Kit kit){
+		if(p.hasPermission("server.kit." + String.valueOf(kit).toLowerCase())){
+			return true;
+		}
+		return false;
+	}
+	
+	public String getPermissionForKit(Kit kit){
+		return "server.kit." + String.valueOf(kit).toLowerCase();
+	}
+	
+	public String permissionMessage(Player p, Kit kit){
+		
+		if(Main.getAPI().getLanguage(p.getName()) == Language.FINNISH){
+			if (!(p.hasPermission(getPermissionForKit(kit)))) {
+				return "§c§lEt omista tätä pakkausta!";
+			} else {
+				return "§a§lKlikkaa saadaksesi!";
+			}
+		}
+		else if (Main.getAPI().getLanguage(p.getName()) == Language.ENGLISH){
+			if (!(p.hasPermission(getPermissionForKit(kit)))) {
+				return "§c§lYou do not have this kit!";
+			} else {
+				return "§a§lClick to receive!";
+			}
+		}
+		return "";
+	}
+	
 	public void createKitMenuItem(Inventory inv, String name, int pos, Material material, List<String> description){
 		ItemStack item = new ItemStack(material);
 		ItemMeta meta = item.getItemMeta();
@@ -198,7 +231,12 @@ public class KitManager {
 			inv.addItem(gapple);
 			break;
 		case ARCHER:
-			
+			giveLeatherArmor(p, Material.LEATHER_HELMET, Color.ORANGE, "§7Archer", Arrays.asList(""), Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+			giveLeatherArmor(p, Material.LEATHER_CHESTPLATE, Color.WHITE, "§7Archer", Arrays.asList(""), Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+			giveLeatherArmor(p, Material.LEATHER_LEGGINGS, Color.WHITE, "§7Archer", Arrays.asList(""), Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+			giveLeatherArmor(p, Material.LEATHER_BOOTS, Color.ORANGE, "§7Archer", Arrays.asList(""), Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+			giveItem(p, Material.WOOD_SWORD, "§7Archer", Arrays.asList(""), Enchantment.DAMAGE_ALL, 1);
+			giveItem(p, Material.BOW, "§7Archer", Arrays.asList(""), Enchantment.ARROW_INFINITE, 1);
 			inv.addItem(gapple);
 			break;
 		case GHOST:
@@ -220,22 +258,57 @@ public class KitManager {
 			inv.addItem(gapple);
 			break;
 		case PYRO:
+			Main.getAPI().removePotionEffects(p);
+			p.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, Integer.MAX_VALUE, 1));
+			
+			giveLeatherArmor(p, Material.LEATHER_HELMET, Color.RED, "§7Pyro", Arrays.asList(""), Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+			giveLeatherArmor(p, Material.LEATHER_CHESTPLATE, Color.RED, "§7Pyro", Arrays.asList(""), Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+			giveLeatherArmor(p, Material.LEATHER_LEGGINGS, Color.RED, "§7Pyro", Arrays.asList(""), Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+			giveLeatherArmor(p, Material.LEATHER_BOOTS, Color.RED, "§7Pyro", Arrays.asList(""), Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+			
+			giveItem(p, Material.WOOD_SWORD, "§7Pyro", Arrays.asList(""), Enchantment.FIRE_ASPECT, 1);
+			giveItem(p, Material.BOW, "§7Pyro", Arrays.asList(""), Enchantment.ARROW_FIRE, 1);
 			
 			inv.addItem(gapple);
 			break;
 		case BOMB_ARCHER:
 			
+			giveLeatherArmor(p, Material.LEATHER_HELMET, Color.LIME, "§7Bomb Archer", Arrays.asList(""), Enchantment.PROTECTION_ENVIRONMENTAL, 2);
+			giveLeatherArmor(p, Material.LEATHER_CHESTPLATE, Color.LIME, "§7Bomb Archer", Arrays.asList(""), Enchantment.PROTECTION_ENVIRONMENTAL, 2);
+			
+			giveItem(p, Material.STICK, "§7Bomb Archer", Arrays.asList(""), Enchantment.DAMAGE_ALL, 3);
+			giveItem(p, Material.BOW, "§7Bomb Archer", Arrays.asList(""), Enchantment.ARROW_INFINITE, 1);
+			
 			inv.addItem(gapple);
 			break;
 		case THUNDER_GOD:
+			
+			giveLeatherArmor(p, Material.LEATHER_HELMET, Color.RED, "§7Thunder God", Arrays.asList(""), Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+			giveLeatherArmor(p, Material.LEATHER_CHESTPLATE, Color.RED, "§7Thunder God", Arrays.asList(""), Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+			giveLeatherArmor(p, Material.LEATHER_LEGGINGS, Color.RED, "§7Thunder God", Arrays.asList(""), Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+			giveLeatherArmor(p, Material.LEATHER_BOOTS, Color.RED, "§7Thunder God", Arrays.asList(""), Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+			
+			giveItem(p, Material.DIAMOND_AXE, "§7Thunder God", Arrays.asList(""), Enchantment.DURABILITY, 1);
 			
 			inv.addItem(gapple);
 			break;
 		case KNIGHT:
 			
-			inv.addItem(gapple);
+			giveLeatherArmor(p, Material.LEATHER_HELMET, Color.RED, "§7Knight", Arrays.asList(""), Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+			giveArmor(p, Material.CHAINMAIL_CHESTPLATE, "§7Knight", Arrays.asList(""));
+			giveLeatherArmor(p, Material.LEATHER_LEGGINGS, Color.RED, "§7Knight", Arrays.asList(""), Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+			giveLeatherArmor(p, Material.LEATHER_BOOTS, Color.RED, "§7Knight", Arrays.asList(""), Enchantment.PROTECTION_ENVIRONMENTAL, 1);
+			
+			giveItem(p, Material.STONE_SWORD, "§7Knight", Arrays.asList(""));
+			
+			ItemStack knightGapple = new ItemStack(Material.GOLDEN_APPLE);
+			knightGapple.setAmount(7);
+			
+			inv.addItem(knightGapple);
 			break;
 		case BOMBER:
+			
+			// Under construction
 			
 			inv.addItem(gapple);
 			break;
@@ -243,14 +316,42 @@ public class KitManager {
 		}
 	}
 	
+	// GHOST, TANK, PYRO, BOMB_ARCHER, THUNDER_GOD, KNIGHT, BOMBER
+	
 	public void openKitMenu(Player p){
 		if(Main.getAPI().getLanguage(p.getName()) == Language.FINNISH){
 			Inventory inv = Bukkit.createInventory(null, 54, "Pakkaukset");
+			
+			createKitMenuItem(inv, KNIGHT_NAME, 10, Material.STONE_SWORD, Arrays.asList("", "§7§oKuvaus tähän...", "", permissionMessage(p, Kit.KNIGHT)));
+			createKitMenuItem(inv, SPIDER_NAME, 11, Material.SPIDER_EYE, Arrays.asList("", "§7§oKuvaus tähän...", "", permissionMessage(p, Kit.SPIDER)));
+			createKitMenuItem(inv, FISHER_NAME, 12, Material.FISHING_ROD, Arrays.asList("", "§7§oKuvaus tähän...", "", permissionMessage(p, Kit.FISHER)));
+			createKitMenuItem(inv, ARCHER_NAME, 13, Material.BOW, Arrays.asList("", "§7§oKuvaus tähän...", "", permissionMessage(p, Kit.ARCHER)));
+
+			createKitMenuItem(inv, GHOST_NAME, 14, Material.GHAST_TEAR, Arrays.asList("", "§7§oKuvaus tähän...", "", permissionMessage(p, Kit.GHOST)));
+			createKitMenuItem(inv, TANK_NAME, 15, Material.IRON_CHESTPLATE, Arrays.asList("", "§7§oKuvaus tähän...", "", permissionMessage(p, Kit.TANK)));
+			createKitMenuItem(inv, PYRO_NAME, 16, Material.BLAZE_ROD, Arrays.asList("", "§7§oKuvaus tähän...", "", permissionMessage(p, Kit.PYRO)));
+			createKitMenuItem(inv, BOMB_ARCHER_NAME, 19, Material.BLAZE_POWDER, Arrays.asList("", "§7§oKuvaus tähän...", "", permissionMessage(p, Kit.BOMB_ARCHER)));
+			createKitMenuItem(inv, THUNDER_GOD_NAME, 20, Material.IRON_AXE, Arrays.asList("", "§7§oKuvaus tähän...", "", permissionMessage(p, Kit.THUNDER_GOD)));
+			createKitMenuItem(inv, BOMBER_NAME, 21, Material.TNT, Arrays.asList("", "§7§oKuvaus tähän...", "", permissionMessage(p, Kit.BOMBER)));
+			createKitMenuItem(inv, AIRMAN_NAME, 22, Material.FEATHER, Arrays.asList("", "§7§oKuvaus tähän...", "", permissionMessage(p, Kit.AIRMAN)));
 			
 			p.openInventory(inv);
 		}
 		else if(Main.getAPI().getLanguage(p.getName()) == Language.ENGLISH){
 			Inventory inv = Bukkit.createInventory(null, 54, "Kits");
+			
+			createKitMenuItem(inv, KNIGHT_NAME, 10, Material.STONE_SWORD, Arrays.asList("", "§7§oDescription here...", "", permissionMessage(p, Kit.KNIGHT)));
+			createKitMenuItem(inv, SPIDER_NAME, 11, Material.SPIDER_EYE, Arrays.asList("", "§7§oDescription here...", "", permissionMessage(p, Kit.SPIDER)));
+			createKitMenuItem(inv, FISHER_NAME, 12, Material.FISHING_ROD, Arrays.asList("", "§7§oDescription here...", "", permissionMessage(p, Kit.FISHER)));
+			createKitMenuItem(inv, ARCHER_NAME, 13, Material.BOW, Arrays.asList("", "§7§oDescription here...", "", permissionMessage(p, Kit.ARCHER)));
+
+			createKitMenuItem(inv, GHOST_NAME, 14, Material.GHAST_TEAR, Arrays.asList("", "§7§oDescription here...", "", permissionMessage(p, Kit.GHOST)));
+			createKitMenuItem(inv, TANK_NAME, 15, Material.IRON_CHESTPLATE, Arrays.asList("", "§7§oDescription here...", "", permissionMessage(p, Kit.TANK)));
+			createKitMenuItem(inv, PYRO_NAME, 16, Material.BLAZE_ROD, Arrays.asList("", "§7§oDescription here...", "", permissionMessage(p, Kit.PYRO)));
+			createKitMenuItem(inv, BOMB_ARCHER_NAME, 19, Material.BLAZE_POWDER, Arrays.asList("", "§7§oDescription here...", "", permissionMessage(p, Kit.BOMB_ARCHER)));
+			createKitMenuItem(inv, THUNDER_GOD_NAME, 20, Material.IRON_AXE, Arrays.asList("", "§7§oDescription here...", "", permissionMessage(p, Kit.THUNDER_GOD)));
+			createKitMenuItem(inv, BOMBER_NAME, 21, Material.TNT, Arrays.asList("", "§7§oDescription here...", "", permissionMessage(p, Kit.BOMBER)));
+			createKitMenuItem(inv, AIRMAN_NAME, 22, Material.FEATHER, Arrays.asList("", "§7§oDescription here...", "", permissionMessage(p, Kit.AIRMAN)));
 			
 			p.openInventory(inv);
 		}

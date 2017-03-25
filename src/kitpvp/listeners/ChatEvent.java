@@ -18,6 +18,8 @@ public class ChatEvent implements Listener{
 		//The player who sent the player
 		Player p = e.getPlayer();
 	
+		e.setCancelled(true);
+		
 		String msg = e.getMessage().toLowerCase();
 		
 		for(Player recipient : Bukkit.getOnlinePlayers()){
