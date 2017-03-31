@@ -34,14 +34,28 @@ public class DamageListener implements Listener{
 		killer.getInventory().addItem(new ItemStack(Material.GOLDEN_APPLE));
 		
 		e.setDeathMessage(null);
+		e.getDrops().clear();
+		
+		int money =  Main.getAPI().randInt(10, 20);
+		int xp = Main.getAPI().randInt(5, 25);
+		
+		Main.getAPI().addBalance(killer.getName(), money);
+		Main.getAPI().addXp(killer.getName(), xp);
+		
+		if(Main.getAPI().getLanguage(killer.getName()) == Language.FINNISH){
+			ChatUtils.sendMessageWithPrefix(killer, "§7Tapoit pelaajan §c" + victim.getName() + " §7ja sait §c" + xp + " §7xp:tä ja §c" + money + " §7rahaa!");
+		}
+		else if(Main.getAPI().getLanguage(killer.getName()) == Language.ENGLISH){
+			ChatUtils.sendMessageWithPrefix(killer, "§7You killed the player §c" + victim.getName() + " §7and got §c" + xp + " §7XP and §c" + money + " §7money from it!");
+		}
 		
 		if (api.getLanguage(victim.getName()) == Language.FINNISH) {
 
-			ChatUtils.sendMessageWithPrefix(victim, "§7Pelaaja §c" + killer.getName() + " §7tappoi sinut. Hänen elämänsä: §c" + killer.getHealth() / 2 + "§7!");
+			ChatUtils.sendMessageWithPrefix(victim, "§7Pelaaja §c" + killer.getName() + " §7tappoi sinut. Hänen elämänsä: §c" + Main.getAPI().getHealth(killer) / 2 + "§7!");
 			
 		} else if (api.getLanguage(victim.getName()) == Language.ENGLISH) {
 
-			ChatUtils.sendMessageWithPrefix(victim, "§7You were killed by §c" + killer.getName() + "§7. Your killer's health: §c" + killer.getHealth() / 2 + "§7!");
+			ChatUtils.sendMessageWithPrefix(victim, "§7You were killed by §c" + killer.getName() + "§7. Your killer's health: §c" + Main.getAPI().getHealth(killer) / 2 + "§7!");
 			
 		}
 
@@ -56,7 +70,7 @@ public class DamageListener implements Listener{
 		Player victim = (Player) e.getEntity();
 		Player dmger = (Player) e.getDamager();
 		
-		Main.getPacketUtils().sendActionBar(dmger, "§2§l" + victim.getName() + " §a-> " + victim.getHealth() / 2 + "/" + victim.getMaxHealth() / 2);
+		Main.getPacketUtils().sendActionBar(dmger, "§2§l" + victim.getName() + " §a-> " + Main.getAPI().getHealth(victim) / 2 + "/" + victim.getMaxHealth() / 2);
 		
 	}
 	

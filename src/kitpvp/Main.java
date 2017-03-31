@@ -18,6 +18,7 @@ import kitpvp.Util.DataYML;
 import kitpvp.Util.KitAPI;
 import kitpvp.Util.KitsYML;
 import kitpvp.Util.PacketUtils;
+import kitpvp.commands.CommandAnswer;
 import kitpvp.commands.CommandCommands;
 import kitpvp.commands.CommandDB;
 import kitpvp.commands.CommandDiscord;
@@ -39,6 +40,7 @@ import kitpvp.listeners.AbilityListener;
 import kitpvp.listeners.ChatEvent;
 import kitpvp.listeners.ConnectionListener;
 import kitpvp.listeners.DamageListener;
+import kitpvp.listeners.KitMenuListener;
 import kitpvp.listeners.PlayerListeners;
 import kitpvp.punishment.BlacklistCommand;
 import kitpvp.punishment.PunishCommand;
@@ -95,6 +97,7 @@ public class Main extends JavaPlugin implements Plugin{
 		registerCommand("help", new CommandHelp());
 		registerCommand("commands", new CommandCommands());
 		registerCommand("playerinfo", new CommandPlayerInfo());
+		registerCommand("answer", new CommandAnswer());
 		
 		registerListener(this, new ConnectionListener());
 		registerListener(this, new PrefixCommand());
@@ -111,6 +114,7 @@ public class Main extends JavaPlugin implements Plugin{
 		registerListener(this, new PunishmentManager());
 		registerListener(this, new PunishCommand());
 		registerListener(this, new PlayerListeners());
+		registerListener(this, new KitMenuListener());
 		
 		for(Player online : Bukkit.getOnlinePlayers()){
 //			getAPI().startPlayTimeCount(online);

@@ -14,6 +14,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import kitpvp.Language;
 import kitpvp.Main;
+import kitpvp.SpawnItems;
 import kitpvp.Util.ChatUtils;
 import kitpvp.commands.PrefixCommand.NameColor;
 import kitpvp.cosmetics.CosmeticManager;
@@ -67,6 +68,10 @@ public class ConnectionListener implements Listener{
 		data.set(uuid + ".currentName", p.getName());
 		data.set(uuid + ".ipAddress", p.getAddress().getAddress().toString());
 		Main.saveDataFile();
+		
+		if(!(SpawnItems.playersHidden.containsKey(p.getName()))){
+			SpawnItems.playersHidden.put(p.getName(), false);
+		}
 		
 		//Sending join title
 		if(Main.getAPI().getLanguage(p.getName()) == Language.FINNISH){

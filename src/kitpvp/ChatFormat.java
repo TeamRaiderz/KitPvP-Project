@@ -55,7 +55,7 @@ public class ChatFormat implements Listener{
 			e.setCancelled(true);
 			for(Player online : Bukkit.getOnlinePlayers()){
 				if(Main.getDataFile().getBoolean(online.getUniqueId().toString() + ".chat")){
-					TextComponent msg = new TextComponent(ChatColor.translateAlternateColorCodes('&', e.getMessage().replace(":)", "☺").replace(":(", "☹")));
+					TextComponent msg = new TextComponent(ChatColor.translateAlternateColorCodes('&', stringWithEmoticons(e.getMessage())));
 					online.spigot().sendMessage(format, msg);
 				}
 			}
@@ -64,7 +64,7 @@ public class ChatFormat implements Listener{
 			e.setCancelled(true);
 			for(Player online : Bukkit.getOnlinePlayers()){
 				if(Main.getDataFile().getBoolean(online.getUniqueId().toString() + ".chat")){
-					TextComponent msg = new TextComponent(e.getMessage().replace(":)", "☺").replace(":(", "☹"));
+					TextComponent msg = new TextComponent(stringWithEmoticons(e.getMessage()));
 					online.spigot().sendMessage(format1, msg);
 				}
 			}
@@ -72,7 +72,7 @@ public class ChatFormat implements Listener{
 		else if(p.hasPermission("chat.color") && Main.getPermissions().getPrimaryGroup(p) != null){
 			e.setCancelled(true);
 			for(Player online : Bukkit.getOnlinePlayers()){
-				TextComponent msg = new TextComponent(ChatColor.translateAlternateColorCodes('&', e.getMessage().replace(":)", "☺").replace(":(", "☹")));
+				TextComponent msg = new TextComponent(ChatColor.translateAlternateColorCodes('&',  stringWithEmoticons(e.getMessage())));
 				if(Main.getDataFile().getBoolean(online.getUniqueId().toString() + ".chat")){
 					online.spigot().sendMessage(format2, msg);
 				}
@@ -81,7 +81,7 @@ public class ChatFormat implements Listener{
 		else{
 			e.setCancelled(true);
 			for(Player online : Bukkit.getOnlinePlayers()){
-				TextComponent msg = new TextComponent(ChatColor.translateAlternateColorCodes('&', e.getMessage().replace(":)", "☺").replace(":(", "☹")));
+				TextComponent msg = new TextComponent(ChatColor.translateAlternateColorCodes('&', stringWithEmoticons(e.getMessage())));
 				if(Main.getDataFile().getBoolean(online.getUniqueId().toString() + ".chat")){
 					online.spigot().sendMessage(format2, msg);
 				}
@@ -117,6 +117,12 @@ public class ChatFormat implements Listener{
 		}
 		
 		return null;
+	}
+	
+	private String stringWithEmoticons(String s){
+		s = s.replace(":)", "☺").replace(":(", "☹").replace("<3", "♥").replace("*star*", "★").replace("*music*", "♫")
+				.replace("(c)", "©").replace("(r)", "®").replace("*check*", "✓").replaceAll("._.", "๏_๏").replace("->", "→").replace("<-", "←");
+		return s;
 	}
 	
 }

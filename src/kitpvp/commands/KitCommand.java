@@ -44,7 +44,6 @@ public class KitCommand implements CommandExecutor{
 			}
 			else if (args[0].equalsIgnoreCase("reload")){
 				DataYML.reloadFile();
-				KitsYML.reloadFile();
 				Main.getInstance().reloadConfig();
 				
 				if (Main.getAPI().getLanguage(sender.getName()) == Language.FINNISH) {

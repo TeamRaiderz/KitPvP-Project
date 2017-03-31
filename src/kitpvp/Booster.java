@@ -69,6 +69,18 @@ public class Booster implements Listener, CommandExecutor{
 					return true;
 				}
 				
+				if(Main.getConfigFile().getStringList("Booster.thankedPlayers").contains(p.getName())){
+					if(Main.getAPI().getLanguage(p.getName()) == Language.FINNISH){
+						ChatUtils.sendMessageWithPrefix(p, "§7Olet jo kiittänyt tätä pelaajaa!");
+					}
+					else if(Main.getAPI().getLanguage(p.getName()) == Language.ENGLISH){
+						ChatUtils.sendMessageWithPrefix(p, "§7You've already thanked this player!");
+					}
+				}
+				
+				Main.getConfigFile().getStringList("Booster.thankedPlayers").add(p.getName());
+				Main.getInstance().saveConfig();
+				
 				if(Main.getAPI().getLanguage(p.getName()) == Language.FINNISH){
 					ChatUtils.sendMessageWithPrefix(p, "§7Kiitit pelaajaa §c" + Main.getAPI().getCurrentBoosterUser() + " §7ja sait siitä §c10$§7!");
 				}

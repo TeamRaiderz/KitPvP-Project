@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
@@ -1311,7 +1312,7 @@ public class KitAPI {
 		
 		Player p = Bukkit.getPlayer(player);
 		
-		if(p.isOnline()){
+		if(p.isOnline() && p != null){
 			
 			if(getLanguage(p.getName()) == Language.FINNISH){
 				ChatUtils.sendMessageWithPrefix(p, "§7Ansaitsit uuden levelin! (§c" + newLvl + "§7)");
@@ -1895,6 +1896,18 @@ public class KitAPI {
 		double KD = Math.round(absKD * 10000.0D) / 10000.0D;
 		
 		return KD;
+	}
+	
+	public int randInt(int min, int max) {
+	    Random rand = new Random();
+	    int randomNum = rand.nextInt((max - min) + 1) + min;
+	    return randomNum;
+	}
+	
+	public double getHealth(Player target){
+		double rawHealth = target.getHealth();
+		double health = Math.round(rawHealth * 10.0D) / 10.0D;
+		return health;
 	}
 	
 }

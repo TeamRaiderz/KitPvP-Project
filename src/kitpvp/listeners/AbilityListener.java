@@ -11,13 +11,13 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -26,6 +26,8 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -39,6 +41,8 @@ public class AbilityListener implements Listener {
 	 public static HashMap<String, Double> flyCooldown = new HashMap<String, Double>();
 	 public static HashMap<String, Double> archerCooldown = new HashMap<String, Double>();
 	 public static HashMap<String, Double> bombArcherCooldown = new HashMap<String, Double>();
+	 public static HashMap<String, Double> bomberCooldown = new HashMap<String, Double>();
+	 public static HashMap<String, Double> protectorCooldown = new HashMap<String, Double>();
 	 public static List<String> arrowShot = new ArrayList<String>();
 	 public static List<Projectile> customArrow = new ArrayList<Projectile>();
 	 public static HashMap<String, Location> bombArrowLoc = new HashMap<String, Location>();
@@ -98,6 +102,49 @@ public class AbilityListener implements Listener {
 					}.runTaskTimerAsynchronously(Main.getInstance(), 0, 2);
 				}
 			}
+			if(type == Material.SULPHUR && item.hasItemMeta() && item.getItemMeta().getDisplayName().equals("§7Protector")){
+				
+				if(!(protectorCooldown.containsKey(p.getName()))){
+					protectorCooldown.put(p.getName(), 10.0D);
+					new BukkitRunnable() {
+						public void run() {
+							
+							if (protectorCooldown.containsKey(p.getName())) {
+
+								Main.getPacketUtils().sendActionBar(p, "§a§lAbility §a- §c"
+										+ (Math.round(protectorCooldown.get(p.getName()) * 10.0D) / 10.0D));
+
+								protectorCooldown.put(p.getName(), protectorCooldown.get(p.getName()) - 0.1D);
+
+								if (protectorCooldown.get(p.getName()) <= 0.0D) {
+									protectorCooldown.remove(p.getName());
+
+									if (Main.getAPI().getLanguage(p.getName()) == Language.FINNISH) {
+										ChatUtils.sendMessageWithPrefix(p, "§7Voit nyt käyttää abilityäsi!");
+									} else if (Main.getAPI().getLanguage(p.getName()) == Language.ENGLISH) {
+										ChatUtils.sendMessageWithPrefix(p, "§7You can now use your ability!");
+									}
+									cancel();
+								}
+
+							}
+
+						}
+					}.runTaskTimerAsynchronously(Main.getInstance(), 0, 2);
+					
+					p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * 5, 1));
+					for(Entity ent : p.getNearbyEntities(5, 5, 5)){
+						if(p instanceof Player){
+							if(ent == p) continue;
+							ent.setVelocity(ent.getLocation().getDirection().multiply(1.5D).setY(5));
+							((Player) ent).addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 5, 2));
+							((Player) ent).addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 20 * 5, 3));
+						}
+					}
+				}
+				
+				
+			}
 			//Spider ability
 			if(e.getAction() == Action.RIGHT_CLICK_BLOCK && type == Material.SPIDER_EYE && item.hasItemMeta()){
 				e.setCancelled(true);
@@ -114,13 +161,17 @@ public class AbilityListener implements Listener {
 					thunderGodCooldown.put(p.getName(), 10.0D);
 					
 					Block target = p.getTargetBlock((HashSet<Byte>) null, 100);
+					
+					if(target.getType() == Material.AIR){ return; }
+					
 					p.getWorld().strikeLightning(target.getLocation());
+					
 					if(p.getLastDamage() > 0.0D){ p.setLastDamage(0.0D); }
 					for(Entity ent : p.getWorld().getNearbyEntities(target.getLocation(), 5, 5, 5)){
 						if(ent instanceof Player){
 							Player near = (Player) ent;
-							if(near == p) continue;
-							near.setVelocity(new Vector(0, 1, 0));
+							if(near == p || ent == p) continue;
+							near.setVelocity(p.getLocation().toVector().subtract(p.getLocation().toVector()).multiply(2.0).setY(1));
 							near.damage(5.0);
 						}
 					}
@@ -157,9 +208,9 @@ public class AbilityListener implements Listener {
 		//Archer ability
 		else if(e.getAction() == Action.LEFT_CLICK_AIR 
 				|| e.getAction() == Action.LEFT_CLICK_BLOCK){
-			e.setCancelled(true);
 			
 			if(type == Material.BOW && item.hasItemMeta() && item.getItemMeta().getDisplayName().equals("§7Archer")){
+				e.setCancelled(true);
 				if(!(archerCooldown.containsKey(p.getName()))){
 					shootCustomArrow(p);
 					archerCooldown.put(p.getName(), 3.0D);
@@ -193,19 +244,64 @@ public class AbilityListener implements Listener {
 			}
 			else if (type == Material.BOW && item.hasItemMeta()
 					&& item.getItemMeta().getDisplayName().equals("§7Bomb Archer")) {
+				e.setCancelled(true);
 
 				if (bombArrowLoc.containsKey(p.getName())) {
 					
 					Location arrowLoc = bombArrowLoc.get(p.getName());
 					Location shooterLoc = p.getLocation();
-
-					Vector velocity = arrowLoc.toVector().subtract(shooterLoc.toVector()).normalize().multiply(2.0).setY(1);
+					
+					Vector velocity = arrowLoc.toVector().subtract(shooterLoc.toVector()).multiply(2.0).setY(1);
 					p.setVelocity(p.getVelocity().add(velocity));
 					
 					p.playSound(p.getLocation(), Sound.NOTE_PIANO, 1f, 0.2f);
 					bombArrowLoc.remove(p.getName());
 				}
 
+			}
+			else if (type == Material.TNT && item.hasItemMeta() && item.getItemMeta().getDisplayName().equals("§7Bomber")){
+				
+				e.setCancelled(true);
+				
+				if(!(bomberCooldown.containsKey(p.getName()))){
+					bomberCooldown.put(p.getName(), 10.0D);
+					double speedFactor = 1.5D;
+					Location handLocation = p.getLocation();
+					handLocation.setY(handLocation.getY() + 1.0D);
+
+					Vector direction = handLocation.getDirection();
+
+					Entity entity = p.getWorld().spawn(handLocation, TNTPrimed.class);
+					entity.setVelocity(direction.multiply(speedFactor));
+					p.getInventory().removeItem(new ItemStack[] { new ItemStack(Material.TNT, 1) });
+					
+					//Cooldown
+					new BukkitRunnable() {
+						public void run() {
+
+							if (bomberCooldown.containsKey(p.getName())) {
+
+								Main.getPacketUtils().sendActionBar(p,
+										"§a§lAbility §a- §c" + (Math.round(bomberCooldown.get(p.getName()) * 10.0D) / 10.0D));
+
+								bomberCooldown.put(p.getName(), bomberCooldown.get(p.getName()) - 0.1D);
+
+								if (bomberCooldown.get(p.getName()) <= 0.0D) {
+									bomberCooldown.remove(p.getName());
+
+									if (Main.getAPI().getLanguage(p.getName()) == Language.FINNISH) {
+										ChatUtils.sendMessageWithPrefix(p, "§7Voit nyt käyttää abilityäsi!");
+									} else if (Main.getAPI().getLanguage(p.getName()) == Language.ENGLISH) {
+										ChatUtils.sendMessageWithPrefix(p, "§7You can now use your ability!");
+									}
+									cancel();
+								}
+
+							}
+
+						}
+					}.runTaskTimerAsynchronously(Main.getInstance(), 0, 2);
+				}
 			}
 		}
 		
@@ -274,8 +370,8 @@ public class AbilityListener implements Listener {
 					for(Entity p : e.getEntity().getNearbyEntities(5, 5, 5)){
 						if(p instanceof Player){
 							if(p == shooter) continue;
-							p.setVelocity(new Vector(0, 1, 0));
-							((Player) p).damage(2.5D);
+							p.getLocation().toVector().subtract(e.getEntity().getLocation().toVector()).multiply(1.0D).setY(1.0);
+							((Player) p).damage(4.0D);
 						}
 					}
 					e.getEntity().remove();
@@ -298,7 +394,7 @@ public class AbilityListener implements Listener {
 
 				if(shooter.getItemInHand().getType() == Material.BOW && shooter.getItemInHand().hasItemMeta()
 						&& shooter.getItemInHand().getItemMeta().getDisplayName().equals("§7Bomb Archer")){
-					if (!bombArrowShot.contains(shooter.getName())) {
+					if (!bombArrowShot.contains(shooter.getName()) && !bombArcherCooldown.containsKey(shooter.getName())) {
 						bombArrowShot.add(shooter.getName());
 
 						bombArcherCooldown.put(shooter.getName(), 8.0D);
@@ -331,7 +427,7 @@ public class AbilityListener implements Listener {
 						}.runTaskTimerAsynchronously(Main.getInstance(), 0, 2);
 
 					}
-					else{
+					else if(bombArrowShot.contains(shooter.getName()) && bombArcherCooldown.containsKey(shooter.getName())){
 						e.setCancelled(true);
 					}
 				}

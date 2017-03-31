@@ -67,6 +67,8 @@ commands:
   playerinfo: 
     description: Player info
     aliases: [pinfo, playeri]
+  answer: 
+    description: Answer to a question
     
 permissions:
   server.mod:
