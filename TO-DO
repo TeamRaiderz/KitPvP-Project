@@ -4,10 +4,6 @@
                             *--------------*
                          *-----TO DO LIST-----*
                             *--------------*
-                            
-                            
-                            
-                1. Kitpvp-map (Kassu)
 
                 2. Lisää porukkaa ( Kassu/ TR )
 =======
@@ -33,9 +29,7 @@ Custom saavutukset:
       tappaja 1 10 kill / Kaikista joku palkinto
       tappaja 2 100 kill
       tappaja 3 1000kill
-
-Cps test: (DONE)
-   Samantyylinen kuin rulettaja.net
+      
 Bow aim test:
 
     pitää osua npc ukkoihin ja osumasta saa pisteen // aikaa 30sec
@@ -49,16 +43,6 @@ Something to think:
 
   SERVER NAME
   
-  
-  
-NS BOOSTERIT:      UNFINISHED
-   IRL RAHA OSTO
-   antaa kaikille 2h ajaksi tupla raha ja xp
-   
-   Vipillä (BOOSTER) kuukausittain 1 amplifier:
-   
-   (KIITOS JUTTU. CHATTI EVENT JOTA PAINAMALLA PELAAJA JA BOOSTERIN "HALTIJA" SAAVAT MOLEMMAT 5-15dollaria:
-  
 
 NS COSMETIC BOX     UNFINISHED
     
@@ -70,40 +54,24 @@ NS COSMETIC BOX     UNFINISHED
     
 
 
-LEVELSYSTEEMI:    TEHTY
-      
-      ns "valuuttana" xp
-
-      taposta satunnainen määrä xp-pisteitä:
-      n. 5-20xp
-      
-      LEVELIT 50:
+LEVELSYSTEEMI: 90% FINISHED 
       
       *ANTI FARM* Sama kuin sgteamssissa
-      
-      
-      LEVEL = LEVEL x 100
+      *Level up systeemi parempi*
       
       
       
       
- SPAWN ITEMIT:      UNFINISHED (75%)
-    -hide players
+ SPAWN ITEMIT:      UNIFNISHED(75%)
     -ns cosmetic "crate" mistä saa avattua nimen värejä, partikkelejä, nuolijanoja yms
     -joku info kirja
-    -MUUTA?
     
     HUOM!!! Spawn itemit häviää kitin valinnassa tai hypätessä areenalle/// poistumisessa spawn regionilta!
 
 
 
 
-
-KAIKKI MYSLI JUTTU SPAMMIT POIS!!
-
-
-
-Emojit chattiin :),:(,<3,:3
+Emojit chattiin :),:(,<3,:3 (FINISHED)
 
 
 
@@ -113,10 +81,6 @@ Emojit chattiin :),:(,<3,:3
 
 Tablist:
 Header, footer, ping /// Adminit,modet ekana
-
-
-Kitgui
-
 
 
 
