@@ -1,5 +1,6 @@
 package kitpvp.listeners;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -8,10 +9,11 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
-import kitpvp.Language;
 import kitpvp.Main;
 import kitpvp.Util.ChatUtils;
 import kitpvp.Util.KitAPI;
+import kitpvp.Util.Language;
+import kitpvp.arena.events.ArenaKillEvent;
 
 public class DamageListener implements Listener{
 
@@ -41,6 +43,8 @@ public class DamageListener implements Listener{
 		
 		Main.getAPI().addBalance(killer.getName(), money);
 		Main.getAPI().addXp(killer.getName(), xp);
+		
+		Bukkit.getPluginManager().callEvent(new ArenaKillEvent(killer.getName(), victim.getName()));
 		
 		if(Main.getAPI().getLanguage(killer.getName()) == Language.FINNISH){
 			ChatUtils.sendMessageWithPrefix(killer, "§7Tapoit pelaajan §c" + victim.getName() + " §7ja sait §c" + xp + " §7xp:tä ja §c" + money + " §7rahaa!");

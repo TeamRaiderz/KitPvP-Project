@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import kitpvp.Main;
 
@@ -22,6 +23,17 @@ public class MySQLManager {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	public void openAsyncConnection(){
+		new BukkitRunnable(){
+
+			@Override
+			public void run() {
+				openConnection();
+			}
+			
+		}.runTaskAsynchronously(Main.getInstance());
 	}
 	
 	public synchronized void openConnection(){

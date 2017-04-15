@@ -31,9 +31,9 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import kitpvp.Language;
 import kitpvp.Main;
 import kitpvp.Util.ChatUtils;
+import kitpvp.Util.Language;
 import net.minecraft.server.v1_8_R3.EnumParticle;
 import net.minecraft.server.v1_8_R3.PacketPlayOutWorldParticles;
 public class AbilityListener implements Listener {
@@ -106,6 +106,17 @@ public class AbilityListener implements Listener {
 				
 				if(!(protectorCooldown.containsKey(p.getName()))){
 					protectorCooldown.put(p.getName(), 10.0D);
+
+					p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * 5, 1));
+					for(Entity ent : p.getNearbyEntities(5, 5, 5)){
+						if(p instanceof Player){
+							if(ent == p) continue;
+							Vector velocity = (p.getLocation().toVector().subtract(p.getLocation().toVector()).multiply(2.0).setY(1));
+							p.setVelocity(p.getVelocity().add(velocity));
+							((Player) ent).addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 5, 2));
+							((Player) ent).addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 20 * 5, 3));
+						}
+					}
 					new BukkitRunnable() {
 						public void run() {
 							
@@ -132,15 +143,6 @@ public class AbilityListener implements Listener {
 						}
 					}.runTaskTimerAsynchronously(Main.getInstance(), 0, 2);
 					
-					p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * 5, 1));
-					for(Entity ent : p.getNearbyEntities(5, 5, 5)){
-						if(p instanceof Player){
-							if(ent == p) continue;
-							ent.setVelocity(ent.getLocation().getDirection().multiply(1.5D).setY(5));
-							((Player) ent).addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 5, 2));
-							((Player) ent).addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 20 * 5, 3));
-						}
-					}
 				}
 				
 				
@@ -251,7 +253,7 @@ public class AbilityListener implements Listener {
 					Location arrowLoc = bombArrowLoc.get(p.getName());
 					Location shooterLoc = p.getLocation();
 					
-					Vector velocity = arrowLoc.toVector().subtract(shooterLoc.toVector()).multiply(2.0).setY(1);
+					Vector velocity = arrowLoc.toVector().subtract(shooterLoc.toVector()).normalize().multiply(2.0).setY(1);
 					p.setVelocity(p.getVelocity().add(velocity));
 					
 					p.playSound(p.getLocation(), Sound.NOTE_PIANO, 1f, 0.2f);
@@ -370,7 +372,8 @@ public class AbilityListener implements Listener {
 					for(Entity p : e.getEntity().getNearbyEntities(5, 5, 5)){
 						if(p instanceof Player){
 							if(p == shooter) continue;
-							p.getLocation().toVector().subtract(e.getEntity().getLocation().toVector()).multiply(1.0D).setY(1.0);
+							Vector velocity = p.getLocation().toVector().subtract(p.getLocation().toVector()).normalize().multiply(2.0).setY(1);
+							p.setVelocity(velocity);
 							((Player) p).damage(4.0D);
 						}
 					}
@@ -433,5 +436,9 @@ public class AbilityListener implements Listener {
 				}
 			}
 		}
+	}
+	
+	public void executeSpeedAbility(Player p){
+		
 	}
 }

@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import kitpvp.Language;
 import kitpvp.Main;
 import net.minecraft.server.v1_8_R3.EntityPlayer;
 

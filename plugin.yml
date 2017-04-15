@@ -69,6 +69,20 @@ commands:
     aliases: [pinfo, playeri]
   answer: 
     description: Answer to a question
+  tp:
+    description: Teleport to a player
+  setspawn:
+    description: Set the spawn
+  spawn:
+    description: Teleport to spawn
+  staff:
+    description: See the staff members
+  mail:
+    description: Deliveries
+    aliases: [deliveries, posti, toimitukset]
+  staffmode:
+    description: Toggle Staffmode
+    aliases: [sm, mod, modmode, adminmode, am]
     
 permissions:
   server.mod:

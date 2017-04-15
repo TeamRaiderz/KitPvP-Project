@@ -7,8 +7,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import kitpvp.Language;
 import kitpvp.Main;
+import kitpvp.Util.Language;
 
 public class ChatEvent implements Listener{
 

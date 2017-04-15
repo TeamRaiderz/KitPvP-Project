@@ -17,8 +17,8 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import kitpvp.Language;
 import kitpvp.Main;
+import kitpvp.Util.Language;
 import ru.tehkode.permissions.PermissionGroup;
 import ru.tehkode.permissions.PermissionUser;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
@@ -217,12 +217,14 @@ public class KitManager {
 		switch(kit){
 		
 		case SPIDER:
+			Main.getAPI().removePotionEffects(p);
 			giveLeatherArmor(p, Material.LEATHER_HELMET, Color.RED, "§7Spider", Arrays.asList(""), Enchantment.PROTECTION_ENVIRONMENTAL, 1);
 			giveLeatherArmor(p, Material.LEATHER_BOOTS, Color.RED, "§7Spider", Arrays.asList(""), Enchantment.PROTECTION_ENVIRONMENTAL, 1);
 			giveItem(p, Material.SPIDER_EYE, "§7Spider", Arrays.asList(""), Enchantment.DAMAGE_ALL, 2);
 			inv.addItem(gapple);
 			break;
 		case FISHER:
+			Main.getAPI().removePotionEffects(p);
 			giveLeatherArmor(p, Material.LEATHER_HELMET, Color.BLUE, "§7Fisher", Arrays.asList(""));
 			giveLeatherArmor(p, Material.LEATHER_CHESTPLATE, Color.GRAY, "§7Fisher", Arrays.asList(""));
 			giveLeatherArmor(p, Material.LEATHER_LEGGINGS, Color.GRAY, "§7Fisher", Arrays.asList(""));
@@ -232,6 +234,7 @@ public class KitManager {
 			inv.addItem(gapple);
 			break;
 		case AIRMAN:
+			Main.getAPI().removePotionEffects(p);
 			giveLeatherArmor(p, Material.LEATHER_HELMET, Color.ORANGE, "§7Airman", Arrays.asList(""), Enchantment.PROTECTION_ENVIRONMENTAL, 1);
 			giveLeatherArmor(p, Material.LEATHER_CHESTPLATE, Color.WHITE, "§7Airman", Arrays.asList(""));
 			giveLeatherArmor(p, Material.LEATHER_LEGGINGS, Color.WHITE, "§7Airman", Arrays.asList(""));
@@ -241,6 +244,7 @@ public class KitManager {
 			inv.addItem(gapple);
 			break;
 		case ARCHER:
+			Main.getAPI().removePotionEffects(p);
 			giveLeatherArmor(p, Material.LEATHER_HELMET, Color.FUCHSIA, "§7Archer", Arrays.asList(""), Enchantment.PROTECTION_ENVIRONMENTAL, 1);
 			giveLeatherArmor(p, Material.LEATHER_CHESTPLATE, Color.AQUA, "§7Archer", Arrays.asList(""), Enchantment.PROTECTION_ENVIRONMENTAL, 1);
 			giveLeatherArmor(p, Material.LEATHER_LEGGINGS, Color.AQUA, "§7Archer", Arrays.asList(""), Enchantment.PROTECTION_ENVIRONMENTAL, 1);
@@ -283,7 +287,7 @@ public class KitManager {
 			inv.addItem(new ItemStack(Material.ARROW));
 			break;
 		case BOMB_ARCHER:
-			
+			Main.getAPI().removePotionEffects(p);
 			giveLeatherArmor(p, Material.LEATHER_HELMET, Color.LIME, "§7Bomb Archer", Arrays.asList(""), Enchantment.PROTECTION_ENVIRONMENTAL, 2);
 			giveLeatherArmor(p, Material.LEATHER_CHESTPLATE, Color.LIME, "§7Bomb Archer", Arrays.asList(""), Enchantment.PROTECTION_ENVIRONMENTAL, 2);
 			
@@ -294,7 +298,7 @@ public class KitManager {
 			inv.addItem(new ItemStack(Material.ARROW));
 			break;
 		case THUNDER_GOD:
-			
+			Main.getAPI().removePotionEffects(p);
 			giveLeatherArmor(p, Material.LEATHER_HELMET, Color.BLACK, "§7Thunder God", Arrays.asList(""), Enchantment.PROTECTION_ENVIRONMENTAL, 1);
 			giveLeatherArmor(p, Material.LEATHER_CHESTPLATE, Color.BLACK, "§7Thunder God", Arrays.asList(""), Enchantment.PROTECTION_ENVIRONMENTAL, 1);
 			giveLeatherArmor(p, Material.LEATHER_LEGGINGS, Color.BLACK, "§7Thunder God", Arrays.asList(""), Enchantment.PROTECTION_ENVIRONMENTAL, 1);
@@ -305,7 +309,7 @@ public class KitManager {
 			inv.addItem(gapple);
 			break;
 		case KNIGHT:
-			
+			Main.getAPI().removePotionEffects(p);
 			giveLeatherArmor(p, Material.LEATHER_HELMET, Color.GRAY, "§7Knight", Arrays.asList(""), Enchantment.PROTECTION_ENVIRONMENTAL, 1);
 			giveArmor(p, Material.CHAINMAIL_CHESTPLATE, "§7Knight", Arrays.asList(""));
 			giveLeatherArmor(p, Material.LEATHER_LEGGINGS, Color.GRAY, "§7Knight", Arrays.asList(""), Enchantment.PROTECTION_ENVIRONMENTAL, 1);
@@ -319,7 +323,7 @@ public class KitManager {
 			inv.addItem(knightGapple);
 			break;
 		case BOMBER:
-			
+			Main.getAPI().removePotionEffects(p);
 			if(Main.getAPI().getLanguage(p.getName()) == Language.FINNISH){
 				giveItem(p, Material.TNT, "§7Bomber", Arrays.asList("", "§aLeft-click §7-> Ammu räjähtävä TNT", "§7joka vahingoittaa pelaajia", "§7lähellä räjähdystä."));
 			}
@@ -330,7 +334,7 @@ public class KitManager {
 			inv.addItem(gapple);
 			break;
 		case HULK:
-			
+			Main.getAPI().removePotionEffects(p);
 			if (Main.getAPI().getLanguage(p.getName()) == Language.FINNISH) {
 				giveItem(p, Material.GOLD_SWORD, "§7Hulk", Arrays.asList("", "§aRight-click §7-> Lennä taivaalle ja kun", "§7tiput vahingoita ja heitä", "§7lähellä olevat pelaajat",
 						"§7taivaan tuuliin!"));
@@ -341,7 +345,7 @@ public class KitManager {
 			inv.addItem(gapple);
 			break;
 		case PROTECTOR:
-			
+			Main.getAPI().removePotionEffects(p);
 			if (Main.getAPI().getLanguage(p.getName()) == Language.FINNISH) {
 				giveItem(p, Material.SULPHUR, "§7Protector", Arrays.asList("", "§aRight-click §7-> Heitä lähellä olevat", "§7pelaajat pois ja anna heille", "§7näkymättömyys. Samalla anna",
 						"§7itsellesi parempi vastustuskyky!"));

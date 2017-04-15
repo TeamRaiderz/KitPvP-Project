@@ -14,26 +14,32 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import kitpvp.MySQL.MySQLManager;
+import kitpvp.StaffMode.StaffMode;
+import kitpvp.StaffMode.StaffModeCommand;
+import kitpvp.StaffMode.StaffModeListeners;
 import kitpvp.Util.DataYML;
 import kitpvp.Util.KitAPI;
 import kitpvp.Util.KitsYML;
 import kitpvp.Util.PacketUtils;
-import kitpvp.commands.CommandAnswer;
-import kitpvp.commands.CommandCommands;
-import kitpvp.commands.CommandDB;
-import kitpvp.commands.CommandDiscord;
-import kitpvp.commands.CommandHelp;
-import kitpvp.commands.CommandKill;
-import kitpvp.commands.CommandLevelToggle;
-import kitpvp.commands.CommandList;
-import kitpvp.commands.CommandMsg;
-import kitpvp.commands.CommandPlayerInfo;
-import kitpvp.commands.CommandRename;
-import kitpvp.commands.CommandStats;
-import kitpvp.commands.CommandTest;
-import kitpvp.commands.KitCommand;
-import kitpvp.commands.LangCommand;
-import kitpvp.commands.PrefixCommand;
+import kitpvp.commands.admin.CommandDB;
+import kitpvp.commands.admin.CommandKill;
+import kitpvp.commands.admin.CommandPlayerInfo;
+import kitpvp.commands.admin.CommandSetspawn;
+import kitpvp.commands.admin.CommandTest;
+import kitpvp.commands.admin.KitCommand;
+import kitpvp.commands.essential.CommandCommands;
+import kitpvp.commands.essential.CommandDiscord;
+import kitpvp.commands.essential.CommandHelp;
+import kitpvp.commands.essential.CommandList;
+import kitpvp.commands.essential.CommandMsg;
+import kitpvp.commands.essential.CommandSpawn;
+import kitpvp.commands.essential.CommandStats;
+import kitpvp.commands.essential.LangCommand;
+import kitpvp.commands.other.CommandRename;
+import kitpvp.commands.staff.CommandAnswer;
+import kitpvp.commands.staff.CommandLevelToggle;
+import kitpvp.commands.staff.CommandTP;
+import kitpvp.commands.vip.PrefixCommand;
 import kitpvp.cosmetics.CosmeticManager;
 import kitpvp.kits.KitManager;
 import kitpvp.listeners.AbilityListener;
@@ -42,6 +48,14 @@ import kitpvp.listeners.ConnectionListener;
 import kitpvp.listeners.DamageListener;
 import kitpvp.listeners.KitMenuListener;
 import kitpvp.listeners.PlayerListeners;
+import kitpvp.other.Booster;
+import kitpvp.other.ChatFormat;
+import kitpvp.other.Info;
+import kitpvp.other.Mail;
+import kitpvp.other.Profile;
+import kitpvp.other.Settings;
+import kitpvp.other.SpawnItems;
+import kitpvp.other.Staff;
 import kitpvp.punishment.BlacklistCommand;
 import kitpvp.punishment.PunishCommand;
 import kitpvp.punishment.PunishmentManager;
@@ -98,6 +112,12 @@ public class Main extends JavaPlugin implements Plugin{
 		registerCommand("commands", new CommandCommands());
 		registerCommand("playerinfo", new CommandPlayerInfo());
 		registerCommand("answer", new CommandAnswer());
+		registerCommand("spawn", new CommandSpawn());
+		registerCommand("setspawn", new CommandSetspawn());
+		registerCommand("tp", new CommandTP());
+		registerCommand("staff", new Staff());
+		registerCommand("mail", new Mail());
+		registerCommand("staffmode", new StaffModeCommand());
 		
 		registerListener(this, new ConnectionListener());
 		registerListener(this, new PrefixCommand());
@@ -115,6 +135,10 @@ public class Main extends JavaPlugin implements Plugin{
 		registerListener(this, new PunishCommand());
 		registerListener(this, new PlayerListeners());
 		registerListener(this, new KitMenuListener());
+		registerListener(this, new Staff());
+		registerListener(this, new Mail());
+		registerListener(this, new StaffModeListeners());
+	//	registerListener(this, new ArenaEvents());
 		
 		for(Player online : Bukkit.getOnlinePlayers()){
 //			getAPI().startPlayTimeCount(online);
@@ -155,6 +179,10 @@ public class Main extends JavaPlugin implements Plugin{
 		
 		instance = null;
 		
+	}
+	
+	public static StaffMode getStaffModeManager(){
+		return new StaffMode();
 	}
 	
 	private boolean setupEconomy() {
@@ -252,6 +280,12 @@ public class Main extends JavaPlugin implements Plugin{
 	
 	public static CosmeticManager getCosmeticManager(){
 		return new CosmeticManager();
+	}
+	
+	public void sendErrorMessage(Exception e){
+		System.err.println("(!) An error happened in the plugin. Here's the stack trace ->");
+		System.err.println("(!) Msg: " + e.getMessage() + " Caused by: " + e.getCause() +
+				" Happened at: " + e.getStackTrace()[0].getClassName() + ":" +  e.getStackTrace()[0].getLineNumber() + " (" + e.getStackTrace()[0].getMethodName() + ")");
 	}
 	
 }

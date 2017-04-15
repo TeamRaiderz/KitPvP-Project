@@ -2,19 +2,25 @@ package kitpvp.listeners;
 
 import java.util.HashMap;
 
-import org.bukkit.Location;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityPortalEnterEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import kitpvp.Language;
 import kitpvp.Main;
 import kitpvp.Util.ChatUtils;
-import kitpvp.commands.LangCommand;
+import kitpvp.Util.Language;
+import kitpvp.Util.TeleportManager;
+import kitpvp.arena.events.ArenaEnterEvent;
+import kitpvp.commands.essential.LangCommand;
 
 public class PlayerListeners implements Listener{
 
@@ -27,6 +33,10 @@ public class PlayerListeners implements Listener{
 		
 		Player p = e.getPlayer();
 		
+		double fromX = e.getFrom().getX(), fromY = e.getFrom().getY(), fromZ = e.getFrom().getZ();
+		double toX = e.getTo().getX(), toY = e.getTo().getY(), toZ = e.getTo().getZ();
+				
+		
 		if(Main.getAPI().getLanguage(p.getName()) == Language.DEFAULT){
 			p.teleport(e.getFrom());
 			LangCommand.openLangGUI(p);
@@ -35,6 +45,13 @@ public class PlayerListeners implements Listener{
 		
 		if(e.getTo().getY() < 0.0D){
 			p.teleport(p.getWorld().getSpawnLocation());
+		}
+		
+		if(fromX - toX > 0 || fromY - toY > 0|| fromZ - toZ > 0){
+			if(TeleportManager.spawnCooldown.containsKey(p.getName())){
+				TeleportManager.spawnCooldown.remove(p.getName());
+				p.teleport(e.getFrom());
+			}
 		}
 		
 	}
@@ -67,7 +84,7 @@ public class PlayerListeners implements Listener{
 					
 				}
 				
-			}.runTaskTimer(Main.getInstance(), 20, 20);
+			}.runTaskTimerAsynchronously(Main.getInstance(), 20, 20);
 			
 		}
 		else if (cmdCooldown.containsKey(p)){
@@ -143,6 +160,22 @@ public class PlayerListeners implements Listener{
 				ChatUtils.sendMessageWithPrefix(p, "§7You may send chat messages after §c" + chatCooldown.get(p) + " §7seconds!");
 			}
 			return;
+		}
+		
+	}
+
+	@EventHandler
+	public void onInteract(PlayerInteractEvent e) {
+		if (e.getAction() == Action.PHYSICAL && e.getClickedBlock().getType() == Material.SOIL)
+			e.setCancelled(true);
+	}
+
+	@EventHandler
+	public void onPortalEnter(EntityPortalEnterEvent e){
+		
+		if(e.getEntity() instanceof Player){
+			Player p = (Player) e.getEntity();
+			Bukkit.getServer().getPluginManager().callEvent(new ArenaEnterEvent(p.getName()));
 		}
 		
 	}

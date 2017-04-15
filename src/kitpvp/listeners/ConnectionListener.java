@@ -1,5 +1,7 @@
 package kitpvp.listeners;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Iterator;
 
 import org.bukkit.configuration.file.FileConfiguration;
@@ -11,13 +13,17 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
-import kitpvp.Language;
 import kitpvp.Main;
-import kitpvp.SpawnItems;
+import kitpvp.MySQL.MySQLManager;
 import kitpvp.Util.ChatUtils;
-import kitpvp.commands.PrefixCommand.NameColor;
+import kitpvp.Util.KitAPI;
+import kitpvp.Util.Language;
+import kitpvp.commands.vip.PrefixCommand.NameColor;
 import kitpvp.cosmetics.CosmeticManager;
+import kitpvp.other.SpawnItems;
+import kitpvp.punishment.PunishmentManager;
 
 public class ConnectionListener implements Listener{
 
@@ -90,23 +96,117 @@ public class ConnectionListener implements Listener{
 	public void onQuit(PlayerQuitEvent e){
 		
 		Player p = e.getPlayer();
+		String name = p.getName();
+		
+		CosmeticManager cm = new CosmeticManager();
+		KitAPI api = new KitAPI();
+		PunishmentManager pm = new PunishmentManager();
 		
 		Main.getAPI().setLastLogin(p.getName());
+		
+		new BukkitRunnable(){
+
+			@Override
+			public void run() {
+				MySQLManager m = new MySQLManager();
+				try {
+					if(m.getConnection().isClosed() || m.getConnection() == null){
+						m.openConnection();
+					}
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+				
+				//Put cached data of player to database ->
+				
+				try{
+					
+					if(m.cosmeticContainsPlayer(name) && m.playerDataContainsPlayer(name) && m.punishmentContainsPlayer(name)){
+
+						PreparedStatement playerdata = m.getConnection().prepareStatement(
+								"INSERT INTO player_data(player, kills, deaths, balance, levels, xp) VALUES (?, ?, ?, ?, ?, ?);");
+						playerdata.setString(1, name);
+						playerdata.setInt(2, api.getKills(name));
+						playerdata.setInt(3, api.getDeaths(name));
+						playerdata.setInt(4, api.getBalance(name));
+						playerdata.setInt(5, api.getLevel(name));
+						playerdata.setInt(6, api.getXp(name));
+						playerdata.execute();
+						playerdata.close();
+						 
+			            PreparedStatement cosmetic = m.getConnection().prepareStatement(
+								"INSERT INTO cosmetic_data(player, tokens, chests, boosters) VALUES (?, ?, ?, ?);");
+						cosmetic.setString(1, name);
+						cosmetic.setInt(2, cm.getTokens(name));
+						cosmetic.setInt(3, cm.getChests(name));
+						cosmetic.setInt(4, cm.getBoosters(name));
+						cosmetic.execute();
+			            cosmetic.close();
+			            
+			            PreparedStatement punishment = m.getConnection().prepareStatement(
+								"INSERT INTO punishments(player, warnings, bans, kicks) VALUES (?, ?, ?, ?);");
+						punishment.setString(1, name);
+						punishment.setInt(2, pm.getWarnings(name));
+						punishment.setInt(3, pm.getBans(name));
+						punishment.setInt(4, pm.getKicks(name));
+						punishment.execute();
+			            punishment.close();
+			            
+			            m.getConnection().close();
+			            
+			            System.out.println(name + "-> Tokens: " + cm.getTokens(name) + " Boosters: " + cm.getBoosters(name) + " Chests: " + cm.getChests(name) + " Balance: " + api.getBalance(name)
+			   		 + " Deaths: " + api.getDeaths(name) + " Kills: " + api.getKills(name) + " Level: " + api.getLevel(name) + " Xp: " + api.getXp(name)
+			   		  + " Bans: " + pm.getBans(name) + " Kicks: " + pm.getKicks(name) + " Warnings: " + pm.getWarnings(name));
+					}
+					else{
+						m.putPlayerToCosmeticData(name);
+						m.putPlayerToPlayerData(name);
+						m.putPlayerToPunishments(name);
+					}
+					
+				} catch(Exception ex){
+					ex.printStackTrace();
+				}
+				
+			}
+			
+		}.runTaskAsynchronously(Main.getInstance());
 		
 	}
 	
 	@EventHandler
 	public void onAsyncLogin(AsyncPlayerPreLoginEvent e){
 		
+		MySQLManager m = new MySQLManager();
+		try {
+			if(m.getConnection().isClosed() || m.getConnection() == null){
+				m.openConnection();
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+		
 		CosmeticManager cm = new CosmeticManager();
+		KitAPI api = new KitAPI();
+		PunishmentManager pm = new PunishmentManager();
 		
 		String p = e.getName();
 		
 		cm.getBoostersDB(e.getName());
 		cm.getChestsDB(e.getName());
 		cm.getTokensDB(e.getName());
+		api.getBalanceDB(e.getName());
+		api.getDeathsDB(e.getName());
+		api.getKillsDB(e.getName());
+		api.getLevelDB(e.getName());
+		api.getXpDB(e.getName());
+		pm.getBansDB(e.getName());
+		pm.getKicksDB(e.getName());
+		pm.getWarningsDB(e.getName());
 		
-		System.out.println(e.getName() + "-> Tokens: " + cm.getTokens(p) + " Boosters: " + cm.getBoosters(p) + " Chests: " + cm.getChests(p));
+		System.out.println(e.getName() + "-> Tokens: " + cm.getTokens(p) + " Boosters: " + cm.getBoosters(p) + " Chests: " + cm.getChests(p) + " Balance: " + api.getBalance(e.getName())
+		 + " Deaths: " + api.getDeaths(e.getName()) + " Kills: " + api.getKills(e.getName()) + " Level: " + api.getLevel(e.getName()) + " Xp: " + api.getXp(e.getName())
+		  + " Bans: " + pm.getBans(e.getName()) + " Kicks: " + pm.getKicks(e.getName()) + " Warnings: " + pm.getWarnings(e.getName()));
 		
 	}
 	
