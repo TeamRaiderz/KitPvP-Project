@@ -95,73 +95,71 @@ public class PlayerListeners implements Listener{
 			else if(Main.getAPI().getLanguage(p.getName()) == Language.ENGLISH){
 				ChatUtils.sendMessageWithPrefix(p, "§7You may use commands after §c" + cmdCooldown.get(p) + " §7seconds!");
 			}
-			return;
 		}
 	}
 	
 	@EventHandler
-	public void onChatSend(AsyncPlayerChatEvent e){
-		
+	public void onChatSend(AsyncPlayerChatEvent e) {
+
 		Player p = e.getPlayer();
-		
+
 		e.setCancelled(true);
-		
-		if(Main.getAPI().getLanguage(p.getName()) == Language.DEFAULT){
+
+		if (Main.getAPI().getLanguage(p.getName()) == Language.DEFAULT) {
 			e.setCancelled(true);
 			LangCommand.openLangGUI(p);
 			return;
 		}
-		
+
 		if (prevMsg.containsKey(p.getUniqueId().toString())) {
-		      if ((((String)prevMsg.get(p.getUniqueId().toString())).equalsIgnoreCase(e.getMessage())) && !(p.hasPermission("server.spambypass"))) {
-		        e.setCancelled(true);
-		        if(Main.getAPI().getLanguage(p.getName()) == Language.FINNISH){
+			if ((((String) prevMsg.get(p.getUniqueId().toString())).equalsIgnoreCase(e.getMessage()))
+					&& !(p.hasPermission("server.spambypass"))) {
+				e.setCancelled(true);
+				if (Main.getAPI().getLanguage(p.getName()) == Language.FINNISH) {
 					ChatUtils.sendMessageWithPrefix(p, "§7Tuo viesti muistuttaa liikaa sinun aikaisempaa viestiäsi!");
-				}
-				else if(Main.getAPI().getLanguage(p.getName()) == Language.ENGLISH){
+				} else if (Main.getAPI().getLanguage(p.getName()) == Language.ENGLISH) {
 					ChatUtils.sendMessageWithPrefix(p, "§7That message is too similiar to your previous message!");
 				}
-		        return;
-		      }
-		      else {
-		    	  prevMsg.remove(p.getUniqueId().toString());
-		    	  prevMsg.put(p.getUniqueId().toString(), e.getMessage());
-		      }
-		    }
-		    else if(!prevMsg.containsKey(p.getUniqueId().toString()) && !p.hasPermission("server.spambypass") && !p.isOp())
-		      prevMsg.put(p.getUniqueId().toString(), e.getMessage());
-		
-		if(!chatCooldown.containsKey(p) && !p.hasPermission("server.chatcooldown") && !p.isOp()){
+				return;
+			} else {
+				prevMsg.remove(p.getUniqueId().toString());
+				prevMsg.put(p.getUniqueId().toString(), e.getMessage());
+			}
+		} else if (!prevMsg.containsKey(p.getUniqueId().toString()) && !p.hasPermission("server.spambypass")
+				&& !p.isOp())
+			prevMsg.put(p.getUniqueId().toString(), e.getMessage());
+
+		else if (!chatCooldown.containsKey(p) && !p.hasPermission("server.chatcooldown")) {
 			chatCooldown.put(p, 3);
-			
-			new BukkitRunnable(){
+
+			new BukkitRunnable() {
 
 				@Override
 				public void run() {
-					
+
 					chatCooldown.put(p, chatCooldown.get(p) - 1);
-					
-					if(chatCooldown.get(p) <= 0){
+
+					if (chatCooldown.get(p) <= 0) {
 						chatCooldown.remove(p);
 						cancel();
 					}
-					
+
 				}
-				
+
 			}.runTaskTimer(Main.getInstance(), 20, 20);
 			return;
-		}
-		if (chatCooldown.containsKey(p) && !p.hasPermission("server.chatcooldown") && !p.isOp()){
+		} else if (chatCooldown.containsKey(p) && !p.hasPermission("server.chatcooldown") && !p.isOp()) {
 			e.setCancelled(true);
-			if(Main.getAPI().getLanguage(p.getName()) == Language.FINNISH){
-				ChatUtils.sendMessageWithPrefix(p, "§7Voit lähettää viestejä §c" + chatCooldown.get(p) + " §7sekunnin päästä!");
-			}
-			else if(Main.getAPI().getLanguage(p.getName()) == Language.ENGLISH){
-				ChatUtils.sendMessageWithPrefix(p, "§7You may send chat messages after §c" + chatCooldown.get(p) + " §7seconds!");
+			if (Main.getAPI().getLanguage(p.getName()) == Language.FINNISH) {
+				ChatUtils.sendMessageWithPrefix(p,
+						"§7Voit lähettää viestejä §c" + chatCooldown.get(p) + " §7sekunnin päästä!");
+			} else if (Main.getAPI().getLanguage(p.getName()) == Language.ENGLISH) {
+				ChatUtils.sendMessageWithPrefix(p,
+						"§7You may send chat messages after §c" + chatCooldown.get(p) + " §7seconds!");
 			}
 			return;
 		}
-		
+
 	}
 
 	@EventHandler

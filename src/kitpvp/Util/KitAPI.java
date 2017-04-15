@@ -1053,7 +1053,7 @@ public class KitAPI {
 					board.getTeam("balance").setSuffix("§c" + String.valueOf(getBalance(p.getName())));
 					board.getTeam("lvl").setSuffix("§c" + String.valueOf(getLevel(p.getName())));
 					board.getTeam("xp").setSuffix("§c" + String.valueOf(getXp(p.getName()) + "/" + getLevel(p.getName()) * 100));
-					board.getTeam("xp").setSuffix("§c" + String.valueOf(Main.getCosmeticManager().getTokens(p.getName())));
+					board.getTeam("tokens").setSuffix("§c" + String.valueOf(Main.getCosmeticManager().getTokens(p.getName())));
 				}
 				
 			}.runTaskTimerAsynchronously(Main.getInstance(), 20, 60);
@@ -1152,6 +1152,7 @@ public class KitAPI {
 					board.getTeam("balance").setSuffix("§c" + String.valueOf(getBalance(p.getName())));
 					board.getTeam("lvl").setSuffix("§c" + String.valueOf(getLevel(p.getName())));
 					board.getTeam("xp").setSuffix("§c" + String.valueOf(getXp(p.getName()) + "/" + getLevel(p.getName()) * 100));
+					board.getTeam("tokens").setSuffix("§c" + String.valueOf(Main.getCosmeticManager().getTokens(p.getName())));
 				}
 				
 			}.runTaskTimerAsynchronously(Main.getInstance(), 20, 60);
