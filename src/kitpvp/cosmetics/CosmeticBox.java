@@ -63,8 +63,8 @@ public class CosmeticBox implements Listener{
 			e.setCancelled(true);
 			
 			if(e.getCurrentItem().getType() == Material.CHEST && e.getCurrentItem().hasItemMeta() && Main.getCosmeticManager().getTokens(p.getName()) >= 1){
-				Crate crate = new Crate(p);
-				crate.activateCrate();
+				CSGOCrate c = new CSGOCrate();
+				c.openCSGO(p);
 				Main.getCosmeticManager().setTokens(p.getName(), Main.getCosmeticManager().getTokens(p.getName()) - 1);
 			}
 			

@@ -1329,4 +1329,12 @@ public class KitAPI {
 		inv.setItem(pos, item);
 	}
 	
+	 public static ItemStack makeItem(Material material, int amount, int type, String name) {
+		    ItemStack item = new ItemStack(material, amount, (short)type);
+		    ItemMeta m = item.getItemMeta();
+		    m.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
+		    item.setItemMeta(m);
+		    return item;
+	 }
+	
 }

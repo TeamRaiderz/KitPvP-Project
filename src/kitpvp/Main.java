@@ -41,6 +41,7 @@ import kitpvp.commands.staff.CommandAnswer;
 import kitpvp.commands.staff.CommandLevelToggle;
 import kitpvp.commands.staff.CommandTP;
 import kitpvp.commands.vip.PrefixCommand;
+import kitpvp.cosmetics.CSGOCrate;
 import kitpvp.cosmetics.CosmeticBox;
 import kitpvp.cosmetics.CosmeticManager;
 import kitpvp.kits.KitManager;
@@ -147,6 +148,7 @@ public class Main extends JavaPlugin implements Plugin{
 		registerListener(this, new LevelListeners());
 		registerListener(this, new CosmeticBox());
 		registerListener(this, new ArenaEvents());
+		registerListener(this, new CSGOCrate());
 		
 		for(Player online : Bukkit.getOnlinePlayers()){
 //			getAPI().startPlayTimeCount(online);

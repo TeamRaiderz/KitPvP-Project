@@ -1,6 +1,9 @@
 package kitpvp.cosmetics;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
@@ -20,12 +23,14 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import kitpvp.Main;
+import kitpvp.Util.KitAPI;
 
 public class Crate {
 	
 	private Player opener;
 	private Inventory openingInv;
 	private Inventory prizeInv;
+	public static HashMap<String, Crate> crates = new HashMap<>();
 	
 	public Crate(Player opener){
 		this.opener = opener;
@@ -136,4 +141,52 @@ public class Crate {
 			}
 		}.runTaskLater(Main.getInstance(), 55L);
 	}
+	
+	public ArrayList<Prize> getPrizes(){
+		
+		ArrayList<Prize> prizes = new ArrayList<>();
+		prizes.add(new Prize("Jackpot", KitAPI.makeItem(Material.GOLD_INGOT, 1, 0, "§6§lJackpot"), 1));
+		prizes.add(new Prize("Particle", KitAPI.makeItem(Material.REDSTONE, 1, 0, "§d§lParticle effect"), 25));
+		prizes.add(new Prize("Archer", KitAPI.makeItem(Material.BOW, 1, 0, "§9§lArcher kit"), 74));
+		
+		return prizes;
+	}
+	
+	public Prize pickPrize(Player player){
+		
+		ArrayList prizes = new ArrayList();
+		
+		for(int stop = 0; (prizes.size() == 0) && (stop <= 2000); stop++){
+			
+			int counter = 0;
+			
+			for(Iterator localIterator = getPrizes().iterator(); localIterator.hasNext();){
+				Prize prize = (Prize)localIterator.next();
+				int chance = prize.getChance();
+				
+				counter = 1;
+		        int num = 1 + new Random().nextInt(100);
+		        if ((num >= 1) && (num <= chance))
+		          prizes.add(prize);
+		        counter++;
+			}
+			
+		}
+		
+		Prize prize = (Prize)prizes.get(new Random().nextInt(prizes.size()));
+		return prize;
+	}
+	
+	public static void getReward(Player p, Prize prize){
+		if(prize.getName().equals("Jackpot")){
+			p.sendMessage("§cVoitit parhaan palkinnon! " + prize.getChance() + "%");
+		}
+		else if(prize.getName().equals("Particle")){
+			p.sendMessage("§cVoitit toiseksi palkinnon! " + prize.getChance() + "%");
+		}
+		else if(prize.getName().equals("Archer")){
+			p.sendMessage("§cVoitit huonoimman palkinnon! " + prize.getChance() + "%");
+		}
+	}
+	
 }
