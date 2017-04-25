@@ -5,7 +5,9 @@ import java.util.Arrays;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 
 import kitpvp.Main;
@@ -34,7 +36,7 @@ public class CosmeticBox implements Listener{
 		}
 		else if (api.getLanguage(p.getName()) == Language.ENGLISH){
 			
-			Inventory inv = Bukkit.createInventory(null, 36, "Kosmetiikka");
+			Inventory inv = Bukkit.createInventory(null, 36, "Cosmetics");
 			
 			api.createItem(inv, 10, Material.BOW, 1, "§aArrow trails", Arrays.asList("§7Select the arrow trail you want!", "", "§7You own: §e" + ArrowTrail.getAmount(p)));
 			api.createItem(inv, 13, Material.CHEST, 1, "§aBox of luck", Arrays.asList("§7Open a box and win awesome prizes!", "",
@@ -46,6 +48,26 @@ public class CosmeticBox implements Listener{
 			api.createItem(inv, 24, Material.DEAD_BUSH, 1, "§c§lComing soon...", Arrays.asList("§7..."));
 			
 			p.openInventory(inv);
+		}
+		
+	}
+	
+	@EventHandler
+	public void onInvClick(InventoryClickEvent e){
+		Player p = (Player) e.getWhoClicked();
+		
+		if(e.getCurrentItem() == null || e.getCurrentItem().getType() == Material.AIR) return;
+		
+		if(e.getInventory().getName().equals("Kosmetiikka") || e.getInventory().getName().equals("Cosmetics")){
+			
+			e.setCancelled(true);
+			
+			if(e.getCurrentItem().getType() == Material.CHEST && e.getCurrentItem().hasItemMeta() && Main.getCosmeticManager().getTokens(p.getName()) >= 1){
+				Crate crate = new Crate(p);
+				crate.activateCrate();
+				Main.getCosmeticManager().setTokens(p.getName(), Main.getCosmeticManager().getTokens(p.getName()) - 1);
+			}
+			
 		}
 		
 	}

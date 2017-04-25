@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Iterator;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -20,6 +21,7 @@ import kitpvp.MySQL.MySQLManager;
 import kitpvp.Util.ChatUtils;
 import kitpvp.Util.KitAPI;
 import kitpvp.Util.Language;
+import kitpvp.Util.TeleportManager;
 import kitpvp.commands.vip.PrefixCommand.NameColor;
 import kitpvp.cosmetics.CosmeticManager;
 import kitpvp.other.SpawnItems;
@@ -31,6 +33,9 @@ public class ConnectionListener implements Listener{
 	public void onJoin(PlayerJoinEvent e){
 		
 		Player p = e.getPlayer();
+		TeleportManager tm = new TeleportManager();
+		
+		tm.teleportSpawn(p);
 		
 		//Silenting zombies
 		Iterator meta = p.getWorld().getLivingEntities().iterator();
@@ -79,6 +84,8 @@ public class ConnectionListener implements Listener{
 			SpawnItems.playersHidden.put(p.getName(), false);
 		}
 		
+		Main.getAPI().giveScoreboard(p);
+		
 		//Sending join title
 		if(Main.getAPI().getLanguage(p.getName()) == Language.FINNISH){
 			Main.getPacketUtils().sendTitle(p, "§a§lFINSKACRAFT!", "§7Suomen paskin servu!", 20, 40, 20);
@@ -87,8 +94,18 @@ public class ConnectionListener implements Listener{
 			Main.getPacketUtils().sendTitle(p, "§a§lFINSKACRAFT!", "§7Shittiest server in Finland!", 20, 40, 20);
 		}
 		
+		new BukkitRunnable(){
+
+			@Override
+			public void run() {
+				Main.getPacketUtils().sendTabHF(p, "§c§lFinskaCraft", "§7§o-- §c" + Bukkit.getOnlinePlayers().size() + "§7/§c" + Bukkit.getMaxPlayers() + " §7§o--"
+						+ "\n §7IP: §cmc.finska.com"
+						+ "\n §7Store: §cstore.finska.com");
+			}
+			
+		}.runTaskTimerAsynchronously(Main.getInstance(), 20, 60);
+		
 //		Main.getAPI().startPlayTimeCount(p);
-		Main.getAPI().giveScoreboard(p);
 		
 	}
 	
@@ -124,7 +141,7 @@ public class ConnectionListener implements Listener{
 					if(m.cosmeticContainsPlayer(name) && m.playerDataContainsPlayer(name) && m.punishmentContainsPlayer(name)){
 
 						PreparedStatement playerdata = m.getConnection().prepareStatement(
-								"INSERT INTO player_data(player, kills, deaths, balance, levels, xp) VALUES (?, ?, ?, ?, ?, ?);");
+								"REPLACE INTO player_data VALUES (?, ?, ?, ?, ?, ?);");
 						playerdata.setString(1, name);
 						playerdata.setInt(2, api.getKills(name));
 						playerdata.setInt(3, api.getDeaths(name));
@@ -135,7 +152,7 @@ public class ConnectionListener implements Listener{
 						playerdata.close();
 						 
 			            PreparedStatement cosmetic = m.getConnection().prepareStatement(
-								"INSERT INTO cosmetic_data(player, tokens, chests, boosters) VALUES (?, ?, ?, ?);");
+								"REPLACE INTO cosmetic_data VALUES (?, ?, ?, ?);");
 						cosmetic.setString(1, name);
 						cosmetic.setInt(2, cm.getTokens(name));
 						cosmetic.setInt(3, cm.getChests(name));
@@ -144,13 +161,20 @@ public class ConnectionListener implements Listener{
 			            cosmetic.close();
 			            
 			            PreparedStatement punishment = m.getConnection().prepareStatement(
-								"INSERT INTO punishments(player, warnings, bans, kicks) VALUES (?, ?, ?, ?);");
+								"REPLACE INTO punishments VALUES (?, ?, ?, ?);");
 						punishment.setString(1, name);
 						punishment.setInt(2, pm.getWarnings(name));
 						punishment.setInt(3, pm.getBans(name));
 						punishment.setInt(4, pm.getKicks(name));
 						punishment.execute();
 			            punishment.close();
+			            
+			            PreparedStatement lang = m.getConnection().prepareStatement(
+								"REPLACE INTO language VALUES (?, ?);");
+			            lang.setString(1, name);
+			            lang.setString(2, api.getRawLanguage(name));
+			            lang.execute();
+			            lang.close();
 			            
 			            m.getConnection().close();
 			            
@@ -200,6 +224,7 @@ public class ConnectionListener implements Listener{
 		api.getKillsDB(e.getName());
 		api.getLevelDB(e.getName());
 		api.getXpDB(e.getName());
+		api.getLanguageDB(e.getName());
 		pm.getBansDB(e.getName());
 		pm.getKicksDB(e.getName());
 		pm.getWarningsDB(e.getName());

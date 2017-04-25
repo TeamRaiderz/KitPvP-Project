@@ -41,11 +41,7 @@ public class CommandMsg implements CommandExecutor{
 				Player target = Bukkit.getPlayer(args[0]);
 				
 				if(target == null){
-					if(Main.getAPI().getLanguage(sender.getName()) == Language.FINNISH){
-						ChatUtils.sendMessageWithPrefix(sender, "§7En löytänyt kyseistä pelaajaa...");
-					} else if(Main.getAPI().getLanguage(sender.getName()) == Language.ENGLISH){
-						ChatUtils.sendMessageWithPrefix(sender, "§7Couldn't find the player you were looking for...");
-					}
+					ChatUtils.sendPlayerNotFoundMsg(sender, args[0]);
 					return true;
 				}
 				

@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityPortalEnterEvent;
@@ -168,12 +169,14 @@ public class PlayerListeners implements Listener{
 			e.setCancelled(true);
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPortalEnter(EntityPortalEnterEvent e){
 		
 		if(e.getEntity() instanceof Player){
 			Player p = (Player) e.getEntity();
-			Bukkit.getServer().getPluginManager().callEvent(new ArenaEnterEvent(p.getName()));
+			ArenaEnterEvent arenaEnterEvent = new ArenaEnterEvent(p.getName());
+			Bukkit.getServer().getPluginManager().callEvent(arenaEnterEvent);
+			p.sendMessage("TESTING CUSTOM EVENTS! (" + arenaEnterEvent.getEventName()  +")");
 		}
 		
 	}

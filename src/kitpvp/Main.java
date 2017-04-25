@@ -27,6 +27,7 @@ import kitpvp.commands.admin.CommandPlayerInfo;
 import kitpvp.commands.admin.CommandSetspawn;
 import kitpvp.commands.admin.CommandTest;
 import kitpvp.commands.admin.KitCommand;
+import kitpvp.commands.admin.TitleCommand;
 import kitpvp.commands.essential.CommandCommands;
 import kitpvp.commands.essential.CommandDiscord;
 import kitpvp.commands.essential.CommandHelp;
@@ -40,13 +41,16 @@ import kitpvp.commands.staff.CommandAnswer;
 import kitpvp.commands.staff.CommandLevelToggle;
 import kitpvp.commands.staff.CommandTP;
 import kitpvp.commands.vip.PrefixCommand;
+import kitpvp.cosmetics.CosmeticBox;
 import kitpvp.cosmetics.CosmeticManager;
 import kitpvp.kits.KitManager;
 import kitpvp.listeners.AbilityListener;
+import kitpvp.listeners.ArenaEvents;
 import kitpvp.listeners.ChatEvent;
 import kitpvp.listeners.ConnectionListener;
 import kitpvp.listeners.DamageListener;
 import kitpvp.listeners.KitMenuListener;
+import kitpvp.listeners.LevelListeners;
 import kitpvp.listeners.PlayerListeners;
 import kitpvp.other.Booster;
 import kitpvp.other.ChatFormat;
@@ -118,6 +122,8 @@ public class Main extends JavaPlugin implements Plugin{
 		registerCommand("staff", new Staff());
 		registerCommand("mail", new Mail());
 		registerCommand("staffmode", new StaffModeCommand());
+		registerCommand("subtitle", new TitleCommand());
+		registerCommand("title", new TitleCommand());
 		
 		registerListener(this, new ConnectionListener());
 		registerListener(this, new PrefixCommand());
@@ -138,7 +144,9 @@ public class Main extends JavaPlugin implements Plugin{
 		registerListener(this, new Staff());
 		registerListener(this, new Mail());
 		registerListener(this, new StaffModeListeners());
-	//	registerListener(this, new ArenaEvents());
+		registerListener(this, new LevelListeners());
+		registerListener(this, new CosmeticBox());
+		registerListener(this, new ArenaEvents());
 		
 		for(Player online : Bukkit.getOnlinePlayers()){
 //			getAPI().startPlayTimeCount(online);

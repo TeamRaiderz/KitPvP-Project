@@ -83,6 +83,10 @@ commands:
   staffmode:
     description: Toggle Staffmode
     aliases: [sm, mod, modmode, adminmode, am]
+  title:
+    description: Send a title
+  subtitle:
+    description: Send a subtitle
     
 permissions:
   server.mod:

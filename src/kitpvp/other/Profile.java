@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.SkullType;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -40,7 +41,12 @@ public class Profile implements Listener, CommandExecutor {
 		}
 		else if (args.length == 1){
 			
-			OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
+			Player target = Bukkit.getPlayer(args[0]);
+			
+			if(target == null || !target.isOnline()){
+				ChatUtils.sendPlayerNotFoundMsg(sender, args[0]);
+			}
+			
 			if(Main.getDataFile().get(target.getUniqueId().toString()) == null){
 				
 				if(Main.getAPI().getLanguage(p.getName()) == Language.FINNISH){
@@ -73,8 +79,6 @@ public class Profile implements Listener, CommandExecutor {
 
 	public void openProfileMenu(Player opener, String target){
 		
-		OfflinePlayer offTarget = Bukkit.getOfflinePlayer(target);
-		
 		CosmeticManager cm = new CosmeticManager();
 		
 		int tokens = cm.getTokens(target);
@@ -83,45 +87,43 @@ public class Profile implements Listener, CommandExecutor {
 		
 		if(Main.getAPI().getLanguage(opener.getName()) == Language.FINNISH){
 			
-			Inventory inv = Bukkit.createInventory(null, 36, "Profiili " + target);
+			Inventory inv = Bukkit.createInventory(null, 27, "Profiili " + target);
 			
-			ItemStack user = new ItemStack(Material.SKULL_ITEM, 1, (byte) SkullType.PLAYER.ordinal());
-			SkullMeta userMeta = (SkullMeta) user.getItemMeta();
-			userMeta.setOwner(target);
-			userMeta.setDisplayName("ße" + target);
-			userMeta.setLore(Arrays.asList("ß7ßoPelaajan ße" + target + " ß7ßoprofiili."));
-			user.setItemMeta(userMeta);
+			api.createSkullItem(inv, 10, target, "ße" + target, Arrays.asList(
+					"",
+					"ß7Rank: ßa" + Main.getPermissions().getPrimaryGroup(Bukkit.getPlayer(target)),
+					"",
+					"ß7Tokenit: ß6" + tokens,
+					"ß7Chestit: ß6" + chests,
+					"ß7Boosterit: ß6" + boosters,
+					"ß7Raha: ß6" + api.getBalance(target),
+					"",
+					"ß7Level: ßb" + api.getLevel(target),
+					"ß7XP: ßb" + api.getXp(target) + "/" + (api.getLevel(target) * 100)));
 			
-			inv.setItem(13, user);
-			
-			api.createItem(inv, 19, Material.BOOK, 1, "ßaßlTilastot", Arrays.asList("ß7Klikkaa n‰hd‰ksesi sinun", "ß7tilastot!"));
-			api.createItem(inv, 21, Material.NETHER_STAR, 1, "ßbßlInfo", Arrays.asList("ß7Rank: ßa" + Main.getPermissions().getPrimaryGroup(opener.getWorld().getName(), offTarget), 
-					"ß7Paikalla: ßa" + offTarget.isOnline(), "ß7Peliaika: ßa" + Main.getAPI().getPlayTime(target), "ß7Viim. kirjautuminen: ßa" + Main.getAPI().getLastLogin(target)));
-			api.createItem(inv, 23, Material.PAPER, 1, "ßeßlSaavutukset", Arrays.asList("ß7Klikkaa n‰hd‰ksesi h‰nen", "ß7saavutuksensa!"));
-			api.createItem(inv, 25, Material.GOLD_NUGGET, 1, "ß6ßlKosmetiikka", Arrays.asList("ß7Tokenit: ß6" + tokens, "ß7Chestit: ß6" + chests, 
-					"ß7Boosterit: ß6" + boosters));
+			api.createItem(inv, 12, Material.BOOK, 1, "ßeTilastot", Arrays.asList("ß7Klikkaa n‰hd‰ksesi pelaajan", "ße" + target + " ß7tilastot!"));
+			api.createItem(inv, 13, Material.PAPER, 1, "ßeSaavutukset", Arrays.asList("ß7Klikkaa n‰hd‰ksesi pelaajan", "ße" + target + " ß7saavutukset!"));
 			
 			opener.openInventory(inv);
 		}
 		else if(Main.getAPI().getLanguage(opener.getName()) == Language.ENGLISH){
 			
-			Inventory inv = Bukkit.createInventory(null, 36,  "Profile " + target);
+			Inventory inv = Bukkit.createInventory(null, 27,  "Profile " + target);
 			
-			ItemStack user = new ItemStack(Material.SKULL_ITEM, 1, (byte) SkullType.PLAYER.ordinal());
-			SkullMeta userMeta = (SkullMeta) user.getItemMeta();
-			userMeta.setOwner(target);
-			userMeta.setDisplayName("ße" + target);
-			userMeta.setLore(Arrays.asList("ß7ßoThe profile of ße" + target + "ß7ßl."));
-			user.setItemMeta(userMeta);
+			api.createSkullItem(inv, 10, target, "ße" + target, Arrays.asList(
+					"",
+					"ß7Rank: ßa" + Main.getPermissions().getPrimaryGroup(Bukkit.getPlayer(target)),
+					"",
+					"ß7Tokens: ß6" + tokens,
+					"ß7Chests: ß6" + chests,
+					"ß7Boosters: ß6" + boosters,
+					"ß7Balance: ß6" + api.getBalance(target),
+					"",
+					"ß7Level: ßb" + api.getLevel(target),
+					"ß7XP: ßb" + api.getXp(target) + "/" + (api.getLevel(target) * 100)));
 			
-			inv.setItem(13, user);
-			
-			api.createItem(inv, 19, Material.BOOK, 1, "ßaßlStats", Arrays.asList("ß7Click to see your stats"));
-			api.createItem(inv, 21, Material.NETHER_STAR, 1, "ßbßlInfo", Arrays.asList("ß7Rank: ßa" + Main.getPermissions().getPrimaryGroup(opener.getWorld().getName(), offTarget), 
-					"ß7Online: ßa" + offTarget.isOnline(), "ß7Playtime: ßa" + Main.getAPI().getPlayTime(target), "ß7Last login: ßa" + Main.getAPI().getLastLogin(target)));
-			api.createItem(inv, 23, Material.PAPER, 1, "ßeßlAchievements", Arrays.asList("ß7Click to see the achievements", "ß7of " + target + "!"));
-			api.createItem(inv, 25, Material.GOLD_NUGGET, 1, "ß6ßlCosmetics", Arrays.asList("ß7Tokens: ß6" + tokens, "ß7Chests: ß6" + chests, 
-					"ß7Boosters: ß6" + boosters));
+			api.createItem(inv, 12, Material.BOOK, 1, "ßeStatistics", Arrays.asList("ß7Click to see the stats of", "ße" + target + "ß7!"));
+			api.createItem(inv, 13, Material.PAPER, 1, "ßeAchievements", Arrays.asList("ß7Click to see the achievements", "ß7of the player ße" + target + "ß7!"));
 			
 			opener.openInventory(inv);
 		}
@@ -129,7 +131,6 @@ public class Profile implements Listener, CommandExecutor {
 	}
 	
 	public void openProfileMenu(Player p){
-		
 		
 		CosmeticManager cm = new CosmeticManager();
 		
@@ -139,45 +140,47 @@ public class Profile implements Listener, CommandExecutor {
 		
 		if(Main.getAPI().getLanguage(p.getName()) == Language.FINNISH){
 			
-			Inventory inv = Bukkit.createInventory(null, 36, "Profiili");
+			Inventory inv = Bukkit.createInventory(null, 27, "Profiili");
 			
-			ItemStack user = new ItemStack(Material.SKULL_ITEM, 1, (byte) SkullType.PLAYER.ordinal());
-			SkullMeta userMeta = (SkullMeta) user.getItemMeta();
-			userMeta.setOwner(p.getName());
-			userMeta.setDisplayName("ße" + p.getName());
-			userMeta.setLore(Arrays.asList("ß7ßoSinun profiili."));
-			user.setItemMeta(userMeta);
+			api.createSkullItem(inv, 10, p.getName(), "ße" + p.getName(), Arrays.asList(
+					"",
+					"ß7Rank: ßa" + Main.getPermissions().getPrimaryGroup(Bukkit.getPlayer(p.getName())),
+					"",
+					"ß7Tokenit: ß6" + tokens,
+					"ß7Chestit: ß6" + chests,
+					"ß7Boosterit: ß6" + boosters,
+					"ß7Raha: ß6" + api.getBalance(p.getName()),
+					"",
+					"ß7Level: ßb" + api.getLevel(p.getName()),
+					"ß7XP: ßb" + api.getXp(p.getName()) + "/" + (api.getLevel(p.getName()) * 100)));
 			
-			inv.setItem(13, user);
-			
-			api.createItem(inv, 19, Material.BOOK, 1, "ßaßlTilastot", Arrays.asList("ß7Klikkaa n‰hd‰ksesi sinun", "ß7tilastot!"));
-			api.createItem(inv, 21, Material.NETHER_STAR, 1, "ßbßlInfo", Arrays.asList("ß7Rank: ßa" + Main.getPermissions().getPrimaryGroup(p), 
-					"ß7Paikalla: ßa" + p.isOnline(), "ß7Peliaika: ßa" + Main.getAPI().getPlayTime(p.getName())));
-			api.createItem(inv, 23, Material.PAPER, 1, "ßeßlSaavutukset", Arrays.asList("ß7Klikkaa n‰hd‰ksesi sinun", "ß7saavutukset!"));
-			api.createItem(inv, 25, Material.GOLD_NUGGET, 1, "ß6ßlKosmetiikka", Arrays.asList("ß7Tokenit: ß6" + tokens, "ß7Chestit: ß6" + chests, 
-					"ß7Boosterit: ß6" + boosters));
+			api.createItem(inv, 12, Material.BOOK, 1, "ßeTilastot", Arrays.asList("ß7Klikkaa n‰hd‰ksesi tilastosi!"));
+			api.createItem(inv, 13, Material.PAPER, 1, "ßeSaavutukset", Arrays.asList("ß7Klikkaa n‰hd‰ksesi saavutuksesi!"));
+			api.createItem(inv, 14, Material.STORAGE_MINECART, 1, "ßeTilaukset", Arrays.asList("ß7Klikkaa n‰hd‰ksesi tilauksesi!"));
+			api.createItem(inv, 15, Material.REDSTONE_COMPARATOR, 1, "ßeAsetukset", Arrays.asList("ß7Klikkaa p‰‰st‰ksesi asetuksiin!"));
 			
 			p.openInventory(inv);
 		}
 		else if(Main.getAPI().getLanguage(p.getName()) == Language.ENGLISH){
 			
-			Inventory inv = Bukkit.createInventory(null, 36, "Profile");
+			Inventory inv = Bukkit.createInventory(null, 27, "Profile");
 			
-			ItemStack user = new ItemStack(Material.SKULL_ITEM, 1, (byte) SkullType.PLAYER.ordinal());
-			SkullMeta userMeta = (SkullMeta) user.getItemMeta();
-			userMeta.setOwner(p.getName());
-			userMeta.setDisplayName("ße" + p.getName());
-			userMeta.setLore(Arrays.asList("ß7ßoYour profile."));
-			user.setItemMeta(userMeta);
+			api.createSkullItem(inv, 10, p.getName(), "ße" + p.getName(), Arrays.asList(
+					"",
+					"ß7Rank: ßa" + Main.getPermissions().getPrimaryGroup(Bukkit.getPlayer(p.getName())),
+					"",
+					"ß7Tokens: ß6" + tokens,
+					"ß7Chests: ß6" + chests,
+					"ß7Boosters: ß6" + boosters,
+					"ß7Balance: ß6" + api.getBalance(p.getName()),
+					"",
+					"ß7Level: ßb" + api.getLevel(p.getName()),
+					"ß7XP: ßb" + api.getXp(p.getName()) + "/" + (api.getLevel(p.getName()) * 100)));
 			
-			inv.setItem(13, user);
-			
-			api.createItem(inv, 19, Material.BOOK, 1, "ßaßlStats", Arrays.asList("ß7Click to see your stats"));
-			api.createItem(inv, 21, Material.NETHER_STAR, 1, "ßbßlInfo", Arrays.asList("ß7Rank: ßa" + Main.getPermissions().getPrimaryGroup(p), 
-					"ß7Online: ßa" + p.isOnline(), "ß7Playtime: ßa" + Main.getAPI().getPlayTime(p.getName())));
-			api.createItem(inv, 23, Material.PAPER, 1, "ßeßlAchievements", Arrays.asList("ß7Click to see your achievements!"));
-			api.createItem(inv, 25, Material.GOLD_NUGGET, 1, "ß6ßlCosmetics", Arrays.asList("ß7Tokens: ß6" + tokens, "ß7Chests: ß6" + chests, 
-					"ß7Boosters: ß6" + boosters));
+			api.createItem(inv, 12, Material.BOOK, 1, "ßeStatistics", Arrays.asList("ß7Click to see your stats!"));
+			api.createItem(inv, 13, Material.PAPER, 1, "ßeAchievements", Arrays.asList("ß7Click to see the your achievements!"));
+			api.createItem(inv, 14, Material.STORAGE_MINECART, 1, "ßeDeliveries", Arrays.asList("ß7Click to see your deliveries!"));
+			api.createItem(inv, 15, Material.REDSTONE_COMPARATOR, 1, "ßeSettings", Arrays.asList("ß7Click to got to settings!"));
 			
 			p.openInventory(inv);
 		}
@@ -223,6 +226,14 @@ public class Profile implements Listener, CommandExecutor {
 				p.closeInventory();
 				Main.getAPI().sendPlayerStats(p, p.getName());
 			}
+			else if(item.getType() == Material.STORAGE_MINECART){
+				Mail mail = new Mail();
+				mail.openMenu(p);
+			}
+			else if(item.getType() == Material.REDSTONE_COMPARATOR){
+				Settings settings = new Settings();
+				settings.openSettingsGUI(p);
+			}
 		} else if (e.getInventory().getName().equals("Profiili")) {
 
 			e.setCancelled(true);
@@ -230,6 +241,14 @@ public class Profile implements Listener, CommandExecutor {
 			if (item.getType() == Material.BOOK) {
 				p.closeInventory();
 				Main.getAPI().sendPlayerStats(p, p.getName());
+			}
+			else if(item.getType() == Material.STORAGE_MINECART){
+				Mail mail = new Mail();
+				mail.openMenu(p);
+			}
+			else if(item.getType() == Material.REDSTONE_COMPARATOR){
+				Settings settings = new Settings();
+				settings.openSettingsGUI(p);
 			}
 		}
 	}

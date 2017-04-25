@@ -54,6 +54,7 @@ public class KitAPI {
 	public static  HashMap<String, Integer> balance = new HashMap<String, Integer>();
 	public static  HashMap<String, Integer> level = new HashMap<String, Integer>();
 	public static  HashMap<String, Integer> xp = new HashMap<String, Integer>();
+	public static  HashMap<String, String> lang = new HashMap<String, String>();
 	
 	public boolean isBoosterInUse() {
 		return Main.getConfigFile().getBoolean("Booster.inUse");
@@ -261,9 +262,9 @@ public class KitAPI {
 			@Override
 			public void run() {
 				
-				if(xp.get(player) >= xp.get(player) * 100){
+				if(xp.get(player) >= level.get(player) * 100){
 					levelUp(player);
-					xp.put(player, xp.get(player) - (xp.get(player) * 100));
+					xp.put(player, xp.get(player) - (level.get(player) * 100));
 					
 					if(xp.get(player) <= 0){
 						xp.put(player, 0);
@@ -271,7 +272,7 @@ public class KitAPI {
 					}
 					
 				}
-				else if(xp.get(player) < xp.get(player)  * 100){
+				else if(xp.get(player) < level.get(player)  * 100){
 					cancel();
 				}
 				
@@ -290,9 +291,9 @@ public class KitAPI {
 
 				@Override
 				public void run() {
-					if(xp.get(player) >= xp.get(player) * 100){
+					if(xp.get(player) >= level.get(player) * 100){
 						levelUp(player);
-						xp.put(player, xp.get(player) - (xp.get(player) * 100));
+						xp.put(player, xp.get(player) - (level.get(player) * 100));
 						
 						if(xp.get(player) <= 0){
 							xp.put(player, 0);
@@ -300,7 +301,7 @@ public class KitAPI {
 						}
 						
 					}
-					else if(xp.get(player) < xp.get(player)  * 100){
+					else if(xp.get(player) < level.get(player)  * 100){
 						cancel();
 					}
 				}
@@ -355,55 +356,122 @@ public class KitAPI {
 		
 		level.put(player, value);
 		
+		if(value >= 50){
+			level.put(player, 50);
+		}
+		else if(level.get(player) >= 50){
+			level.put(player, 50);
+		}
+		
 	}
 	
 	public void addLevel(String player, int value) {
 		
 		if(level.containsKey(player)){
 			level.put(player, level.get(player) + value);
+			
+			if(value >= 50){
+				level.put(player, 50);
+			}
+			else if(level.get(player) >= 50){
+				level.put(player, 50);
+			}
+			
 		}
 		else{
 			level.put(player, value);
+			
+			if(value >= 50){
+				level.put(player, 50);
+			}
+			else if(level.get(player) >= 50){
+				level.put(player, 50);
+			}
+			
+		}
+		
+	}
+	
+	public void getLanguageDB(String player){
+		MySQLManager m = new MySQLManager();
+		try {
+			if (m.getConnection().isClosed() || m.getConnection() == null) {
+				m.openConnection();
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+		try {
+
+			if (m.languageContainsPlayer(player)) {
+
+				Statement statement = connection.createStatement();
+				ResultSet result = statement
+						.executeQuery("SELECT * FROM `language` WHERE player = '" + player + "';");
+
+				while (result.next()) {
+					lang.put(player, result.getString("lang"));
+				}
+
+			} else {
+				m.putPlayerToLang(player);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void setLanguage(String player, Language language){
+		
+		switch(language){
+		
+		case FINNISH:
+			lang.put(player, "FIN");
+			break;
+		case ENGLISH:
+			lang.put(player, "ENG");
+			break;
+		case DEFAULT:
+			lang.put(player, "DEF");
+			break;
+		
 		}
 		
 	}
 	
 	public Language getLanguage(String player){
 		
-		if(Main.getDataFile().getString(player).equalsIgnoreCase("ENG")){
+		if(lang.get(player).equalsIgnoreCase("ENG")){
 			return Language.ENGLISH;
 		}
-		else if(Main.getDataFile().getString(player).equalsIgnoreCase("FIN")){
+		else if(lang.get(player).equalsIgnoreCase("FIN")){
 			return Language.FINNISH;
 		}
-		else if(Main.getDataFile().getString(player).equalsIgnoreCase("DEF")){
+		else if(lang.get(player).equalsIgnoreCase("DEF")){
 			return Language.DEFAULT;
 		}
 		return null;
 	}
 	
-	public void setLanguage(String player, Language language){
-		
-		if (Main.getDataFile().get(player) == null) {
-			System.out.println("That player is not in our database.");
-			return;
-		}
+	public String getRawLanguage(String player){
+		Language language = getLanguage(player);
+		String raw = "";
 		
 		switch (language) {
 		case FINNISH:
-			Main.getDataFile().set(player, "FIN");
-			Main.saveDataFile();
+			raw = "FIN";
 			break;
 		case ENGLISH:
-			Main.getDataFile().set(player, "ENG");
-			Main.saveDataFile();
+			raw = "ENG";
 			break;
 		case DEFAULT:
-			Main.getDataFile().set(player, "DEF");
-			Main.saveDataFile();
+			raw = "DEF";
 			break;
+
 		}
 		
+		return raw;
 	}
 	
 	public void setNick(String player, NameColor color){
@@ -599,9 +667,59 @@ public class KitAPI {
 		
 		addLevel(player, 1);
 		
+		if(getLevel(player) >= 50){
+			setlevel(player, 50);
+		}
+		
 		Player p = Bukkit.getPlayer(player);
 		
 		if(p.isOnline() && p != null){
+			
+			if(getLevel(player) == 10){
+				if(getLanguage(p.getName()) == Language.FINNISH){
+					ChatUtils.sendMessageWithPrefix(p, "§7Ansaitsit §c1 §7tokenin!");
+				}
+				else if (getLanguage(p.getName()) == Language.ENGLISH){
+					ChatUtils.sendMessageWithPrefix(p, "§7You were given §c1 §7token!");
+				}
+				Main.getCosmeticManager().addTokens(player, 1);
+			}
+			else if(getLevel(player) == 20){
+				if(getLanguage(p.getName()) == Language.FINNISH){
+					ChatUtils.sendMessageWithPrefix(p, "§7Ansaitsit §c1 §7tokenin!");
+				}
+				else if (getLanguage(p.getName()) == Language.ENGLISH){
+					ChatUtils.sendMessageWithPrefix(p, "§7You were given §c1 §7token!");
+				}
+				Main.getCosmeticManager().addTokens(player, 1);
+			}
+			else if(getLevel(player) == 30){
+				if(getLanguage(p.getName()) == Language.FINNISH){
+					ChatUtils.sendMessageWithPrefix(p, "§7Ansaitsit §c1 §7tokenin!");
+				}
+				else if (getLanguage(p.getName()) == Language.ENGLISH){
+					ChatUtils.sendMessageWithPrefix(p, "§7You were given §c1 §7token!");
+				}
+				Main.getCosmeticManager().addTokens(player, 1);
+			}
+			else if(getLevel(player) == 40){
+				if(getLanguage(p.getName()) == Language.FINNISH){
+					ChatUtils.sendMessageWithPrefix(p, "§7Ansaitsit §c1 §7tokenin!");
+				}
+				else if (getLanguage(p.getName()) == Language.ENGLISH){
+					ChatUtils.sendMessageWithPrefix(p, "§7You were given §c1 §7token!");
+				}
+				Main.getCosmeticManager().addTokens(player, 1);
+			}
+			else if(getLevel(player) == 50){
+				if(getLanguage(p.getName()) == Language.FINNISH){
+					ChatUtils.sendMessageWithPrefix(p, "§7Ansaitsit §c1 §7tokenin!");
+				}
+				else if (getLanguage(p.getName()) == Language.ENGLISH){
+					ChatUtils.sendMessageWithPrefix(p, "§7You were given §c1 §7token!");
+				}
+				Main.getCosmeticManager().addTokens(player, 1);
+			}
 			
 			if(getLanguage(p.getName()) == Language.FINNISH){
 				ChatUtils.sendMessageWithPrefix(p, "§7Ansaitsit uuden levelin! (§c" + level.get(player) + "§7)");
@@ -959,8 +1077,6 @@ public class KitAPI {
 
 	public void giveScoreboard(Player p){
 		
-		if(!Main.getDataFile().getBoolean(p.getUniqueId().toString() + ".scoreboard")){ return; }
-		
 		if(getLanguage(p.getName()) == Language.FINNISH){
 			
 			Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
@@ -1054,6 +1170,8 @@ public class KitAPI {
 					board.getTeam("lvl").setSuffix("§c" + String.valueOf(getLevel(p.getName())));
 					board.getTeam("xp").setSuffix("§c" + String.valueOf(getXp(p.getName()) + "/" + getLevel(p.getName()) * 100));
 					board.getTeam("tokens").setSuffix("§c" + String.valueOf(Main.getCosmeticManager().getTokens(p.getName())));
+					
+					
 				}
 				
 			}.runTaskTimerAsynchronously(Main.getInstance(), 20, 60);

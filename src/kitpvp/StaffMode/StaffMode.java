@@ -37,6 +37,8 @@ public class StaffMode {
 		p.getInventory().clear();
 		p.getInventory().setArmorContents(null);
 		
+		giveStaffModeItems(p);
+		
 		ChatUtils.sendMessageWithPrefix(p, "§7Staffmode §aenabled§7!");
 	}
 	

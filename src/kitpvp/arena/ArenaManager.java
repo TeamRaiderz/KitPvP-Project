@@ -6,9 +6,12 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
 
+import kitpvp.Main;
 import kitpvp.Util.ChatUtils;
+import kitpvp.Util.Language;
 import kitpvp.Util.TeleportManager;
 import kitpvp.object.ArenaPlayer;
+import net.md_5.bungee.api.ChatColor;
 
 public class ArenaManager {
 	
@@ -106,6 +109,29 @@ public class ArenaManager {
 			@Override
 			public void setKillStreak(int value) {
 				killStreak = value;
+			}
+
+			@Override
+			public Language getLanguage() {
+				return Main.getAPI().getLanguage(p.getName());
+			}
+
+			@Override
+			public void sendTitle(String headtitle, String subtitle) {
+				Main.getPacketUtils().sendTitle(p, ChatColor.translateAlternateColorCodes('&', headtitle),
+						ChatColor.translateAlternateColorCodes('&', subtitle), 20, 40, 20);
+			}
+			
+			@Override
+			public void sendActionBar(String msg){
+				Main.getPacketUtils().sendActionBar(p, ChatColor.translateAlternateColorCodes('&', msg));
+			}
+			
+			@Override
+			public double getHealth(){
+				double rawHealth = p.getHealth();
+				double health = Math.round(rawHealth * 10.0D) / 10.0D;
+				return health;
 			}
 			
 		});

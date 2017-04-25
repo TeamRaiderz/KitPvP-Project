@@ -75,4 +75,13 @@ public class ChatUtils {
 		}
 	}
 	
+	public static void sendPlayerNotFoundMsg(CommandSender sender, String target){
+		if(Main.getAPI().getLanguage(sender.getName()) == Language.FINNISH){
+			ChatUtils.sendMessageWithPrefix(sender, "§7En löytänyt pelaajaa §c" + target + ".");
+		}
+		else if(Main.getAPI().getLanguage(sender.getName()) == Language.ENGLISH){
+			ChatUtils.sendMessageWithPrefix(sender, "§7Couldn't find the player §c" + target  + ".");
+		}
+	}
+	
 }

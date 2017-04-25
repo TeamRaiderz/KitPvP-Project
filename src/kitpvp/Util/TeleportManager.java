@@ -95,4 +95,9 @@ public class TeleportManager {
 		return Float.parseFloat(Main.getInstance().getConfig().getString("Spawn.YAW"));
 	}
 	
+	public Location getSpawnLocation(){
+		Location spawn = new Location(getSpawnWorld(), getSpawnX(), getSpawnY(), getSpawnZ(), getSpawnYaw(), getSpawnPitch());
+		return spawn;
+	}
+	
 }

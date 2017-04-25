@@ -31,7 +31,7 @@ public class ArenaKillEvent extends Event{
 		return handlers;
 	}
 	
-	public HandlerList getHandlerList(){
+	public static HandlerList getHandlerList(){
 		return handlers;
 	}
 	

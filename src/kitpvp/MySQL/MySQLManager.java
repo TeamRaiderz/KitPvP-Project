@@ -115,6 +115,25 @@ public class MySQLManager {
 		}
 	}
 	
+	public synchronized boolean languageContainsPlayer(String p){
+		try{
+			PreparedStatement sql = connection.prepareStatement("SELECT * FROM `language` WHERE player=?;");
+			sql.setString(1, p);
+			
+			ResultSet set = sql.executeQuery();
+			
+			boolean containsPlayer = set.next();
+			
+			sql.close();
+			set.close();
+			
+			return containsPlayer;
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 	public Connection getConnection(){
 		return connection;
 	}
@@ -123,6 +142,18 @@ public class MySQLManager {
 		try{
 			PreparedStatement newPlayer = connection.prepareStatement("INSERT `player_data` values(?,0,0,0,0,0)");
 			newPlayer.setString(1, player);
+			newPlayer.execute();
+			newPlayer.close();
+		} catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	public void putPlayerToLang(String player){
+		try{
+			PreparedStatement newPlayer = connection.prepareStatement("INSERT `language` values(?,?)");
+			newPlayer.setString(1, player);
+			newPlayer.setString(2, "DEF");
 			newPlayer.execute();
 			newPlayer.close();
 		} catch(Exception e){

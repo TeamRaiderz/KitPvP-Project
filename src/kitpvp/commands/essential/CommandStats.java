@@ -32,7 +32,7 @@ public class CommandStats implements CommandExecutor {
 			Player target = Bukkit.getPlayer(args[0]);
 			
 			if(target == null || !target.isOnline()){
-				ChatUtils.sendMessageWithPrefix(sender, "§7That player is not online!");
+				ChatUtils.sendPlayerNotFoundMsg(sender, args[0]);
 				return true;
 			}
 			
