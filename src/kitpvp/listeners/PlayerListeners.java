@@ -10,10 +10,13 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityPortalEnterEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import kitpvp.Main;
@@ -22,6 +25,7 @@ import kitpvp.Util.Language;
 import kitpvp.Util.TeleportManager;
 import kitpvp.arena.events.ArenaEnterEvent;
 import kitpvp.commands.essential.LangCommand;
+import kitpvp.other.SpawnItems;
 
 public class PlayerListeners implements Listener{
 
@@ -176,9 +180,31 @@ public class PlayerListeners implements Listener{
 			Player p = (Player) e.getEntity();
 			ArenaEnterEvent arenaEnterEvent = new ArenaEnterEvent(p.getName());
 			Bukkit.getServer().getPluginManager().callEvent(arenaEnterEvent);
-			p.sendMessage("TESTING CUSTOM EVENTS! (" + arenaEnterEvent.getEventName()  +")");
 		}
 		
+	}
+	
+	@EventHandler
+	public void onRespawn(PlayerRespawnEvent e){
+		SpawnItems.giveItems(e.getPlayer(), e.getPlayer().getInventory());
+	}
+	
+	@EventHandler
+	public void onInvClick(InventoryClickEvent e){
+		Player p = (Player) e.getWhoClicked();
+		if(e.getInventory().getName().equals("Oston varmistus") || e.getInventory().getName().equals("Confirm purchase")){
+			e.setCancelled(true);
+			
+			int price = Integer.valueOf(e.getInventory().getItem(13).getItemMeta().getDisplayName().charAt(11));
+			
+			if(e.getCurrentItem() == new ItemStack(Material.STAINED_GLASS_PANE, 1, (short)5) && e.getCurrentItem().hasItemMeta()){
+				Main.getAPI().setBalance(p.getName(), Main.getAPI().getBalance(p.getName()) - price);
+			}
+			else if(e.getCurrentItem() == new ItemStack(Material.STAINED_GLASS_PANE, 1, (short)14) && e.getCurrentItem().hasItemMeta()){
+				p.closeInventory();
+			}
+			
+		}
 	}
 	
 }

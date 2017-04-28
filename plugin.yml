@@ -87,6 +87,9 @@ commands:
     description: Send a title
   subtitle:
     description: Send a subtitle
+  crates:
+    description: Open the crate menu
+    aliases: [laatikot]
     
 permissions:
   server.mod:

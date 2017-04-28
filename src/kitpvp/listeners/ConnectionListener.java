@@ -68,8 +68,6 @@ public class ConnectionListener implements Listener{
 			
 			Main.getAPI().setNick(p.getName(), NameColor.DEFAULT);
 			
-			Main.getDataFile().set(p.getName(), "DEF");
-			
 			Main.saveDataFile();
 		}
 		
@@ -79,6 +77,8 @@ public class ConnectionListener implements Listener{
 		data.set(uuid + ".currentName", p.getName());
 		data.set(uuid + ".ipAddress", p.getAddress().getAddress().toString());
 		Main.saveDataFile();
+		
+		SpawnItems.giveItems(p, p.getInventory());
 		
 		if(!(SpawnItems.playersHidden.containsKey(p.getName()))){
 			SpawnItems.playersHidden.put(p.getName(), false);

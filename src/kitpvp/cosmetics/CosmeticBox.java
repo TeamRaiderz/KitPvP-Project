@@ -13,6 +13,9 @@ import org.bukkit.inventory.Inventory;
 import kitpvp.Main;
 import kitpvp.Util.KitAPI;
 import kitpvp.Util.Language;
+import kitpvp.cosmetics.menus.ArrowtrailMenu;
+import kitpvp.cosmetics.menus.DeatheffectMenu;
+import kitpvp.cosmetics.menus.ParticleMenu;
 
 public class CosmeticBox implements Listener{
 
@@ -66,6 +69,18 @@ public class CosmeticBox implements Listener{
 				CSGOCrate c = new CSGOCrate();
 				c.openCSGO(p);
 				Main.getCosmeticManager().setTokens(p.getName(), Main.getCosmeticManager().getTokens(p.getName()) - 1);
+			}
+			else if(e.getCurrentItem().getType() == Material.BOW && e.getCurrentItem().hasItemMeta()){
+				ParticleMenu m = new ParticleMenu();
+				m.openMenu(p);
+			}
+			else if(e.getCurrentItem().getType() == Material.EMERALD && e.getCurrentItem().hasItemMeta()){
+				ArrowtrailMenu m = new ArrowtrailMenu();
+				m.openMenu(p);
+			}
+			else if(e.getCurrentItem().getType() == Material.SKULL_ITEM && e.getCurrentItem().hasItemMeta()){
+				DeatheffectMenu m = new DeatheffectMenu();
+				m.openMenu(p);
 			}
 			
 		}

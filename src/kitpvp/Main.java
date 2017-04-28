@@ -44,7 +44,10 @@ import kitpvp.commands.vip.PrefixCommand;
 import kitpvp.cosmetics.CSGOCrate;
 import kitpvp.cosmetics.CosmeticBox;
 import kitpvp.cosmetics.CosmeticManager;
-import kitpvp.cosmetics.Particles;
+import kitpvp.cosmetics.menus.ArrowtrailMenu;
+import kitpvp.cosmetics.menus.CrateCaveMenu;
+import kitpvp.cosmetics.menus.DeatheffectMenu;
+import kitpvp.cosmetics.menus.ParticleMenu;
 import kitpvp.kits.KitManager;
 import kitpvp.listeners.AbilityListener;
 import kitpvp.listeners.ArenaEvents;
@@ -127,7 +130,7 @@ public class Main extends JavaPlugin implements Plugin{
 		registerCommand("staffmode", new StaffModeCommand());
 		registerCommand("subtitle", new TitleCommand());
 		registerCommand("title", new TitleCommand());
-		registerCommand("particle", new Particles());
+		registerCommand("crates", new CrateCaveMenu());
 		
 		registerListener(this, new ConnectionListener());
 		registerListener(this, new PrefixCommand());
@@ -153,6 +156,10 @@ public class Main extends JavaPlugin implements Plugin{
 		registerListener(this, new ArenaEvents());
 		registerListener(this, new CSGOCrate());
 		registerListener(this, new ParticleListeners());
+		registerListener(this, new ArrowtrailMenu());
+		registerListener(this, new CrateCaveMenu());
+		registerListener(this, new ParticleMenu());
+		registerListener(this, new DeatheffectMenu());
 		
 		for(Player online : Bukkit.getOnlinePlayers()){
 //			getAPI().startPlayTimeCount(online);
