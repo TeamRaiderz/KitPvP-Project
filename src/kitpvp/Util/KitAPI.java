@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -550,6 +551,14 @@ public class KitAPI {
 		meta.setLore(lore);
 		wool.setItemMeta(meta);
 		inv.setItem(pos, wool);
+	}
+	
+	public ItemStack makeWoolItem(DyeColor color, String displayName){
+		ItemStack wool = new ItemStack(Material.WOOL, 1, color.getData());
+		ItemMeta meta = wool.getItemMeta();
+		meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
+		wool.setItemMeta(meta);
+		return wool;
 	}
 	
 	public void Silent(Entity YourEntity) {

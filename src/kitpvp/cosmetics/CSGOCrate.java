@@ -3,14 +3,15 @@ package kitpvp.cosmetics;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -44,28 +45,19 @@ public class CSGOCrate implements Listener {
 		int color = r.nextInt(15);
 		if (color == 8)
 			color = 1;
-		inv.setItem(0, (ItemStack) Glass.get(Integer.valueOf(1)));
-		inv.setItem(18, (ItemStack) Glass.get(Integer.valueOf(1)));
-		inv.setItem(1, (ItemStack) Glass.get(Integer.valueOf(2)));
-		inv.setItem(19, (ItemStack) Glass.get(Integer.valueOf(2)));
-		inv.setItem(2, (ItemStack) Glass.get(Integer.valueOf(3)));
-		inv.setItem(20, (ItemStack) Glass.get(Integer.valueOf(3)));
-		inv.setItem(3, (ItemStack) Glass.get(Integer.valueOf(5)));
-		inv.setItem(21, (ItemStack) Glass.get(Integer.valueOf(5)));
+		
+		int[] glasspanes = new int[] { 0, 18, 1, 19, 2, 20, 3, 21, 5, 23, 6, 24, 7, 25, 8, 26 };
+		
+		for(int i : glasspanes){
+			inv.setItem(i, KitAPI.makeItem(Material.STAINED_GLASS_PANE, 1, 0, " "));
+		}
+		
 		inv.setItem(4, KitAPI.makeItem(Material.STAINED_GLASS, 1, 15, " "));
 		inv.setItem(22, KitAPI.makeItem(Material.STAINED_GLASS, 1, 15, " "));
-		inv.setItem(5, (ItemStack) Glass.get(Integer.valueOf(6)));
-		inv.setItem(23, (ItemStack) Glass.get(Integer.valueOf(6)));
-		inv.setItem(6, (ItemStack) Glass.get(Integer.valueOf(7)));
-		inv.setItem(24, (ItemStack) Glass.get(Integer.valueOf(7)));
-		inv.setItem(7, (ItemStack) Glass.get(Integer.valueOf(8)));
-		inv.setItem(25, (ItemStack) Glass.get(Integer.valueOf(8)));
-		inv.setItem(8, KitAPI.makeItem(Material.STAINED_GLASS_PANE, 1, color, " "));
-		inv.setItem(26, KitAPI.makeItem(Material.STAINED_GLASS_PANE, 1, color, " "));
 	}
 
-	public static void openCSGO(Player player) {
-		Crate c = new Crate(player);
+	public void openCSGO(Player player) {
+		Crate c = new Crate();
 		Inventory inv = Bukkit.createInventory(null, 27, "Rolling CSGO...");
 		setGlass(inv);
 		for (int i = 9; (i > 8) && (i < 18); i++) {
@@ -103,11 +95,11 @@ public class CSGOCrate implements Listener {
 							}
 							this.time++;
 							if (this.time >= 60) {
-								player.playSound(player.getLocation(), Sound.LEVEL_UP, 1f, 1f);
-								Bukkit.getScheduler().cancelTask(((Integer) roll.get(player)));
+								player.playSound(player.getLocation(), Sound.CLICK, 1f, 1f);
+								Bukkit.getScheduler().cancelTask(roll.get(player));
 								roll.remove(player);
 								Prize prize = null;
-								Crate c = new Crate(player);
+								Crate c = new Crate();
 								for (Prize p : (c.getPrizes())) {
 									if (inv.getItem(13).isSimilar(p.getDisplayItem())) {
 										prize = p;
@@ -137,7 +129,7 @@ public class CSGOCrate implements Listener {
 	}
 
 	private static void moveItems(Inventory inv, Player player) {
-		Crate c = new Crate(player);
+		Crate c = new Crate();
 		ArrayList items = new ArrayList();
 		for (int i = 9; (i > 8) && (i < 17); i++) {
 			items.add(inv.getItem(i));
@@ -147,16 +139,12 @@ public class CSGOCrate implements Listener {
 			inv.setItem(i + 10, (ItemStack) items.get(i));
 	}
 
-	// @EventHandler
-	// public void onLeave(PlayerQuitEvent e)
-	// {
-	// Player player = e.getPlayer();
-	// if (roll.containsKey(player)) {
-	// Bukkit.getScheduler().cancelTask(((Integer)roll.get(player)).intValue());
-	// roll.remove(player);
-	// }
-	// if (GUI.crates.containsKey(player))
-	// GUI.crates.remove(player);
-	// }
-	// }
+	@EventHandler
+	public void onLeave(PlayerQuitEvent e) {
+		Player player = e.getPlayer();
+		if (roll.containsKey(player)) {
+			Bukkit.getScheduler().cancelTask(roll.get(player));
+			roll.remove(player);
+		}
+	}
 }

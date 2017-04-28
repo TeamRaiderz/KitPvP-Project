@@ -2,16 +2,18 @@ package kitpvp.cosmetics;
 
 import org.bukkit.inventory.ItemStack;
 
+import kitpvp.Util.KitAPI;
+
 public class Prize {
 
 	private String name;
-	private ItemStack displayItem;
 	private int chance;
+	private Rarity rarity;
 	
-	public Prize(String name, ItemStack displayItem, int chance){
+	public Prize(String name, int chance, Rarity rarity){
 		this.name = name;
-		this.displayItem = displayItem;
 		this.chance = chance;
+		this.rarity = rarity;
 	}
 
 	public String getName() {
@@ -19,7 +21,13 @@ public class Prize {
 	}
 
 	public ItemStack getDisplayItem() {
-		return displayItem;
+		KitAPI api = new KitAPI();
+		ItemStack item = api.makeWoolItem(rarity.color, rarity.getName());
+		return item;
+	}
+	
+	public Rarity getRarity(){
+		return rarity;
 	}
 
 	public int getChance() {

@@ -26,128 +26,26 @@ import kitpvp.Main;
 import kitpvp.Util.KitAPI;
 
 public class Crate {
-	
-	private Player opener;
-	private Inventory openingInv;
-	private Inventory prizeInv;
 	public static HashMap<String, Crate> crates = new HashMap<>();
-	
-	public Crate(Player opener){
-		this.opener = opener;
-	}
-	
-	public void activateCrate(){
-		
-		Inventory inv = Bukkit.createInventory(null, InventoryType.CHEST, "Rolling...");
-		opener.openInventory(inv);
-		startInventory(inv, opener);
-	}
-	
-	public void startInventory(final Inventory inv, final Player p){
-		startFrame((short) 5, 0L, ChatColor.RED, inv, opener);
-		startFrame((short) 6, 10L, ChatColor.GREEN, inv, opener);
-		startFrame((short) 7, 15L, ChatColor.AQUA, inv, opener);
-		startFrame((short) 1, 20L, ChatColor.BLUE, inv, opener);
-		startFrame((short) 2, 25L, ChatColor.DARK_GREEN, inv, opener);
-		startFrame((short) 3, 30L, ChatColor.LIGHT_PURPLE, inv, opener);
-		startFrame((short) 4, 35L, ChatColor.DARK_PURPLE, inv, opener);
-		startFrame((short) 9, 40L, ChatColor.GOLD, inv, opener);
-		startFrame((short) 10, 45L, ChatColor.YELLOW, inv, opener);
-		selectPrize(opener, inv);
-	}
-	
-	public void startFrame(final short sh, final long delay, final ChatColor chatColor, final Inventory inv, final Player p){
-		final Sound sound = Sound.ORB_PICKUP;
-		new BukkitRunnable(){
-			public void run(){
-				
-				ItemStack rolling = new ItemStack(Material.STAINED_GLASS_PANE, 1, sh);
-				ItemMeta rollingMeta = rolling.getItemMeta();
-				rollingMeta.setDisplayName(" ");
-				rolling.setItemMeta(rollingMeta);
-				
-				for (int x = 0;x<inv.getSize(); x++){
-					inv.setItem(x, new ItemStack(rolling));
-					
-				}
-				
-				ItemStack is = new ItemStack(Material.PAPER);
-				ItemMeta im = is.getItemMeta();
-				im.setDisplayName(chatColor + "?");
-				is.setItemMeta(im);
-				inv.setItem(13, is);
-				opener.playSound(opener.getLocation(), sound, 1, 1);
-				cancel();
-			}
-		}.runTaskLater(Main.getInstance(), delay);		
-	}
-	
-	public void selectPrize(final Player p, final Inventory inv){
-		
-		Random rn = new Random();
-	    int chance = rn.nextInt(100);
-	    int roundedChance = (int) (Math.round(chance * 10.0D) / 10.0D);
-	    
-		new BukkitRunnable(){
-			public void run() {
-				if(chance <= 1){
-					opener.sendMessage("ßeVoitit ß6Helvetin Iso L‰j‰ Karkkia " + roundedChance + "% ßemahdollisuuksilla!");
-					Main.getAPI().createItem(inv, 13, Material.NAME_TAG, 1, "ß6ßlPASKAA", Arrays.asList(""));
-					opener.closeInventory();
-					System.out.println("VIP 6");
-				} else if (chance <= 5) {
-					opener.sendMessage("ßeVoitit ß6Todella Iso L‰j‰ Karkkia " + roundedChance + "% ßemahdollisuuksilla!");
-					Main.getAPI().createItem(inv, 13, Material.NAME_TAG, 1, "ß6ßlPASKAA", Arrays.asList(""));
-					opener.closeInventory();
-					System.out.println("VIP 4");
-				} else if (chance <= 15) {
-					opener.sendMessage("ßeVoitit ß6Hyvin Iso L‰j‰ Karkkia " + roundedChance + "% ßemahdollisuuksilla!");
-					Main.getAPI().createItem(inv, 13, Material.NAME_TAG, 1, "ß6ßlPASKAA", Arrays.asList(""));
-					opener.closeInventory();
-					System.out.println("VIP 3");
-				} else if (chance <= 25) {
-					opener.sendMessage("ßeVoitit ß6Iso L‰j‰ Karkkia " + roundedChance + "% ßemahdollisuuksilla!");
-					Main.getAPI().createItem(inv, 13, Material.NAME_TAG, 1, "ß6ßlPASKAA", Arrays.asList(""));
-					opener.closeInventory();
-					System.out.println("VIP 7");
-				} else if (chance <= 35) {
-					opener.sendMessage("ßeVoitit ß6Keskikokoista Hieman Isompi L‰j‰ Karkkia " + roundedChance + "% ßemahdollisuuksilla!");
-					Main.getAPI().createItem(inv, 13, Material.NAME_TAG, 1, "ß6ßlPASKAA", Arrays.asList(""));
-					opener.closeInventory();
-					System.out.println("VIP 8");
-				} else if (chance <= 45) {
-					opener.sendMessage("ßeVoitit ß6Keskikokoisen L‰j‰n Karkkia " + roundedChance + "% ßemahdollisuuksilla!");
-					Main.getAPI().createItem(inv, 13, Material.NAME_TAG, 1, "ß6ßlPASKAA", Arrays.asList(""));
-					opener.closeInventory();
-					System.out.println("VIP 2");
-				} else if (chance <= 55) {
-					opener.sendMessage("ßeVoitit ß6Pienen L‰j‰n Karkkia " + roundedChance + "% ßemahdollisuuksilla!");
-					Main.getAPI().createItem(inv, 13, Material.NAME_TAG, 1, "ß6ßlPASKAA", Arrays.asList(""));
-					opener.closeInventory();
-					System.out.println("VIP 1");
-				} else {
-					opener.sendMessage("ßeVoitit ß6Hyvin Pienen L‰j‰n Karkkia " + roundedChance + "% ßemahdollisuuksilla!");
-					Main.getAPI().createItem(inv, 13, Material.NAME_TAG, 1, "ß6ßlPASKAA", Arrays.asList(""));
-					System.out.println("VIP 0");
-					opener.closeInventory();
-				}
-							
-				Firework firework = (Firework) opener.getWorld().spawnEntity(opener.getLocation(), EntityType.FIREWORK);
-				FireworkMeta fireworkMeta = firework.getFireworkMeta();
-				fireworkMeta.setPower(10);
-				fireworkMeta.addEffects(FireworkEffect.builder().trail(true).flicker(true).with(FireworkEffect.Type.BALL_LARGE).withColor(Color.NAVY).withColor(Color.FUCHSIA).build());
-				firework.setFireworkMeta(fireworkMeta);				
-				firework.detonate();
-			}
-		}.runTaskLater(Main.getInstance(), 55L);
-	}
 	
 	public ArrayList<Prize> getPrizes(){
 		
 		ArrayList<Prize> prizes = new ArrayList<>();
-		prizes.add(new Prize("Jackpot", KitAPI.makeItem(Material.GOLD_INGOT, 1, 0, "ß6ßlJackpot"), 1));
-		prizes.add(new Prize("Particle", KitAPI.makeItem(Material.REDSTONE, 1, 0, "ßdßlParticle effect"), 25));
-		prizes.add(new Prize("Archer", KitAPI.makeItem(Material.BOW, 1, 0, "ß9ßlArcher kit"), 74));
+		
+		// JACKPOT 1% - 3% and 5%, RARE 6% - 15%, UNCOMMON 16% - 60%, COMMON 60% - 100%, PRICELESS 4%
+		
+		prizes.add(new Prize("Jackpot", 1, Rarity.LEGENDRAY));
+		prizes.add(new Prize("Fly cmd", 1, Rarity.LEGENDRAY));
+		
+		prizes.add(new Prize("Particle effect", 10, Rarity.RARE));
+		
+		prizes.add(new Prize("Arrow trail", 20, Rarity.UNCOMMON));
+		prizes.add(new Prize("Token", 25, Rarity.UNCOMMON));
+		
+		prizes.add(new Prize("Money", 70, Rarity.COMMON));
+		prizes.add(new Prize("Arrow trail", 60, Rarity.COMMON));
+		
+		prizes.add(new Prize("Nothing", 4, Rarity.PRICELESS));
 		
 		return prizes;
 	}
@@ -162,7 +60,7 @@ public class Crate {
 			
 			for(Iterator localIterator = getPrizes().iterator(); localIterator.hasNext();){
 				Prize prize = (Prize)localIterator.next();
-				int chance = prize.getChance();
+				double chance = prize.getChance();
 				
 				counter = 1;
 		        int num = 1 + new Random().nextInt(100);
@@ -178,14 +76,53 @@ public class Crate {
 	}
 	
 	public static void getReward(Player p, Prize prize){
-		if(prize.getName().equals("Jackpot")){
-			p.sendMessage("ßcVoitit parhaan palkinnon! " + prize.getChance() + "%");
+		if(prize.getRarity() == Rarity.LEGENDRAY){
+			if(prize.getName().equals("Jackpot")){
+				p.sendMessage("ßfßlVOITIT ß6ßlJACKPOTINßfßl!!! ß610,000 Äßfßl!!");
+				Main.getAPI().addBalance(p.getName(), 10000);
+			}
+			else if(prize.getName().equals("Fly cmd")){
+				p.sendMessage("ßfßlVOITIT ß6ßl/fly ßfßlKOMENNON!!");
+				Main.getAPI().addBalance(p.getName(), 10000);
+			}
+			else{
+				p.sendMessage("ßcVoitit parhaan palkinnon! Arvokkuus: " + prize.getRarity().toString() + " ("  + prize.getChance() + "%)");
+			}
 		}
-		else if(prize.getName().equals("Particle")){
-			p.sendMessage("ßcVoitit toiseksi palkinnon! " + prize.getChance() + "%");
+		else if(prize.getRarity() == Rarity.RARE){
+			if(prize.getName().equals("Particle effect")){
+				p.sendMessage("ßfßlVoitit ßcpartikkeli efektinßfßl!");
+			}
+			else{
+				p.sendMessage("ßcVoitit toiseksi palkinnon! Arvokkuus: " + prize.getRarity().toString() + " ("  + prize.getChance() + "%)");
+			}
 		}
-		else if(prize.getName().equals("Archer")){
-			p.sendMessage("ßcVoitit huonoimman palkinnon! " + prize.getChance() + "%");
+		else if(prize.getRarity() == Rarity.UNCOMMON){
+			if(prize.getName().equals("Arrow trail")){
+				p.sendMessage("ßfßlVoitit ß5nuolivananßfßl!");
+			}
+			else if(prize.getName().equals("Token")){
+				p.sendMessage("ßfßlVoitit ß5tokeninßfßl!");
+				Main.getCosmeticManager().addTokens(p.getName(), 1);
+			}
+			else{
+				p.sendMessage("ßcVoitit toiseksi huonoimman palkinnon! Arvokkuus: " + prize.getRarity().toString() + " ("  + prize.getChance() + "%)");
+			}
+		}
+		else if(prize.getRarity() == Rarity.COMMON){
+			if(prize.getName().equals("Money")){
+				p.sendMessage("ßfßlVoitit ß9rahaaßfßl! ß950Äßfßl!");
+				Main.getAPI().addBalance(p.getName(), 50);
+			}
+			else if(prize.getName().equals("Arrow trail")){
+				p.sendMessage("ßfßlVoitit ß9nuolivananßfßl!");
+			}
+			else{
+				p.sendMessage("ßcVoitit huonoimman palkinnon! Arvokkuus: " + prize.getRarity().toString() + " ("  + prize.getChance() + "%)");
+			}
+		}
+		else if(prize.getRarity() == Rarity.PRICELESS){
+			p.sendMessage("ßcEt voittanut t‰ll‰ kertaa mit‰‰n! " + prize.getChance() + "%");
 		}
 	}
 	
