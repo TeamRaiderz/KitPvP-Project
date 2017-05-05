@@ -9,7 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-public class KitsYML {
+public class AchievementsYML {
 
 	public static YamlConfiguration pData = null;
 	public static File pDataFile = null;
@@ -19,12 +19,12 @@ public class KitsYML {
 		
 	
 	if(pDataFile == null){
-		pDataFile = new File(Bukkit.getPluginManager().getPlugin("KitPvP").getDataFolder(), "kits.yml");
+		pDataFile = new File(Bukkit.getPluginManager().getPlugin("KitPvP").getDataFolder(), "achievements.yml");
 	}
 	
 	pData = YamlConfiguration.loadConfiguration(pDataFile);
 	
-	InputStream defConfigStream = Bukkit.getPluginManager().getPlugin("KitPvP").getResource("kits.yml");
+	InputStream defConfigStream = Bukkit.getPluginManager().getPlugin("KitPvP").getResource("achievements.yml");
 	if(defConfigStream != null){
 		YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
 		if(!(pDataFile.exists() || pDataFile.length() == 0L)){

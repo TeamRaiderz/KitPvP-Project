@@ -19,7 +19,7 @@ import kitpvp.StaffMode.StaffModeCommand;
 import kitpvp.StaffMode.StaffModeListeners;
 import kitpvp.Util.DataYML;
 import kitpvp.Util.KitAPI;
-import kitpvp.Util.KitsYML;
+import kitpvp.Util.AchievementsYML;
 import kitpvp.Util.PacketUtils;
 import kitpvp.commands.admin.CommandDB;
 import kitpvp.commands.admin.CommandKill;
@@ -257,7 +257,7 @@ public class Main extends JavaPlugin implements Plugin{
 	}
 	
 	public static FileConfiguration getKitFile(){
-		return KitsYML.getFile();
+		return AchievementsYML.getFile();
 	}
 	public static FileConfiguration getConfigFile(){
 		return Main.getInstance().getConfig();
@@ -276,7 +276,7 @@ public class Main extends JavaPlugin implements Plugin{
 	}
 	
 	public static void saveKitFile(){
-		KitsYML.saveFile();
+		AchievementsYML.saveFile();
 	}
 	
 	public static void saveDataFile(){
@@ -307,6 +307,14 @@ public class Main extends JavaPlugin implements Plugin{
 		System.err.println("(!) An error happened in the plugin. Here's the stack trace ->");
 		System.err.println("(!) Msg: " + e.getMessage() + " Caused by: " + e.getCause() +
 				" Happened at: " + e.getStackTrace()[0].getClassName() + ":" +  e.getStackTrace()[0].getLineNumber() + " (" + e.getStackTrace()[0].getMethodName() + ")");
+	}
+	
+	public static FileConfiguration getAchievementsFile(){
+		return AchievementsYML.getFile();
+	}
+	
+	public static void saveAchievementsFile(){
+		AchievementsYML.saveFile();
 	}
 	
 }

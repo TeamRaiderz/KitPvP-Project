@@ -41,6 +41,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.minecraft.server.v1_8_R3.EnumParticle;
 import net.minecraft.server.v1_8_R3.NBTTagCompound;
 
 public class KitAPI {
@@ -557,6 +558,15 @@ public class KitAPI {
 		ItemStack wool = new ItemStack(Material.WOOL, 1, color.getData());
 		ItemMeta meta = wool.getItemMeta();
 		meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
+		wool.setItemMeta(meta);
+		return wool;
+	}
+	
+	public ItemStack makeWoolItem(DyeColor color, String displayName, List<String> lore){
+		ItemStack wool = new ItemStack(Material.WOOL, 1, color.getData());
+		ItemMeta meta = wool.getItemMeta();
+		meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
+		meta.setLore(lore);
 		wool.setItemMeta(meta);
 		return wool;
 	}
@@ -1346,4 +1356,22 @@ public class KitAPI {
 		    return item;
 	 }
 	
+	 public static ItemStack makeItem(Material material, int amount, int type, String name, List<String> lore) {
+		    ItemStack item = new ItemStack(material, amount, (short)type);
+		    ItemMeta m = item.getItemMeta();
+		    m.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
+		    m.setLore(lore);
+		    item.setItemMeta(m);
+		    return item;
+	 }
+	 
+	 public void makeArrowTrailMenuItem(Player p, Inventory inv, int pos, EnumParticle e, String name){
+		 if(!(p.hasPermission("server.arrowtrail." + e.toString().toLowerCase()))){
+			 
+		 }
+		 else{
+			 
+		 }
+	 }
+	 
 }

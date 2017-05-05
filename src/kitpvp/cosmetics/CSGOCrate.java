@@ -58,7 +58,7 @@ public class CSGOCrate implements Listener {
 
 	public void openCSGO(Player player) {
 		Crate c = new Crate();
-		Inventory inv = Bukkit.createInventory(null, 27, "Rolling CSGO...");
+		Inventory inv = Bukkit.createInventory(null, 27, "Rolling...");
 		setGlass(inv);
 		for (int i = 9; (i > 8) && (i < 18); i++) {
 			inv.setItem(i, c.pickPrize(player).getDisplayItem());

@@ -83,7 +83,6 @@ public class Crate {
 			}
 			else if(prize.getName().equals("Fly cmd")){
 				p.sendMessage("§f§lVOITIT §6§l/fly §f§lKOMENNON!!");
-				Main.getAPI().addBalance(p.getName(), 10000);
 			}
 			else{
 				p.sendMessage("§cVoitit parhaan palkinnon! Arvokkuus: " + prize.getRarity().toString() + " ("  + prize.getChance() + "%)");

@@ -1,5 +1,7 @@
 package kitpvp.cosmetics;
 
+import java.util.Arrays;
+
 import org.bukkit.inventory.ItemStack;
 
 import kitpvp.Util.KitAPI;
@@ -22,7 +24,7 @@ public class Prize {
 
 	public ItemStack getDisplayItem() {
 		KitAPI api = new KitAPI();
-		ItemStack item = api.makeWoolItem(rarity.color, rarity.getName());
+		ItemStack item = api.makeWoolItem(rarity.color, rarity.chatColor + "§l" + name.toUpperCase(), Arrays.asList(rarity.chatColor + rarity.toString()));
 		return item;
 	}
 	

@@ -14,7 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import kitpvp.Main;
 import kitpvp.Util.ChatUtils;
 import kitpvp.Util.DataYML;
-import kitpvp.Util.KitsYML;
+import kitpvp.Util.AchievementsYML;
 import kitpvp.Util.Language;
 import kitpvp.kits.KitManager.Kit;
 
@@ -46,6 +46,7 @@ public class KitCommand implements CommandExecutor{
 			else if (args[0].equalsIgnoreCase("reload")){
 				DataYML.reloadFile();
 				Main.getInstance().reloadConfig();
+				AchievementsYML.reloadFile();
 				
 				if (Main.getAPI().getLanguage(sender.getName()) == Language.FINNISH) {
 					ChatUtils.sendMessageWithPrefix(sender, "§7Reloadasit pluginin!");
@@ -72,9 +73,14 @@ public class KitCommand implements CommandExecutor{
 				Player p = (Player) sender;
 				
 				String rawKitName = args[0].toUpperCase();
-				Kit kit = Kit.valueOf(rawKitName);
-				
-				Main.getKitManager().giveKit(p, kit);
+				try{
+					Kit kit = Kit.valueOf(rawKitName);
+					
+					Main.getKitManager().giveKit(p, kit);
+				} catch(Exception e){
+					
+					p.sendMessage("§cCould not give kit \"" + rawKitName + "\", because it doesn't exist! Error: " + e.toString());
+				}
 				
 				return true;
 			}

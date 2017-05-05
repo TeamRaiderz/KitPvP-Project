@@ -38,7 +38,7 @@ public class CrateCaveMenu implements Listener, CommandExecutor{
 			
 			Main.getAPI().createItem(inv, 12, Material.ENDER_CHEST, 1, "§bCosmetics", Arrays.asList("§7Open a chest where you", "§7can find awesome cosmetics!", "", "§7Price: §e1 token"));
 			Main.getAPI().createItem(inv, 14, Material.CHEST, 1, "§bKits", Arrays.asList("§7Open a chest where you", "§7can find awesome PvP-kits!"
-					, "", "§7Price: §e50"));
+					, "", "§7Price: §e500"));
 			
 			p.openInventory(inv);
 		}
